@@ -18,16 +18,27 @@ export const CATEGORIES = {
 
 export type CategorySlug = keyof typeof CATEGORIES;
 
-// Σ(공부)의 하위 카테고리: slug → 화면에 보이는 이름
-export const STUDY_SUBCATEGORIES = {
-  philosophy: "Philosophy",
-  mathematics: "Mathematics",
-  economics: "Economics",
-  "computer-science": "Computer Science",
-  finance: "Finance",
-} as const;
-
-export type StudySubcategory = keyof typeof STUDY_SUBCATEGORIES;
+// 각 카테고리의 하위 분류: slug → 화면에 보이는 이름
+export const SUBCATEGORIES: Record<CategorySlug, Record<string, string>> = {
+  diary: {
+    "2026": "2026",
+    "2027": "2027",
+  },
+  review: {
+    texts: "Texts", // 글
+    films: "Films", // 영상
+    exhibitions: "Exhibitions", // 전시
+    performances: "Performances", // 공연
+    travel: "Travel", // 여행
+  },
+  study: {
+    philosophy: "Philosophy",
+    mathematics: "Mathematics",
+    economics: "Economics",
+    "computer-science": "Computer Science",
+    finance: "Finance",
+  },
+};
 
 export interface PostMeta {
   slug: string;
@@ -35,7 +46,7 @@ export interface PostMeta {
   excerpt: string;
   date: string;
   category: CategorySlug;
-  subcategory?: StudySubcategory; // category가 study일 때만 사용
+  subcategory?: string; // 해당 category의 하위 분류 slug (SUBCATEGORIES 참고)
   keywords: string[];
 }
 
@@ -58,10 +69,11 @@ function readPostFile(fileName: string): { meta: PostMeta; content: string } {
     );
   }
 
-  const subcategory = data.subcategory as StudySubcategory | undefined;
-  if (subcategory && !(subcategory in STUDY_SUBCATEGORIES)) {
+  const subcategory =
+    data.subcategory !== undefined ? String(data.subcategory) : undefined;
+  if (subcategory && !(subcategory in SUBCATEGORIES[category])) {
     throw new Error(
-      `"${fileName}"의 subcategory는 ${Object.keys(STUDY_SUBCATEGORIES).join(" / ")} 중 하나여야 합니다. (현재: ${data.subcategory})`,
+      `"${fileName}"의 subcategory는 ${Object.keys(SUBCATEGORIES[category]).join(" / ")} 중 하나여야 합니다. (현재: ${subcategory})`,
     );
   }
 
@@ -94,10 +106,13 @@ export function getPostsByCategory(category: CategorySlug): PostMeta[] {
   return getAllPosts().filter((post) => post.category === category);
 }
 
-/** 공부(Σ)의 특정 하위 카테고리 글만 */
-export function getPostsBySubcategory(sub: StudySubcategory): PostMeta[] {
+/** 특정 카테고리의 특정 하위 분류 글만 */
+export function getPostsBySubcategory(
+  category: CategorySlug,
+  sub: string,
+): PostMeta[] {
   return getAllPosts().filter(
-    (post) => post.category === "study" && post.subcategory === sub,
+    (post) => post.category === category && post.subcategory === sub,
   );
 }
 

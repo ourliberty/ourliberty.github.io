@@ -1,10 +1,9 @@
 import type { MetadataRoute } from "next";
 import {
   CATEGORIES,
-  STUDY_SUBCATEGORIES,
+  SUBCATEGORIES,
   getAllPosts,
   type CategorySlug,
-  type StudySubcategory,
 } from "@/lib/posts";
 import { SITE_URL } from "@/lib/site";
 
@@ -21,9 +20,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     (category) => ({ url: `${SITE_URL}/categories/${category}/` }),
   );
 
-  const subcategories = (
-    Object.keys(STUDY_SUBCATEGORIES) as StudySubcategory[]
-  ).map((sub) => ({ url: `${SITE_URL}/categories/study/${sub}/` }));
+  const subcategories = (Object.keys(SUBCATEGORIES) as CategorySlug[]).flatMap(
+    (category) =>
+      Object.keys(SUBCATEGORIES[category]).map((sub) => ({
+        url: `${SITE_URL}/categories/${category}/${sub}/`,
+      })),
+  );
 
   return [{ url: `${SITE_URL}/` }, ...categories, ...subcategories, ...posts];
 }

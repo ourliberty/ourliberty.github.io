@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CATEGORIES, STUDY_SUBCATEGORIES, type PostMeta } from "@/lib/posts";
+import { CATEGORIES, SUBCATEGORIES, type PostMeta } from "@/lib/posts";
 
 export default function PostCard({ post }: { post: PostMeta }) {
   return (
@@ -10,7 +10,7 @@ export default function PostCard({ post }: { post: PostMeta }) {
           <>
             <span className="mx-2.5">·</span>
             <span className="uppercase">
-              {STUDY_SUBCATEGORIES[post.subcategory]}
+              {SUBCATEGORIES[post.category][post.subcategory]}
             </span>
           </>
         )}

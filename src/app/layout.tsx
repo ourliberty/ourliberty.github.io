@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
-import {
-  CATEGORIES,
-  STUDY_SUBCATEGORIES,
-  type CategorySlug,
-  type StudySubcategory,
-} from "@/lib/posts";
+import { CATEGORIES, SUBCATEGORIES, type CategorySlug } from "@/lib/posts";
 import { SITE_NAME, SITE_DESCRIPTION, AUTHOR, SITE_URL } from "@/lib/site";
 import "highlight.js/styles/github.css";
 import "./globals.css";
@@ -53,44 +48,31 @@ export default function RootLayout({
         {/* 상단: 블로그 제목 없이, 카테고리만 중앙 정렬 */}
         <header>
           <nav className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 px-6 pb-6 pt-12 text-[0.85rem] uppercase tracking-[0.3em] text-soft">
-            {(Object.keys(CATEGORIES) as CategorySlug[]).map((slug) =>
-              slug === "study" ? (
-                // Σ는 마우스를 올리면 하위 카테고리가 펼쳐짐
-                <span key={slug} className="group relative">
-                  <Link
-                    href={`/categories/${slug}/`}
-                    title={slug}
-                    className="transition-colors duration-300 hover:text-ink"
-                  >
-                    {CATEGORIES[slug]}
-                  </Link>
-                  <span className="invisible absolute left-1/2 top-full z-10 -translate-x-1/2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
-                    <span className="flex flex-col gap-2.5 whitespace-nowrap bg-paper px-7 py-5 text-center text-[0.65rem] tracking-[0.25em] shadow-[0_10px_35px_rgba(0,0,0,0.09)]">
-                      {(
-                        Object.keys(STUDY_SUBCATEGORIES) as StudySubcategory[]
-                      ).map((sub) => (
-                        <Link
-                          key={sub}
-                          href={`/categories/study/${sub}/`}
-                          className="transition-colors duration-300 hover:text-ink"
-                        >
-                          {STUDY_SUBCATEGORIES[sub]}
-                        </Link>
-                      ))}
-                    </span>
-                  </span>
-                </span>
-              ) : (
+            {(Object.keys(CATEGORIES) as CategorySlug[]).map((slug) => (
+              // 기호에 마우스를 올리면 하위 분류가 펼쳐짐
+              <span key={slug} className="group relative">
                 <Link
-                  key={slug}
                   href={`/categories/${slug}/`}
                   title={slug}
                   className="transition-colors duration-300 hover:text-ink"
                 >
                   {CATEGORIES[slug]}
                 </Link>
-              ),
-            )}
+                <span className="invisible absolute left-1/2 top-full z-10 -translate-x-1/2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                  <span className="flex flex-col gap-2.5 whitespace-nowrap bg-paper px-7 py-5 text-center text-[0.65rem] tracking-[0.25em] shadow-[0_10px_35px_rgba(0,0,0,0.09)]">
+                    {Object.entries(SUBCATEGORIES[slug]).map(([sub, name]) => (
+                      <Link
+                        key={sub}
+                        href={`/categories/${slug}/${sub}/`}
+                        className="transition-colors duration-300 hover:text-ink"
+                      >
+                        {name}
+                      </Link>
+                    ))}
+                  </span>
+                </span>
+              </span>
+            ))}
             <Link
               href="/"
               title="about"
