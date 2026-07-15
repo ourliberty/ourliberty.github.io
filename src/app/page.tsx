@@ -6,11 +6,11 @@ export default function Home() {
   return (
     <section className="pt-16 text-center">
       <p className="font-serif text-xl leading-loose tracking-tight">
-        보고, 읽고, 배운 것들을 기록합니다.
+        An archive of things seen, read, and learned.
       </p>
       <p className="mx-auto mt-10 max-w-md text-[0.9rem] leading-loose text-soft">
-        일기는 Journal에, 영화와 책의 감상은 Marginalia에, 공부한 것들은
-        Études에 담아둡니다.
+        Days are kept in Fragments, films and books in Critique, and studies
+        in Lexicon.
       </p>
     </section>
   );

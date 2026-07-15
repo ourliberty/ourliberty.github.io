@@ -9,11 +9,11 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeStringify from "rehype-stringify";
 
 // 카테고리 목록: 주소(slug) → 화면에 보이는 이름
-// journal: 일기 / marginalia: 영화·책 감상 / etudes: 공부
+// fragments: 일기(단상) / critique: 영화·책 감상 / lexicon: 공부(어휘집)
 export const CATEGORIES = {
-  journal: "Journal",
-  marginalia: "Marginalia",
-  etudes: "Études",
+  fragments: "Fragments",
+  critique: "Critique",
+  lexicon: "Lexicon",
 } as const;
 
 export type CategorySlug = keyof typeof CATEGORIES;
@@ -39,10 +39,10 @@ function readPostFile(fileName: string): { meta: PostMeta; content: string } {
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
 
-  const category = (data.category ?? "journal") as CategorySlug;
+  const category = (data.category ?? "fragments") as CategorySlug;
   if (!(category in CATEGORIES)) {
     throw new Error(
-      `"${fileName}"의 category는 journal / marginalia / etudes 중 하나여야 합니다. (현재: ${data.category})`,
+      `"${fileName}"의 category는 fragments / critique / lexicon 중 하나여야 합니다. (현재: ${data.category})`,
     );
   }
 

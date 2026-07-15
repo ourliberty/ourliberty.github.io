@@ -23,7 +23,7 @@
    title: '글 제목'
    excerpt: '목록에 보여질 한 줄 요약'
    date: '2026-07-15'
-   category: journal      # journal(일기) / marginalia(감상) / etudes(공부) 중 하나
+   category: fragments    # fragments(일기) / critique(감상) / lexicon(공부) 중 하나
    keywords: ['영화', '태그2']
    ---
    ```

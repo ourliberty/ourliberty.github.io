@@ -58,10 +58,10 @@ export default async function PostPage({ params }: PageProps<"/posts/[slug]">) {
       />
       <footer className="mt-24 text-center">
         <Link
-          href="/"
-          className="text-[0.72rem] tracking-[0.3em] text-soft transition-colors duration-300 hover:text-ink"
+          href={`/categories/${post.category}/`}
+          className="text-[0.72rem] uppercase tracking-[0.3em] text-soft transition-colors duration-300 hover:text-ink"
         >
-          목록으로
+          Back to {CATEGORIES[post.category]}
         </Link>
       </footer>
     </article>

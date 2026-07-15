@@ -19,7 +19,7 @@ export async function generateMetadata({
   const name = CATEGORIES[category as CategorySlug];
   return {
     title: name,
-    description: `${name} 카테고리의 글 모음`,
+    description: `Posts in ${name}`,
   };
 }
 
@@ -36,8 +36,8 @@ export default async function CategoryPage({
         <h1 className="font-serif text-2xl font-medium tracking-tight">
           {CATEGORIES[slug]}
         </h1>
-        <p className="mt-3 text-[0.68rem] tracking-[0.3em] text-soft">
-          {posts.length}개의 글
+        <p className="mt-3 text-[0.68rem] uppercase tracking-[0.3em] text-soft">
+          {posts.length} {posts.length === 1 ? "entry" : "entries"}
         </p>
       </header>
       <section>
