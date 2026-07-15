@@ -47,7 +47,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col bg-paper text-ink">
         {/* 상단: 블로그 제목 없이, 카테고리만 중앙 정렬 */}
         <header>
-          <nav className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 px-6 pb-6 pt-12 text-[0.72rem] uppercase tracking-[0.3em] text-soft">
+          <nav className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 px-6 pb-6 pt-12 text-[0.85rem] uppercase tracking-[0.3em] text-soft">
             {(Object.keys(CATEGORIES) as CategorySlug[]).map((slug) => (
               <Link
                 key={slug}

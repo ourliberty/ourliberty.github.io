@@ -33,7 +33,7 @@ export default async function CategoryPage({
   return (
     <>
       <header className="mb-6 text-center">
-        <h1 className="font-serif text-2xl font-medium tracking-tight">
+        <h1 className="font-serif text-4xl font-medium tracking-tight">
           {CATEGORIES[slug]}
         </h1>
         <p className="mt-3 text-[0.68rem] uppercase tracking-[0.3em] text-soft">

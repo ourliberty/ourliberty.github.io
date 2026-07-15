@@ -2,7 +2,7 @@
 title: '[책] 독후감 쓰는 양식 예시'
 excerpt: '독후감을 쓸 때 참고할 수 있는 틀이에요.'
 date: '2026-07-12'
-category: critique
+category: review
 keywords: ['책']
 ---
 

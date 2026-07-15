@@ -8,12 +8,12 @@ import remarkRehype from "remark-rehype";
 import rehypeHighlight from "rehype-highlight";
 import rehypeStringify from "rehype-stringify";
 
-// 카테고리 목록: 주소(slug) → 화면에 보이는 이름
-// fragments: 일기(단상) / critique: 영화·책 감상 / lexicon: 공부(어휘집)
+// 카테고리 목록: 주소(slug) → 화면에 보이는 기호
+// diary: ∂(하루의 조각·단상) / review: ∴(보고 읽은 뒤의 결론) / study: Σ(쌓여가는 배움)
 export const CATEGORIES = {
-  fragments: "Fragments",
-  critique: "Critique",
-  lexicon: "Lexicon",
+  diary: "∂",
+  review: "∴",
+  study: "Σ",
 } as const;
 
 export type CategorySlug = keyof typeof CATEGORIES;
@@ -39,10 +39,10 @@ function readPostFile(fileName: string): { meta: PostMeta; content: string } {
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
 
-  const category = (data.category ?? "fragments") as CategorySlug;
+  const category = (data.category ?? "diary") as CategorySlug;
   if (!(category in CATEGORIES)) {
     throw new Error(
-      `"${fileName}"의 category는 fragments / critique / lexicon 중 하나여야 합니다. (현재: ${data.category})`,
+      `"${fileName}"의 category는 diary / review / study 중 하나여야 합니다. (현재: ${data.category})`,
     );
   }
 

@@ -2,7 +2,7 @@
 title: '[영화] 감상평 쓰는 양식 예시'
 excerpt: '영화 감상평을 쓸 때 이런 틀을 쓰면 편해요.'
 date: '2026-07-13'
-category: critique
+category: review
 keywords: ['영화']
 ---
 
