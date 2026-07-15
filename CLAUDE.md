@@ -9,5 +9,6 @@
   category는 diary(화면표기 ∂)/review(∴)/study(Σ)만 허용 — `src/lib/posts.ts` 참고)
 - 사이트 UI 문구는 전부 영어 (본문 글은 한국어여도 됨). 작성자 표기는 "haju"
 - 첫 화면(`/`)은 글 목록이 아니라 소개 페이지. 전체 글 목록 페이지는 의도적으로 없음
+- 내비게이션은 기호만 사용: ∂(diary) ∴(review) Σ(study) ∃(about/홈) — 단어 라벨 넣지 말 것
 - 정적 배포 전제: 서버 기능(Server Actions, API route 등) 추가 금지
 - 사이트 설정은 `src/lib/site.ts`에 모아둠
