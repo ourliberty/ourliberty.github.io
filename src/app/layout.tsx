@@ -52,6 +52,7 @@ export default function RootLayout({
               <Link
                 key={slug}
                 href={`/categories/${slug}/`}
+                title={slug}
                 className="transition-colors duration-300 hover:text-ink"
               >
                 {CATEGORIES[slug]}
@@ -59,9 +60,10 @@ export default function RootLayout({
             ))}
             <Link
               href="/"
+              title="about"
               className="transition-colors duration-300 hover:text-ink"
             >
-              About
+              ∃
             </Link>
           </nav>
         </header>
