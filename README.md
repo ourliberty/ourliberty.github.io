@@ -26,7 +26,7 @@
    category: diary        # diary(일기·∂) / review(감상·∴) / study(공부·Σ) 중 하나
    subcategory: "2026"    # 하위 분류 (생략 가능)
    #  diary:  2026 / 2027   ← 연도는 따옴표로 감싸기
-   #  review: texts(글) / films(영상) / exhibitions(전시) / performances(공연) / travel(여행)
+   #  review: texts(글) / films(영상) / exhibitions(전시) / performances(공연)
    #  study:  philosophy / mathematics / economics / computer-science / finance
    keywords: ['영화', '태그2']
    ---

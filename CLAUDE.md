@@ -11,7 +11,7 @@
 - 첫 화면(`/`)은 글 목록이 아니라 소개 페이지. 전체 글 목록 페이지는 의도적으로 없음
 - 내비게이션은 기호만 사용: ∂(diary) ∴(review) Σ(study) ∃(about/홈) — 단어 라벨 넣지 말 것
 - 세 카테고리 모두 하위 분류 존재 (frontmatter `subcategory`, `src/lib/posts.ts`의 SUBCATEGORIES):
-  diary=2026/2027, review=texts/films/exhibitions/performances/travel,
+  diary=2026/2027, review=texts/films/exhibitions/performances,
   study=philosophy/mathematics/economics/computer-science/finance. 기호에 호버하면 드롭다운
 - 정적 배포 전제: 서버 기능(Server Actions, API route 등) 추가 금지
 - 사이트 설정은 `src/lib/site.ts`에 모아둠

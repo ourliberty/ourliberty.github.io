@@ -29,7 +29,6 @@ export const SUBCATEGORIES: Record<CategorySlug, Record<string, string>> = {
     films: "Films", // 영상
     exhibitions: "Exhibitions", // 전시
     performances: "Performances", // 공연
-    travel: "Travel", // 여행
   },
   study: {
     philosophy: "Philosophy",
