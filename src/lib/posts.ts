@@ -61,6 +61,7 @@ function readPostFile(fileName: string): { meta: PostMeta; content: string } {
 
 /** 모든 글의 메타데이터를 최신순으로 */
 export function getAllPosts(): PostMeta[] {
+  if (!fs.existsSync(postsDirectory)) return [];
   return fs
     .readdirSync(postsDirectory)
     .filter((fileName) => fileName.endsWith(".md"))
