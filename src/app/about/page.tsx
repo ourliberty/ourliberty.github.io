@@ -8,15 +8,12 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <header className="border-b border-line pb-12">
-        <p className="mb-6 text-[0.7rem] tracking-[0.45em] text-accent">
-          ABOUT
-        </p>
-        <h1 className="font-serif text-4xl font-semibold tracking-tight">
+      <header className="mb-12 text-center">
+        <h1 className="font-serif text-2xl font-medium tracking-tight">
           소개
         </h1>
       </header>
-      <div className="prose prose-neutral mt-10 max-w-[65ch]">
+      <div className="prose prose-neutral mx-auto max-w-[62ch]">
         <p>
           안녕하세요! 이 블로그는 제가 보고, 읽고, 배운 것들을 기록하는
           곳입니다.

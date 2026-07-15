@@ -3,19 +3,19 @@ import Link from "next/link";
 import { Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import { CATEGORIES, type CategorySlug } from "@/lib/posts";
 import { SITE_NAME, SITE_DESCRIPTION, AUTHOR, SITE_URL } from "@/lib/site";
-import "highlight.js/styles/github-dark.css";
+import "highlight.js/styles/github.css";
 import "./globals.css";
 
 const notoSansKr = Noto_Sans_KR({
   variable: "--font-noto-sans-kr",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["300", "400", "500"],
 });
 
 const notoSerifKr = Noto_Serif_KR({
   variable: "--font-noto-serif-kr",
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -45,39 +45,38 @@ export default function RootLayout({
       className={`${notoSansKr.variable} ${notoSerifKr.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-paper text-ink">
-        <header className="sticky top-0 z-10 border-b border-line bg-paper/85 backdrop-blur-md">
-          <div className="mx-auto flex max-w-3xl flex-wrap items-baseline justify-between gap-y-2 px-6 py-5">
+        {/* 상단: 블로그 제목 없이, 카테고리만 중앙 정렬 */}
+        <header>
+          <nav className="flex flex-wrap items-center justify-center gap-x-9 gap-y-3 px-6 pb-6 pt-12 text-[0.78rem] tracking-[0.3em] text-soft">
             <Link
               href="/"
-              className="font-serif text-lg font-semibold tracking-tight"
+              className="transition-colors duration-300 hover:text-ink"
             >
-              {SITE_NAME}
+              전체
             </Link>
-            <nav className="flex gap-6 text-[0.8rem] tracking-[0.18em] text-soft">
-              {(Object.keys(CATEGORIES) as CategorySlug[]).map((slug) => (
-                <Link
-                  key={slug}
-                  href={`/categories/${slug}/`}
-                  className="transition-colors duration-200 hover:text-accent"
-                >
-                  {CATEGORIES[slug]}
-                </Link>
-              ))}
+            {(Object.keys(CATEGORIES) as CategorySlug[]).map((slug) => (
               <Link
-                href="/about/"
-                className="transition-colors duration-200 hover:text-accent"
+                key={slug}
+                href={`/categories/${slug}/`}
+                className="transition-colors duration-300 hover:text-ink"
               >
-                소개
+                {CATEGORIES[slug]}
               </Link>
-            </nav>
-          </div>
+            ))}
+            <Link
+              href="/about/"
+              className="transition-colors duration-300 hover:text-ink"
+            >
+              소개
+            </Link>
+          </nav>
         </header>
-        <main className="mx-auto w-full max-w-3xl flex-1 px-6 pb-24 pt-14">
+        <main className="mx-auto w-full max-w-2xl flex-1 px-6 pb-28 pt-16">
           {children}
         </main>
-        <footer className="border-t border-line py-10 text-center">
-          <p className="text-[0.7rem] tracking-[0.35em] text-soft">
-            {SITE_NAME} · © {new Date().getFullYear()} {AUTHOR}
+        <footer className="pb-16 pt-10 text-center">
+          <p className="text-[0.62rem] tracking-[0.4em] text-soft">
+            © {new Date().getFullYear()} {AUTHOR}
           </p>
         </footer>
       </body>

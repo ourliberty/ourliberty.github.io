@@ -32,42 +32,36 @@ export default async function PostPage({ params }: PageProps<"/posts/[slug]">) {
 
   return (
     <article>
-      <header className="mb-14 text-center">
-        <p className="mb-7 text-[0.7rem] tracking-[0.4em] text-accent">
+      <header className="mb-16 text-center">
+        <p className="text-[0.68rem] tracking-[0.3em] text-soft">
           <Link
             href={`/categories/${post.category}/`}
-            className="transition-colors hover:text-ink"
+            className="transition-colors duration-300 hover:text-ink"
           >
             {CATEGORIES[post.category]}
           </Link>
-          <span className="mx-3 text-soft">·</span>
-          <time dateTime={post.date} className="text-soft">
-            {post.date}
-          </time>
+          <span className="mx-2.5">·</span>
+          <time dateTime={post.date}>{post.date}</time>
         </p>
-        <h1 className="mx-auto max-w-2xl font-serif text-3xl font-semibold leading-[1.35] tracking-tight sm:text-4xl">
+        <h1 className="mx-auto mt-6 max-w-xl font-serif text-3xl font-medium leading-[1.4] tracking-tight">
           {post.title}
         </h1>
         {post.keywords.length > 0 && (
-          <p className="mt-7 text-[0.72rem] tracking-[0.25em] text-soft">
-            {post.keywords.join("   ·   ")}
+          <p className="mt-6 text-[0.68rem] tracking-[0.25em] text-soft">
+            {post.keywords.join("  ·  ")}
           </p>
         )}
-        <div
-          aria-hidden
-          className="mx-auto mt-12 h-px w-14 bg-accent"
-        />
       </header>
       <div
-        className="prose prose-neutral mx-auto max-w-[65ch]"
+        className="prose prose-neutral mx-auto max-w-[62ch]"
         dangerouslySetInnerHTML={{ __html: post.contentHtml }}
       />
-      <footer className="mt-20 border-t border-line pt-8 text-center">
+      <footer className="mt-24 text-center">
         <Link
           href="/"
-          className="text-[0.75rem] tracking-[0.3em] text-soft transition-colors duration-200 hover:text-accent"
+          className="text-[0.72rem] tracking-[0.3em] text-soft transition-colors duration-300 hover:text-ink"
         >
-          ← 목록으로
+          목록으로
         </Link>
       </footer>
     </article>

@@ -32,14 +32,11 @@ export default async function CategoryPage({
 
   return (
     <>
-      <header className="border-b border-line pb-12">
-        <p className="mb-6 text-[0.7rem] tracking-[0.45em] text-accent">
-          카테고리
-        </p>
-        <h1 className="font-serif text-4xl font-semibold tracking-tight">
+      <header className="mb-6 text-center">
+        <h1 className="font-serif text-2xl font-medium tracking-tight">
           {CATEGORIES[slug]}
         </h1>
-        <p className="mt-4 text-[0.75rem] tracking-[0.25em] text-soft">
+        <p className="mt-3 text-[0.68rem] tracking-[0.3em] text-soft">
           {posts.length}개의 글
         </p>
       </header>
