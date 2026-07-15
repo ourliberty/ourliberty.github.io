@@ -6,6 +6,7 @@
 - Next.js 16은 breaking change가 많음. 코드 작성 전 `node_modules/next/dist/docs/` 참고
   (예: `params`는 Promise라 `await` 필요, 타입은 `PageProps<'/route'>` 헬퍼 사용)
 - 글 데이터: `src/data/posts/*.md` (frontmatter: title/excerpt/date/category/keywords,
-  category는 diary/review/study만 허용 — `src/lib/posts.ts` 참고)
+  category는 journal(일기)/marginalia(감상)/etudes(공부)만 허용 — `src/lib/posts.ts` 참고)
+- 첫 화면(`/`)은 글 목록이 아니라 소개 페이지. 전체 글 목록 페이지는 의도적으로 없음
 - 정적 배포 전제: 서버 기능(Server Actions, API route 등) 추가 금지
 - 사이트 설정은 `src/lib/site.ts`에 모아둠

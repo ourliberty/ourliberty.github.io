@@ -2,7 +2,7 @@
 title: '[공부] 마크다운 문법 정리 — 블로그 글은 이렇게 씁니다'
 excerpt: '블로그 글을 쓸 때 필요한 마크다운 문법 치트시트. 이 글 자체가 예시입니다.'
 date: '2026-07-14'
-category: study
+category: etudes
 keywords: ['마크다운', '블로그']
 ---
 

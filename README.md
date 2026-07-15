@@ -8,8 +8,8 @@
 | 위치 | 역할 |
 |---|---|
 | `src/data/posts/` | **글이 들어가는 곳.** 파일 하나 = 글 하나 |
+| `src/app/page.tsx` | 첫 화면(소개글) |
 | `src/lib/site.ts` | 블로그 이름, 소개 문구, 주소 설정 |
-| `src/app/about/page.tsx` | 소개 페이지 |
 | `public/images/` | 글에 넣을 사진 보관 |
 
 ## 글 쓰는 법 (3단계)
@@ -23,7 +23,7 @@
    title: '글 제목'
    excerpt: '목록에 보여질 한 줄 요약'
    date: '2026-07-15'
-   category: diary        # diary(일기) / review(감상) / study(공부) 중 하나
+   category: journal      # journal(일기) / marginalia(감상) / etudes(공부) 중 하나
    keywords: ['영화', '태그2']
    ---
    ```

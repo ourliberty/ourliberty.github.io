@@ -15,10 +15,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     (category) => ({ url: `${SITE_URL}/categories/${category}/` }),
   );
 
-  return [
-    { url: `${SITE_URL}/` },
-    { url: `${SITE_URL}/about/` },
-    ...categories,
-    ...posts,
-  ];
+  return [{ url: `${SITE_URL}/` }, ...categories, ...posts];
 }

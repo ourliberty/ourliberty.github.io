@@ -2,7 +2,7 @@
 title: '블로그를 시작하며'
 excerpt: '오늘부터 이 블로그를 시작한다. 꾸준히 쓰는 게 목표.'
 date: '2026-07-14'
-category: diary
+category: journal
 keywords: ['시작', '다짐']
 ---
 
