@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import PostCard from "@/components/PostCard";
 import {
   CATEGORIES,
+  STUDY_SUBCATEGORIES,
   getPostsByCategory,
   type CategorySlug,
+  type StudySubcategory,
 } from "@/lib/posts";
 
 export function generateStaticParams() {
@@ -39,6 +42,21 @@ export default async function CategoryPage({
         <p className="mt-3 text-[0.68rem] uppercase tracking-[0.3em] text-soft">
           {posts.length} {posts.length === 1 ? "entry" : "entries"}
         </p>
+        {slug === "study" && (
+          <nav className="mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[0.65rem] uppercase tracking-[0.25em] text-soft">
+            {(Object.keys(STUDY_SUBCATEGORIES) as StudySubcategory[]).map(
+              (sub) => (
+                <Link
+                  key={sub}
+                  href={`/categories/study/${sub}/`}
+                  className="transition-colors duration-300 hover:text-ink"
+                >
+                  {STUDY_SUBCATEGORIES[sub]}
+                </Link>
+              ),
+            )}
+          </nav>
+        )}
       </header>
       <section>
         {posts.map((post) => (

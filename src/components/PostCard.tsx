@@ -1,11 +1,19 @@
 import Link from "next/link";
-import { CATEGORIES, type PostMeta } from "@/lib/posts";
+import { CATEGORIES, STUDY_SUBCATEGORIES, type PostMeta } from "@/lib/posts";
 
 export default function PostCard({ post }: { post: PostMeta }) {
   return (
     <article className="py-11 text-center">
       <p className="text-[0.68rem] tracking-[0.3em] text-soft">
         {CATEGORIES[post.category]}
+        {post.subcategory && (
+          <>
+            <span className="mx-2.5">·</span>
+            <span className="uppercase">
+              {STUDY_SUBCATEGORIES[post.subcategory]}
+            </span>
+          </>
+        )}
         <span className="mx-2.5">·</span>
         <time dateTime={post.date}>{post.date}</time>
       </p>

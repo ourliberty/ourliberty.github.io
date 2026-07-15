@@ -1,5 +1,11 @@
 import type { MetadataRoute } from "next";
-import { CATEGORIES, getAllPosts, type CategorySlug } from "@/lib/posts";
+import {
+  CATEGORIES,
+  STUDY_SUBCATEGORIES,
+  getAllPosts,
+  type CategorySlug,
+  type StudySubcategory,
+} from "@/lib/posts";
 import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -15,5 +21,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     (category) => ({ url: `${SITE_URL}/categories/${category}/` }),
   );
 
-  return [{ url: `${SITE_URL}/` }, ...categories, ...posts];
+  const subcategories = (
+    Object.keys(STUDY_SUBCATEGORIES) as StudySubcategory[]
+  ).map((sub) => ({ url: `${SITE_URL}/categories/study/${sub}/` }));
+
+  return [{ url: `${SITE_URL}/` }, ...categories, ...subcategories, ...posts];
 }

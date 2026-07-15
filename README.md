@@ -24,6 +24,7 @@
    excerpt: '목록에 보여질 한 줄 요약'
    date: '2026-07-15'
    category: diary        # diary(일기·∂) / review(감상·∴) / study(공부·Σ) 중 하나
+   subcategory: finance   # study일 때만: philosophy / mathematics / economics / computer-science / finance
    keywords: ['영화', '태그2']
    ---
    ```

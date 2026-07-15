@@ -18,12 +18,24 @@ export const CATEGORIES = {
 
 export type CategorySlug = keyof typeof CATEGORIES;
 
+// Σ(공부)의 하위 카테고리: slug → 화면에 보이는 이름
+export const STUDY_SUBCATEGORIES = {
+  philosophy: "Philosophy",
+  mathematics: "Mathematics",
+  economics: "Economics",
+  "computer-science": "Computer Science",
+  finance: "Finance",
+} as const;
+
+export type StudySubcategory = keyof typeof STUDY_SUBCATEGORIES;
+
 export interface PostMeta {
   slug: string;
   title: string;
   excerpt: string;
   date: string;
   category: CategorySlug;
+  subcategory?: StudySubcategory; // category가 study일 때만 사용
   keywords: string[];
 }
 
@@ -46,6 +58,13 @@ function readPostFile(fileName: string): { meta: PostMeta; content: string } {
     );
   }
 
+  const subcategory = data.subcategory as StudySubcategory | undefined;
+  if (subcategory && !(subcategory in STUDY_SUBCATEGORIES)) {
+    throw new Error(
+      `"${fileName}"의 subcategory는 ${Object.keys(STUDY_SUBCATEGORIES).join(" / ")} 중 하나여야 합니다. (현재: ${data.subcategory})`,
+    );
+  }
+
   return {
     meta: {
       slug,
@@ -53,6 +72,7 @@ function readPostFile(fileName: string): { meta: PostMeta; content: string } {
       excerpt: data.excerpt ?? "",
       date: String(data.date ?? ""),
       category,
+      subcategory,
       keywords: data.keywords ?? [],
     },
     content,
@@ -72,6 +92,13 @@ export function getAllPosts(): PostMeta[] {
 /** 특정 카테고리의 글만 */
 export function getPostsByCategory(category: CategorySlug): PostMeta[] {
   return getAllPosts().filter((post) => post.category === category);
+}
+
+/** 공부(Σ)의 특정 하위 카테고리 글만 */
+export function getPostsBySubcategory(sub: StudySubcategory): PostMeta[] {
+  return getAllPosts().filter(
+    (post) => post.category === "study" && post.subcategory === sub,
+  );
 }
 
 /** 해당 slug의 글 파일이 존재하는지 */
