@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CATEGORIES, getAllPosts, getPost } from "@/lib/posts";
+import { notFound } from "next/navigation";
+import { CATEGORIES, getAllPosts, getPost, postExists } from "@/lib/posts";
 
 // 빌드 시 어떤 글 페이지들을 만들지 알려줌 (SSG 핵심)
+// 글이 하나도 없을 때는 자리표시용 경로 하나를 만들어 빌드 오류를 막음 (404로 처리됨)
 export function generateStaticParams() {
-  return getAllPosts().map((post) => ({ slug: post.slug }));
+  const posts = getAllPosts();
+  if (posts.length === 0) return [{ slug: "placeholder" }];
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 // 글마다 SEO 메타데이터 생성
@@ -12,6 +16,7 @@ export async function generateMetadata({
   params,
 }: PageProps<"/posts/[slug]">): Promise<Metadata> {
   const { slug } = await params;
+  if (!postExists(slug)) return {};
   const post = await getPost(slug);
   return {
     title: post.title,
@@ -28,6 +33,7 @@ export async function generateMetadata({
 
 export default async function PostPage({ params }: PageProps<"/posts/[slug]">) {
   const { slug } = await params;
+  if (!postExists(slug)) notFound();
   const post = await getPost(slug);
 
   return (

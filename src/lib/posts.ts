@@ -73,6 +73,11 @@ export function getPostsByCategory(category: CategorySlug): PostMeta[] {
   return getAllPosts().filter((post) => post.category === category);
 }
 
+/** 해당 slug의 글 파일이 존재하는지 */
+export function postExists(slug: string): boolean {
+  return fs.existsSync(path.join(postsDirectory, `${slug}.md`));
+}
+
 /** 글 한 편의 전체 내용 (마크다운 → HTML 변환 포함) */
 export async function getPost(slug: string): Promise<Post> {
   const { meta, content } = readPostFile(`${slug}.md`);
