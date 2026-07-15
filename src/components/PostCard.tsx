@@ -3,29 +3,31 @@ import { CATEGORIES, type PostMeta } from "@/lib/posts";
 
 export default function PostCard({ post }: { post: PostMeta }) {
   return (
-    <article className="group border-b border-neutral-200 py-8 dark:border-neutral-800">
-      <div className="mb-2 flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
+    <article className="group grid gap-3 border-b border-line py-10 sm:grid-cols-[10rem_1fr] sm:gap-6">
+      <div className="text-[0.7rem] leading-relaxed tracking-[0.25em] text-soft">
         <Link
           href={`/categories/${post.category}/`}
-          className="rounded-full bg-neutral-100 px-3 py-0.5 font-medium text-neutral-700 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+          className="text-accent transition-colors hover:text-ink"
         >
           {CATEGORIES[post.category]}
         </Link>
-        <time dateTime={post.date}>{post.date}</time>
+        <time dateTime={post.date} className="mt-1 block">
+          {post.date}
+        </time>
       </div>
-      <h2 className="text-xl font-bold">
-        <Link
-          href={`/posts/${post.slug}/`}
-          className="hover:text-blue-600 dark:hover:text-blue-400"
-        >
-          {post.title}
-        </Link>
-      </h2>
-      {post.excerpt && (
-        <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-          {post.excerpt}
-        </p>
-      )}
+      <div>
+        <h2 className="font-serif text-2xl font-semibold leading-snug tracking-tight">
+          <Link
+            href={`/posts/${post.slug}/`}
+            className="transition-colors duration-200 group-hover:text-accent"
+          >
+            {post.title}
+          </Link>
+        </h2>
+        {post.excerpt && (
+          <p className="mt-3 leading-relaxed text-soft">{post.excerpt}</p>
+        )}
+      </div>
     </article>
   );
 }

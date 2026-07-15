@@ -32,35 +32,42 @@ export default async function PostPage({ params }: PageProps<"/posts/[slug]">) {
 
   return (
     <article>
-      <header className="mb-8 border-b border-neutral-200 pb-8 dark:border-neutral-800">
-        <div className="mb-3 flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
+      <header className="mb-14 text-center">
+        <p className="mb-7 text-[0.7rem] tracking-[0.4em] text-accent">
           <Link
             href={`/categories/${post.category}/`}
-            className="rounded-full bg-neutral-100 px-3 py-0.5 font-medium text-neutral-700 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+            className="transition-colors hover:text-ink"
           >
             {CATEGORIES[post.category]}
           </Link>
-          <time dateTime={post.date}>{post.date}</time>
-        </div>
-        <h1 className="text-3xl font-bold leading-snug">{post.title}</h1>
+          <span className="mx-3 text-soft">·</span>
+          <time dateTime={post.date} className="text-soft">
+            {post.date}
+          </time>
+        </p>
+        <h1 className="mx-auto max-w-2xl font-serif text-3xl font-semibold leading-[1.35] tracking-tight sm:text-4xl">
+          {post.title}
+        </h1>
         {post.keywords.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2 text-sm text-neutral-500 dark:text-neutral-400">
-            {post.keywords.map((keyword) => (
-              <span key={keyword}>#{keyword}</span>
-            ))}
-          </div>
+          <p className="mt-7 text-[0.72rem] tracking-[0.25em] text-soft">
+            {post.keywords.join("   ·   ")}
+          </p>
         )}
+        <div
+          aria-hidden
+          className="mx-auto mt-12 h-px w-14 bg-accent"
+        />
       </header>
       <div
-        className="prose prose-neutral max-w-none dark:prose-invert"
+        className="prose prose-neutral mx-auto max-w-[65ch]"
         dangerouslySetInnerHTML={{ __html: post.contentHtml }}
       />
-      <footer className="mt-12 border-t border-neutral-200 pt-6 dark:border-neutral-800">
+      <footer className="mt-20 border-t border-line pt-8 text-center">
         <Link
           href="/"
-          className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+          className="text-[0.75rem] tracking-[0.3em] text-soft transition-colors duration-200 hover:text-accent"
         >
-          ← 목록으로 돌아가기
+          ← 목록으로
         </Link>
       </footer>
     </article>

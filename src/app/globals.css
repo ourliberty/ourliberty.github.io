@@ -1,11 +1,91 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* ============================================
+   색상 팔레트 — 여기만 바꾸면 분위기가 바뀝니다
+   라이트: 아이보리 종이 + 잉크 블랙 + 브론즈
+   다크: 웜 차콜 + 크림 + 소프트 골드
+   ============================================ */
+:root {
+  --paper: #faf7f2;
+  --ink: #1c1917;
+  --soft: #8a8178;
+  --accent: #8e6b33;
+  --line: #e7e0d4;
+  --pre-bg: #201d19;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #141210;
+    --ink: #eae5dc;
+    --soft: #9d968b;
+    --accent: #c8a768;
+    --line: #292520;
+    --pre-bg: #1d1a16;
+  }
+}
+
 @theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-soft: var(--soft);
+  --color-accent: var(--accent);
+  --color-line: var(--line);
   --font-sans: var(--font-noto-sans-kr), "Apple SD Gothic Neo", sans-serif;
+  --font-serif: var(--font-noto-serif-kr), "Apple SD Gothic Neo", serif;
 }
 
 body {
   font-family: var(--font-sans);
   word-break: keep-all; /* 한글 단어가 어색하게 잘리지 않게 */
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--paper);
+}
+
+/* 본문(prose) 색을 팔레트에 맞춤 */
+.prose {
+  --tw-prose-body: var(--ink);
+  --tw-prose-headings: var(--ink);
+  --tw-prose-lead: var(--soft);
+  --tw-prose-links: var(--accent);
+  --tw-prose-bold: var(--ink);
+  --tw-prose-counters: var(--accent);
+  --tw-prose-bullets: var(--accent);
+  --tw-prose-hr: var(--line);
+  --tw-prose-quotes: var(--soft);
+  --tw-prose-quote-borders: var(--accent);
+  --tw-prose-captions: var(--soft);
+  --tw-prose-code: var(--ink);
+  --tw-prose-pre-bg: var(--pre-bg);
+  --tw-prose-th-borders: var(--line);
+  --tw-prose-td-borders: var(--line);
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.prose blockquote {
+  font-style: normal;
+}
+
+.prose code::before,
+.prose code::after {
+  content: none; /* 인라인 코드의 백틱 표시 제거 */
+}
+
+.prose :not(pre) > code {
+  background: color-mix(in srgb, var(--line) 55%, transparent);
+  border-radius: 0.25rem;
+  padding: 0.15em 0.4em;
+  font-weight: 500;
 }

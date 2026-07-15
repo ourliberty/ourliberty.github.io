@@ -32,15 +32,22 @@ export default async function CategoryPage({
 
   return (
     <>
-      <h1 className="mb-2 text-2xl font-bold">{CATEGORIES[slug]}</h1>
-      <p className="mb-6 text-sm text-neutral-500 dark:text-neutral-400">
-        {posts.length}개의 글
-      </p>
-      <div>
+      <header className="border-b border-line pb-12">
+        <p className="mb-6 text-[0.7rem] tracking-[0.45em] text-accent">
+          카테고리
+        </p>
+        <h1 className="font-serif text-4xl font-semibold tracking-tight">
+          {CATEGORIES[slug]}
+        </h1>
+        <p className="mt-4 text-[0.75rem] tracking-[0.25em] text-soft">
+          {posts.length}개의 글
+        </p>
+      </header>
+      <section>
         {posts.map((post) => (
           <PostCard key={post.slug} post={post} />
         ))}
-      </div>
+      </section>
     </>
   );
 }
