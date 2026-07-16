@@ -15,3 +15,5 @@
   study=philosophy/mathematics/economics/computer-science/finance. 기호에 호버하면 드롭다운
 - 정적 배포 전제: 서버 기능(Server Actions, API route 등) 추가 금지
 - 사이트 설정은 `src/lib/site.ts`에 모아둠
+- 글(포스트) 문체: AI 티가 나지 않게 — 본문에 `**볼드**` 강조와 em-dash(—) 사용 금지.
+  범위 표시용 en-dash(–, 예: (i)–(iv), Gauss–Jordan)는 허용. 수식은 KaTeX($, $$)
