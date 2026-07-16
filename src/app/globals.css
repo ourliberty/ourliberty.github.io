@@ -68,6 +68,13 @@ body {
   content: none; /* 인라인 코드의 백틱 표시 제거 */
 }
 
+/* 폭이 넓은 수식은 모바일에서 가로 스크롤 */
+.prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.3rem 0;
+}
+
 .prose :not(pre) > code {
   background: #f4f4f4;
   border-radius: 0.25rem;

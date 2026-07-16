@@ -4,7 +4,9 @@ import matter from "gray-matter";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
+import rehypeKatex from "rehype-katex";
 import rehypeHighlight from "rehype-highlight";
 import rehypeStringify from "rehype-stringify";
 
@@ -127,7 +129,9 @@ export async function getPost(slug: string): Promise<Post> {
   const processed = await unified()
     .use(remarkParse)
     .use(remarkGfm)
+    .use(remarkMath) // $...$ / $$...$$ 수식 문법 인식
     .use(remarkRehype)
+    .use(rehypeKatex) // 수식을 KaTeX로 렌더링
     .use(rehypeHighlight)
     .use(rehypeStringify)
     .process(content);

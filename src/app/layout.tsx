@@ -4,6 +4,7 @@ import { Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import { CATEGORIES, SUBCATEGORIES, type CategorySlug } from "@/lib/posts";
 import { SITE_NAME, SITE_DESCRIPTION, AUTHOR, SITE_URL } from "@/lib/site";
 import "highlight.js/styles/github.css";
+import "katex/dist/katex.min.css";
 import "./globals.css";
 
 const notoSansKr = Noto_Sans_KR({
