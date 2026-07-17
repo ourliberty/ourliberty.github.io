@@ -1,7 +1,5 @@
-# 나의 블로그 운영 가이드
 
-이 폴더가 내 블로그의 전부입니다. Next.js + SSG(정적 사이트 생성) 방식으로,
-글은 마크다운 파일로 관리합니다.
+Next.js + SSG, 글은 마크다운 파일로 관리
 
 ## 폴더 구조 (중요한 것만)
 
@@ -14,7 +12,7 @@
 
 ## 글 쓰는 법 (3단계)
 
-1. `src/data/posts` 폴더에 새 파일 만들기. 이름은 영문으로: `parasite-review.md`
+1. `src/data/posts` 폴더에 새 파일  `parasite-review.md`
    (파일 이름이 곧 글 주소가 됩니다 → `/posts/parasite-review/`)
 2. 파일 맨 위에 아래 머리말(frontmatter)을 붙이기:
 
@@ -32,13 +30,11 @@
    ---
    ```
 
-3. 그 아래에 마크다운으로 본문 쓰기.
-   (마크다운 문법과 감상평·독후감 양식은 `templates` 폴더에 참고용으로 있어요 —
-   복사해서 `src/data/posts`에 넣으면 그대로 글이 됩니다)
+3. 그 아래에 마크다운으로 본문
 
 ## 내 컴퓨터에서 미리보기
 
-터미널을 열고:
+터미널
 
 ```bash
 cd ~/my-blog
@@ -47,9 +43,9 @@ npm run dev
 
 브라우저에서 http://localhost:3000 접속. 끝낼 때는 터미널에서 Ctrl+C.
 
-## 인터넷에 올리기 (발행)
+## 발행
 
-글을 쓰거나 고친 뒤, 터미널에서:
+글을 쓰거나 고친 뒤, 터미널에서
 
 ```bash
 cd ~/my-blog
@@ -58,10 +54,10 @@ git commit -m "새 글 작성"
 git push
 ```
 
-GitHub이 자동으로 빌드해서 1~2분 뒤 블로그에 반영됩니다.
-(`.github/workflows/deploy.yml`이 자동 배포를 담당해요.)
+GitHub이 자동으로 빌드해서 1~2분 뒤 블로그에 반영
+`.github/workflows/deploy.yml`이 자동 배포
 
-## 처음 배포할 때 (한 번만)
+## 처음 배포할 때
 
 1. GitHub에서 `내아이디.github.io` 이름으로 저장소(repository) 만들기
 2. `src/lib/site.ts`의 `SITE_URL`을 `https://내아이디.github.io`로 수정
