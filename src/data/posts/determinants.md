@@ -1,5 +1,5 @@
 ---
-title: 'Determinants: An Expository Account of Chapter 2'
+title: 'Linear Algebra Ch2. Determinants'
 excerpt: 'The cofactor definition, Laplace expansion, the row-operation calculus, the multiplicative law, and the classical formulas of the adjugate and Cramer.'
 date: '2026-07-17'
 category: study
