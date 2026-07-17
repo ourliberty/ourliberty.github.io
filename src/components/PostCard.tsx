@@ -17,7 +17,7 @@ export default function PostCard({ post }: { post: PostMeta }) {
         <span className="mx-2.5">·</span>
         <time dateTime={post.date}>{post.date}</time>
       </p>
-      <h2 className="mt-4 font-serif text-[1.55rem] font-medium leading-snug tracking-tight">
+      <h2 className="mt-4 whitespace-pre-line font-serif text-[1.55rem] font-medium leading-snug tracking-tight">
         <Link
           href={`/posts/${post.slug}/`}
           className="transition-colors duration-300 hover:text-soft"

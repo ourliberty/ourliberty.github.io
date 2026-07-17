@@ -19,7 +19,8 @@ export async function generateMetadata({
   if (!postExists(slug)) return {};
   const post = await getPost(slug);
   return {
-    title: post.title,
+    // 브라우저 탭 제목에서는 줄바꿈을 공백으로
+    title: post.title.replace(/\s*\n\s*/g, " "),
     description: post.excerpt,
     keywords: post.keywords,
     openGraph: {
@@ -49,7 +50,7 @@ export default async function PostPage({ params }: PageProps<"/posts/[slug]">) {
           <span className="mx-2.5">·</span>
           <time dateTime={post.date}>{post.date}</time>
         </p>
-        <h1 className="mx-auto mt-6 max-w-xl font-serif text-3xl font-medium leading-[1.4] tracking-tight">
+        <h1 className="mx-auto mt-6 max-w-xl whitespace-pre-line font-serif text-3xl font-medium leading-[1.4] tracking-tight">
           {post.title}
         </h1>
         {post.keywords.length > 0 && (
