@@ -57,6 +57,8 @@ $$
 \begin{bmatrix} + & - & + & - & \cdots \\ - & + & - & + & \cdots \\ + & - & + & - & \cdots \\ \vdots & & & & \ddots \end{bmatrix}.
 $$
 
+The sign is not an arbitrary decoration, and one can see where it comes from. The determinant will turn out to be alternating, meaning that each interchange of two adjacent rows or columns flips its sign (Lemma 2.4 below), and the entry $a_{ij}$ sits $i - 1$ row-steps and $j - 1$ column-steps away from the upper-left corner. Sliding it home by adjacent interchanges costs $(i-1) + (j-1)$ sign flips, and $(-1)^{(i-1)+(j-1)} = (-1)^{i+j}$. The checkerboard is the alternating property made visible.
+
 With these in hand, the determinant of $A$ is defined by expansion along the first row:
 
 $$
@@ -97,7 +99,11 @@ which admits the well-known mnemonic of Sarrus' rule: copy the first two columns
 
 It is also worth registering, from the start, how quickly brute-force expansion grows. Expanding an $n \times n$ determinant by cofactors, without exploiting any zeros, requires on the order of $n!$ multiplications, about $3.6$ million for $n = 10$. The definition is thus a definition, not an algorithm; the practical algorithm arrives in §3.
 
-### 1.2 A first computation
+### 1.2 A geometric preview: what the number measures
+
+Before the formalism thickens, it is worth knowing what the determinant is, in the plainest case. Take $A = \left[\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}\right]$ and regard its rows as vectors $\vec{u} = (a, b)$ and $\vec{v} = (c, d)$ in the plane. The parallelogram they span has area $|\vec{u}|\,|\vec{v}|\sin\theta$, where $\theta$ is the angle between them, and a short trigonometric computation (or a picture of the parallelogram boxed inside a rectangle, with the surrounding triangles subtracted) shows this area to be exactly $|ad - bc|$. The determinant itself, sign included, is the signed area: positive when the rotation from $\vec{u}$ to $\vec{v}$ is counterclockwise, negative when clockwise. Three consequences are visible immediately, and each will reappear as a theorem. The determinant vanishes precisely when $\vec{u}$ and $\vec{v}$ are parallel (the parallelogram collapses to a segment of area zero), which is the geometric shadow of "proportional rows give determinant zero." Swapping the two rows reverses the sense of rotation and hence the sign. And doubling one row doubles the area, while doubling both rows quadruples it: the germ of $\det(kA) = k^n\det(A)$. In dimension $n$ the same story holds with the parallelepiped spanned by the $n$ rows and its $n$-dimensional volume; we return to this picture, with the whole chapter behind us, in §6. For now it supplies the right mental furniture: every identity below is a statement about how volumes behave.
+
+### 1.3 A first computation
 
 Example 2.3. Compute the determinant of
 
@@ -254,6 +260,8 @@ Moreover:
 The proofs interlock elegantly, and their order of deduction is instructive. Property (1) is Lemma 2.4(2). For (1-1): if rows $i$ and $j$ of $A$ are equal, interchanging them changes nothing (the matrix is the same matrix), yet by (1) the determinant is negated; hence $\det(A) = -\det(A)$, forcing $\det(A) = 0$. Property (2) follows from Laplace expansion along the scaled row: every term acquires the factor $k$. Then (2-1) combines (2) and (1-1): factoring the scalar out of the offending row leaves a matrix with two equal rows. Property (3) is where Theorem 2.9 earns its keep. Adding $k$ times row $j$ to row $i$ produces a matrix whose $i$-th row is a sum; by row-additivity its determinant splits into $\det(A)$ plus the determinant of a matrix whose $i$-th row is $k$ times its $j$-th row, and the latter vanishes by (2-1). Finally (2-2) is $n$ applications of (2), one per row: multiplying the entire matrix by $k$ scales each of the $n$ rows, and the factors accumulate to $k^n$.
 
 Property (2-2) is a reliable generator of examination errors. For a $3 \times 3$ matrix $A$ with $\det(A) = 5$, the determinant of $2A$ is not $10$ but $2^3 \cdot 5 = 40$. The exponent is forced by multilinearity (the determinant sees a matrix one row at a time), and, as we will see in §6, it is also what dimensional analysis demands of a signed volume.
+
+A companion special case worth committing to memory: taking $k = -1$ gives $\det(-A) = (-1)^n\det(A)$, so negating a matrix negates its determinant in odd dimensions and leaves it untouched in even ones.
 
 By transpose invariance (Theorem 2.6), every statement above holds with "row" replaced by "column."
 
@@ -445,6 +453,8 @@ $$
 
 Thus $A\operatorname{adj}(A)$ has $\det(A)$ down the diagonal and zeros elsewhere, which is the assertion; the computation for $\operatorname{adj}(A)\,A$ is the same argument run on columns. Part (2) follows by dividing (1) by the nonzero scalar $\det(A)$: the matrix $\frac{1}{\det(A)}\operatorname{adj}(A)$ multiplies $A$ to the identity, and by Theorem 1.52 it is therefore the inverse. $\square$
 
+Observe that part (1) makes no invertibility hypothesis: the identity $A\operatorname{adj}(A) = \det(A)I$ holds for every square matrix. For singular $A$ it reads $A\operatorname{adj}(A) = O$: the adjugate of a singular matrix, when nonzero, is a whole matrix of "null directions" for $A$, a fact with uses of its own.
+
 The identity underlying the off-diagonal case, that an "alien cofactor expansion" pairing a row with the cofactors of a different row always gives zero, is worth isolating in the mind: it is the mechanism that makes the adjugate work, and it is nothing but the equal-rows corollary in disguise.
 
 For $n = 2$ the theorem reproduces an old friend. The cofactors of $\left[\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}\right]$ are $C_{11} = d$, $C_{12} = -c$, $C_{21} = -b$, $C_{22} = a$, so
@@ -566,3 +576,5 @@ Cramer's rule invites the same verdict as the adjugate. As a computational devic
 A chapter of formulas deserves a closing paragraph of interpretation. The determinant of a real $n \times n$ matrix is, up to sign, the volume-scaling factor of the transformation $\vec{x} \mapsto A\vec{x}$: a region of area (or volume) $V$ is carried to a region of area $|\det(A)| \cdot V$, and the sign of $\det(A)$ records whether the transformation preserves or reverses orientation. Read against this interpretation, the chapter's theorems lose their air of coincidence. A singular matrix flattens space into something lower-dimensional, hence "volume zero, no inverse" (Theorem 2.15); performing one transformation after another multiplies the scaling factors (Theorem 2.16); scaling all of $\mathbb{R}^n$ by $k$ scales $n$-dimensional volume by $k^n$ (Theorem 2.10, (2-2)); interchanging two coordinate axes is a reflection, which reverses orientation (the sign flip of Lemma 2.4); and a shear, the geometric content of $E_{ij}(k)$, slides volumes without changing them (Theorem 2.10(3), and the familiar fact that triangles on the same base and height have equal area). The algebra of this chapter is the arithmetic of volume.
 
 For the reader keeping accounts, the equivalence theorem of Chapter 1 now reads: for $A \in \mathrm{Mat}_n(\mathbb{R})$, the invertibility of $A$, the triviality of the null solutions of $A\vec{x} = \vec{0}$, the reduction of $A$ to $I_n$, the factorization of $A$ into elementary matrices, the unique (indeed, the mere) solvability of $A\vec{x} = \vec{b}$ for all $\vec{b}$, and the non-vanishing of $\det(A)$ are all one property, viewed from seven sides. Later chapters will add the linear independence of the rows and columns, the maximality of the rank, and the non-membership of $0$ among the eigenvalues, and it is in the theory of eigenvalues that the determinant performs its most consequential service, as the polynomial $\det(A - \lambda I)$ whose roots govern the deepest structure of the matrix. The reader who has internalized cofactor expansion, the row-operation calculus, and the multiplicative law is fully equipped for that encounter.
+
+As a final self-examination in the spirit of the previous essay: the reader should be able to reconstruct, unaided, the checkerboard of cofactor signs and its derivation from adjacent swaps; the reason Sarrus' rule stops working at order four; the deduction chain running from "swap negates" through "equal rows kill" to "replacement operations are free"; the exponent in $\det(kA) = k^n\det(A)$ and the geometric reason for it; the two-case proof of the multiplicative law and the role Theorem 1.53 plays in the singular case; the alien-cofactor argument that makes the adjugate work, including where the transpose is used; and the recognition step at the end of Cramer's rule, where a sum of $b$'s against cofactors is unmasked as the determinant of a column-replaced matrix. A reader who can do all of this has not merely followed the chapter; the chapter has become theirs.
