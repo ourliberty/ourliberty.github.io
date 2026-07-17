@@ -1,7 +1,7 @@
 ---
-title: 'Systems of Linear Equations and Matrices: An Expository Account of Chapter 1'
+title: 'Linear Algebra Ch1. Systems of Linear Equations and Matrices'
 excerpt: 'The algebra of matrices, elimination made rigorous, and the theory of invertibility: a complete pass through a standard first chapter of linear algebra.'
-date: '2026-07-15'
+date: '2026-07-14'
 category: study
 subcategory: mathematics
 keywords: ['linear algebra', 'matrices', 'Gaussian elimination', 'invertibility']
