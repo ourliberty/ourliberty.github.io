@@ -1,6 +1,6 @@
 ---
 title: |-
-  Linear Algebra Ch1.
+  Linear Algebra Ch1
   Systems of Linear Equations and Matrices
 excerpt: 'The algebra of matrices, elimination made rigorous, and the theory of invertibility: a complete pass through a standard first chapter of linear algebra.'
 date: '2026-07-14'
