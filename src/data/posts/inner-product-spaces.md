@@ -3,7 +3,7 @@ title: |-
   Linear Algebra Ch4
   Inner Product Spaces
 excerpt: 'Length, distance, angle, and orthogonality from a single axiom: Cauchy-Schwarz, orthogonal complements, projection and best approximation, Gram-Schmidt, and the cross product.'
-date: '2026-07-17'
+date: '2026-07-18'
 category: study
 subcategory: mathematics
 keywords: ['linear algebra', 'inner product', 'orthogonality', 'Gram-Schmidt', 'projection']
