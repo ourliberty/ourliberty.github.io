@@ -51,6 +51,13 @@ body {
   --tw-prose-td-borders: var(--line);
 }
 
+/* 일기 본문: 회색 글씨 */
+.prose-diary {
+  --tw-prose-body: var(--soft);
+  --tw-prose-headings: var(--soft);
+  --tw-prose-bold: var(--soft);
+}
+
 .prose h2,
 .prose h3,
 .prose h4 {

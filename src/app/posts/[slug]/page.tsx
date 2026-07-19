@@ -60,7 +60,12 @@ export default async function PostPage({ params }: PageProps<"/posts/[slug]">) {
         )}
       </header>
       <div
-        className="prose prose-neutral mx-auto max-w-[62ch]"
+        className={
+          post.category === "diary"
+            ? // 일기 본문: 더 작고 회색으로
+              "prose prose-neutral prose-sm prose-diary mx-auto max-w-[62ch]"
+            : "prose prose-neutral mx-auto max-w-[62ch]"
+        }
         dangerouslySetInnerHTML={{ __html: post.contentHtml }}
       />
       <footer className="mt-24 text-center">
