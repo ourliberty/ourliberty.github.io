@@ -62,8 +62,8 @@ export default async function PostPage({ params }: PageProps<"/posts/[slug]">) {
       <div
         className={
           post.category === "diary"
-            ? // 일기 본문: 더 작고 회색으로, 가운데 정렬
-              "prose prose-neutral prose-sm prose-diary mx-auto max-w-[52ch] text-center"
+            ? // 일기 본문: 더 작고 회색으로, 양쪽 정렬(줄이 좌우로 꽉 차게)
+              "prose prose-neutral prose-sm prose-diary mx-auto max-w-[68ch] text-justify"
             : "prose prose-neutral mx-auto max-w-[62ch]"
         }
         dangerouslySetInnerHTML={{ __html: post.contentHtml }}
