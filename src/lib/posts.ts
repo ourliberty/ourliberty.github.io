@@ -33,11 +33,16 @@ export const SUBCATEGORIES: Record<CategorySlug, Record<string, string>> = {
     performances: "Performances", // 공연
   },
   study: {
-    philosophy: "Philosophy",
+    logic: "Logic", // 논리학
+    "philosophy-of-mathematics": "Philosophy of Mathematics", // 수학철학
+    "philosophy-of-language": "Philosophy of Language", // 언어철학
+    metaphysics: "Metaphysics", // 형이상학
+    epistemology: "Epistemology", // 인식론
+    "philosophy-of-mind": "Philosophy of Mind", // 심리철학
+    "philosophy-of-science": "Philosophy of Science", // 과학철학
     mathematics: "Mathematics",
     economics: "Economics",
     "computer-science": "Computer Science",
-    finance: "Finance",
   },
 };
 
