@@ -5,6 +5,7 @@ date: '2026-07-26'
 category: study
 subcategory: computer-science
 keywords: ['transformer', 'attention', 'deep learning', 'paper review']
+youtube: js1CtxSY38I
 ---
 
 > TL;DR for the impatient. In 2017 the standard way to process a sentence was to read it word by word, in order (RNNs). This paper throws that out and says: let every word look at every other word *at the same time* through a mechanism called attention. That one change makes training massively parallel (so much faster on GPUs), makes long-range word relationships easier to learn, and, almost as a side effect, beats the state of the art in machine translation. Every model you've heard of since (BERT, GPT, ViT, and so on) is built on this idea.

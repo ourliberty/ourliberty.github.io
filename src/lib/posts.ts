@@ -49,6 +49,7 @@ export interface PostMeta {
   category: CategorySlug;
   subcategory?: string; // 해당 category의 하위 분류 slug (SUBCATEGORIES 참고)
   keywords: string[];
+  youtube?: string; // 있으면 글에 유튜브 플레이어를 넣음 (영상 ID 또는 링크)
 }
 
 export interface Post extends PostMeta {
@@ -87,6 +88,7 @@ function readPostFile(fileName: string): { meta: PostMeta; content: string } {
       category,
       subcategory,
       keywords: data.keywords ?? [],
+      youtube: data.youtube ? String(data.youtube) : undefined,
     },
     content,
   };

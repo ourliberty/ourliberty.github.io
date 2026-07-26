@@ -32,6 +32,14 @@ export async function generateMetadata({
   };
 }
 
+// 영상 ID 또는 링크(youtu.be / watch?v= / embed/)에서 11자리 ID만 뽑아
+// 개인정보 보호용 nocookie 도메인의 embed 주소로 만든다
+function youtubeEmbedSrc(input: string): string {
+  const match = input.trim().match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);
+  const id = match ? match[1] : input.trim();
+  return `https://www.youtube-nocookie.com/embed/${id}`;
+}
+
 export default async function PostPage({ params }: PageProps<"/posts/[slug]">) {
   const { slug } = await params;
   if (!postExists(slug)) notFound();
@@ -59,6 +67,23 @@ export default async function PostPage({ params }: PageProps<"/posts/[slug]">) {
           </p>
         )}
       </header>
+      {post.youtube && (
+        <div className="mx-auto mb-16 max-w-md">
+          <p className="mb-3 text-center text-[0.68rem] uppercase tracking-[0.3em] text-soft">
+            ♪ Soundtrack
+          </p>
+          <div className="relative aspect-video overflow-hidden">
+            <iframe
+              className="absolute inset-0 h-full w-full"
+              src={youtubeEmbedSrc(post.youtube)}
+              title="Soundtrack"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
+        </div>
+      )}
       <div
         className={
           post.category === "diary"
