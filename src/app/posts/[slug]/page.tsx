@@ -69,9 +69,6 @@ export default async function PostPage({ params }: PageProps<"/posts/[slug]">) {
       </header>
       {post.youtube && (
         <div className="mx-auto mb-16 max-w-md">
-          <p className="mb-3 text-center text-[0.68rem] uppercase tracking-[0.3em] text-soft">
-            ♪ Soundtrack
-          </p>
           <div className="relative aspect-video overflow-hidden">
             <iframe
               className="absolute inset-0 h-full w-full"
