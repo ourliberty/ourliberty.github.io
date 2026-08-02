@@ -38,6 +38,7 @@ export const SUBCATEGORIES: Record<CategorySlug, Record<string, string>> = {
     mathematics: "Mathematics",
     economics: "Economics",
     "computer-science": "Computer Science",
+    leet: "LEET", // 법학적성시험
   },
 };
 

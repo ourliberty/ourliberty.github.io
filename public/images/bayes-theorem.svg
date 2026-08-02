@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="360" viewBox="0 0 760 360" role="img" aria-label="베이즈 정리의 구조: 사후확률, 가능도, 사전확률, 주변화">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#c4c4c4" />
+    </marker>
+  </defs>
+
+  <!-- equation -->
+  <g fill="#1a1a1a" font-family="Georgia, 'Times New Roman', serif">
+    <text x="150" y="200" font-size="42" text-anchor="middle">P(A|B)</text>
+    <text x="252" y="200" font-size="42" text-anchor="middle">=</text>
+    <text x="510" y="162" font-size="34" text-anchor="middle">P(B|A) &#183; P(A)</text>
+    <line x1="330" y1="188" x2="690" y2="188" stroke="#1a1a1a" stroke-width="2.5" />
+    <text x="510" y="232" font-size="34" text-anchor="middle">P(B)</text>
+  </g>
+
+  <!-- labels -->
+  <g font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="600" letter-spacing="2.5" fill="#9a9a9a">
+    <text x="380" y="58" text-anchor="middle">LIKELIHOOD</text>
+    <text x="612" y="58" text-anchor="middle">PRIOR</text>
+    <text x="150" y="308" text-anchor="middle">POSTERIOR</text>
+    <text x="510" y="308" text-anchor="middle">EVIDENCE</text>
+  </g>
+
+  <!-- connectors -->
+  <g stroke="#c4c4c4" stroke-width="1.5" fill="none">
+    <path d="M380,70 C400,100 420,118 442,140" marker-end="url(#arrow)" />
+    <path d="M606,70 C596,100 590,118 582,140" marker-end="url(#arrow)" />
+    <path d="M150,292 L150,222" marker-end="url(#arrow)" />
+    <path d="M510,292 L510,250" marker-end="url(#arrow)" />
+  </g>
+</svg>
