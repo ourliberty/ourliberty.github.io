@@ -51,6 +51,7 @@ export interface PostMeta {
   subcategory?: string; // 해당 category의 하위 분류 slug (SUBCATEGORIES 참고)
   keywords: string[];
   youtube?: string; // 있으면 글에 유튜브 플레이어를 넣음 (영상 ID 또는 링크)
+  private?: boolean; // true면 사이트 어디에도 노출되지 않음 (빌드에서 제외)
 }
 
 export interface Post extends PostMeta {
@@ -90,6 +91,7 @@ function readPostFile(fileName: string): { meta: PostMeta; content: string } {
       subcategory,
       keywords: data.keywords ?? [],
       youtube: data.youtube ? String(data.youtube) : undefined,
+      private: data.private === true,
     },
     content,
   };
@@ -102,6 +104,7 @@ export function getAllPosts(): PostMeta[] {
     .readdirSync(postsDirectory)
     .filter((fileName) => fileName.endsWith(".md"))
     .map((fileName) => readPostFile(fileName).meta)
+    .filter((post) => !post.private) // 비공개 글은 목록에서 제외
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
@@ -120,9 +123,9 @@ export function getPostsBySubcategory(
   );
 }
 
-/** 해당 slug의 글 파일이 존재하는지 */
+/** 해당 slug의 공개된 글이 존재하는지 (비공개 글은 없는 것으로 취급) */
 export function postExists(slug: string): boolean {
-  return fs.existsSync(path.join(postsDirectory, `${slug}.md`));
+  return getAllPosts().some((post) => post.slug === slug);
 }
 
 /** 글 한 편의 전체 내용 (마크다운 → HTML 변환 포함) */
