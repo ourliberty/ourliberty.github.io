@@ -1,6 +1,6 @@
 ---
-title: 'Attention Is All You Need'
-excerpt: (Vaswani et al., 2017)'
+title: You got me looking for'
+excerpt: 'Attention Is All You Need(Vaswani et al., 2017)'
 date: '2026-07-26'
 category: study
 subcategory: computer-science
