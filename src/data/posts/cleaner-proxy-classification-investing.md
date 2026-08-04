@@ -5,7 +5,6 @@ excerpt: 'Maximizing the risk-adjusted return of classification model-based inve
 date: '2026-08-03'
 category: study
 subcategory: computer-science
-keywords: ['machine learning', 'quantitative finance', 'paper review', 'backtesting']
 ---
 
 On "Maximizing the risk-adjusted return of classification model-based investments" (Yang and Chang, 2026).
