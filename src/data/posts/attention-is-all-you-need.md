@@ -1,10 +1,9 @@
 ---
-title: '"Attention Is All You Need" (Vaswani et al., 2017)'
-excerpt: 'Rebuilding the Transformer from the paper''s own text: scaled dot-product attention, multi-head attention, sinusoidal positions, and an honest read of what holds up and what deserves an asterisk.'
+title: 'Attention Is All You Need'
+excerpt: (Vaswani et al., 2017)'
 date: '2026-07-26'
 category: study
 subcategory: computer-science
-keywords: ['transformer', 'attention', 'deep learning', 'paper review']
 youtube: js1CtxSY38I
 ---
 
