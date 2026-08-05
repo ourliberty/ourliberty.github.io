@@ -7,11 +7,7 @@ subcategory: computer-science
 youtube: js1CtxSY38I
 ---
 
-A study log. I rebuild the architecture from the text, verify the numbers, and separate load-bearing choices from incidental ones. Context that postdates the paper (2017) is flagged as such so hindsight isn't smuggled into the original claims.
-
 Almost everything downstream, BERT, GPT, T5, ViT, Whisper, AlphaFold's Evoformer, descends from this eight-page paper. The title is a joke that turned out to be a thesis: a state-of-the-art sequence transduction model can be built from attention alone, discarding recurrence (RNNs, read left-to-right) and convolution (CNNs, sliding local filters) entirely.
-
-One authorship detail worth remembering, since it's unusually candid: all eight authors are equal contributors, order randomized. Uszkoreit proposed replacing RNNs with self-attention; Vaswani and Polosukhin built the first models; Shazeer contributed scaled dot-product attention, multi-head attention, and the parameter-free positional representation.
 
 ## 1. What is actually being removed
 
