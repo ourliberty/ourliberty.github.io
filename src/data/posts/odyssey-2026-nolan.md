@@ -19,8 +19,6 @@ subcategory: films
 
 > The representation of Odysseus as a reluctant warlord makes a nonsense of the movie's imagined world. We are not shown...
 
-Emily Wilson, "An Uncomplicated Man," *London Review of Books* 48, no. 14.
-
 2.
 이 영화의 역사적 배경은 후기 청동기 붕괴(BC1200), 상호의존성 매우 높은 궁전경제가 단일 원인이 아니라 교역망, 기후, 지진, 내부 불안 등 여러 원인에 의해 연쇄적으로 무너져 내린 사건이다. 촘촘히 연결되어 번영한 국제경제는 바로 그 연결성 때문에 다같이 나락간다. 그렇다면 상호의존은 취약성인가? 상호의존 없이 평화가 가능한가? 아니라면 상호의존은 평화인가? 복합적 상호의존이 전쟁의 비용을 높여 평화를 촉진한다고 하지 않았던가? 아니 그렇다면 평화가 취약성인가?? 코플랜드의 무역기대이론에 따르면 상호의존은 미래 교역에 대한 기대가 밝을 때에만 평화적이고, 그 기대가 무너지면 바로 공동 취약성으로 돌변한다고 한다... 그러니까, 제도의 뒷받침 없는 상호의존은 평화보단 동반 붕괴의 조건에 가까운 것이고, 요점은 뒷받침되는 제도의 견고함이 되겠다.
 
