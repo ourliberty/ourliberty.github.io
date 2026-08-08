@@ -5,3 +5,7 @@ export const SITE_DESCRIPTION =
 export const AUTHOR = "haju";
 
 export const SITE_URL = "https://ourliberty.github.io";
+
+// 방문자 조회수 집계 (GoatCounter). 본인 코드로 채우면 켜지고, 비워두면 아무것도 안 붙음.
+// 예: GoatCounter에서 코드가 "haju"라면 → "haju" 만 적으면 됨 (haju.goatcounter.com)
+export const GOATCOUNTER_CODE = "";

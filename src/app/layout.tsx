@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import { CATEGORIES, SUBCATEGORIES, type CategorySlug } from "@/lib/posts";
-import { SITE_NAME, SITE_DESCRIPTION, AUTHOR, SITE_URL } from "@/lib/site";
+import {
+  SITE_NAME,
+  SITE_DESCRIPTION,
+  AUTHOR,
+  SITE_URL,
+  GOATCOUNTER_CODE,
+} from "@/lib/site";
 import "highlight.js/styles/github.css";
 import "katex/dist/katex.min.css";
 import "./globals.css";
@@ -91,6 +97,14 @@ export default function RootLayout({
             © {new Date().getFullYear()} {AUTHOR}
           </p>
         </footer>
+        {/* 방문자 조회수 집계: GOATCOUNTER_CODE가 있을 때만 스크립트를 넣음 */}
+        {GOATCOUNTER_CODE && (
+          <script
+            data-goatcounter={`https://${GOATCOUNTER_CODE}.goatcounter.com/count`}
+            async
+            src="//gc.zgo.at/count.js"
+          ></script>
+        )}
       </body>
     </html>
   );
