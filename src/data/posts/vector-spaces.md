@@ -1,4 +1,5 @@
 ---
+private: true
 title: |-
   Linear Algebra Ch3
   Vector Spaces

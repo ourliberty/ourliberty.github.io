@@ -1,4 +1,5 @@
 ---
+private: true
 title: |-
   Linear Algebra Ch5
   Linear Transformations
