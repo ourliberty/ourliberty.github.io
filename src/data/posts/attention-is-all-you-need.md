@@ -1,5 +1,4 @@
 ---
-private: true
 title: You got me looking for
 excerpt: 'Attention Is All You Need(Vaswani et al., 2017)'
 date: '2026-07-26'

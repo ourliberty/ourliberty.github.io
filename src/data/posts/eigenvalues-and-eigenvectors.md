@@ -1,5 +1,4 @@
 ---
-private: true
 title: |-
   Linear Algebra Ch6
   Eigenvalues and Eigenvectors

@@ -1,5 +1,4 @@
 ---
-private: true
 title: |-
   A Cleaner Proxy for Classification-Based Investing
 excerpt: 'Maximizing the risk-adjusted return of classification model-based investments(2026)'

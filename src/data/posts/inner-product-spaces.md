@@ -1,5 +1,4 @@
 ---
-private: true
 title: |-
   Linear Algebra Ch4
   Inner Product Spaces

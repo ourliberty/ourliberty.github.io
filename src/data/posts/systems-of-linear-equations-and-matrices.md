@@ -1,5 +1,4 @@
 ---
-private: true
 title: |-
   Linear Algebra Ch1
   Systems of Linear Equations and Matrices
