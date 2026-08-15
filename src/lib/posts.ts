@@ -38,7 +38,7 @@ export const SUBCATEGORIES: Record<CategorySlug, Record<string, string>> = {
     mathematics: "Mathematics",
     economics: "Economics",
     "computer-science": "Computer Science",
-    law: "Law", // 법학
+    "law-and-policy": "Law & Policy", // 법과 정책
     leet: "LEET", // 법학적성시험
   },
 };
