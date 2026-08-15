@@ -1,7 +1,7 @@
 ---
 title: '동성 커플이 마주하는 불이익과 대비책 (쓰는중)'
 excerpt: '동성커플은 정말 불리한가? 보완할 방도가 있는가? 향후 전망은 어떠한가?'
-date: '2026-08-13'
+date: '2026-08-16'
 category: study
 subcategory: law-and-policy
 ---
