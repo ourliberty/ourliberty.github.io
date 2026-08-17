@@ -3,7 +3,6 @@ title: '〈오디세이〉(2026)'
 excerpt: '크리스토퍼 놀란'
 date: '2026-08-06'
 category: review
-subcategory: films
 ---
 
 

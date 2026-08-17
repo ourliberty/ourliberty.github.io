@@ -22,17 +22,10 @@ export type CategorySlug = keyof typeof CATEGORIES;
 
 // 각 카테고리의 하위 분류: slug → 화면에 보이는 이름
 export const SUBCATEGORIES: Record<CategorySlug, Record<string, string>> = {
-  diary: {
-    "2026": "2026",
-    "2027": "2027",
-  },
-  review: {
-    texts: "Texts", // 글
-    films: "Films", // 영상
-    exhibitions: "Exhibitions", // 전시
-    performances: "Performances", // 공연
-  },
-  study: {}, // 공부는 하위 분류 없이 하나로 통일
+  // 모든 카테고리를 하위 분류 없이 하나로 통일
+  diary: {},
+  review: {},
+  study: {},
 };
 
 export interface PostMeta {

@@ -3,7 +3,6 @@ title: '『AI 지도책 - 세계의 부와 권력을 재편하는 인공지능�
 excerpt: '케이트 크로퍼드 (소소의 책)'
 date: '2026-08-13'
 category: review
-subcategory: texts
 ---
 
 \  
