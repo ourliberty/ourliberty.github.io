@@ -32,15 +32,7 @@ export const SUBCATEGORIES: Record<CategorySlug, Record<string, string>> = {
     exhibitions: "Exhibitions", // 전시
     performances: "Performances", // 공연
   },
-  study: {
-    "analytic-philosophy": "Analytic Philosophy", // 분석철학
-    "continental-philosophy": "Continental Philosophy", // 대륙철학
-    mathematics: "Mathematics",
-    economics: "Economics",
-    "computer-science": "Computer Science",
-    "law-and-policy": "Law & Policy", // 법과 정책
-    leet: "LEET", // 법학적성시험
-  },
+  study: {}, // 공부는 하위 분류 없이 하나로 통일
 };
 
 export interface PostMeta {

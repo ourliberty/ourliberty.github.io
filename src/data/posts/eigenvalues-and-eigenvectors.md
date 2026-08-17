@@ -5,7 +5,6 @@ title: |-
 excerpt: 'Invariant directions and the scalings along them: the characteristic polynomial, diagonalization, the spectral theorem for symmetric matrices, and the principal axes theorem.'
 date: '2026-07-20'
 category: study
-subcategory: mathematics
 keywords: ['linear algebra', 'eigenvalues', 'diagonalization', 'spectral theorem', 'quadratic forms']
 ---
 

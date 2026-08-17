@@ -4,7 +4,6 @@ title: |-
 excerpt: 'Maximizing the risk-adjusted return of classification model-based investments(2026)'
 date: '2026-08-03'
 category: study
-subcategory: computer-science
 ---
 
 On "Maximizing the risk-adjusted return of classification model-based investments" (Yang and Chang, 2026).

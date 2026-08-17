@@ -5,7 +5,6 @@ title: |-
 excerpt: 'From arrows to axioms: subspaces, span, linear independence, basis, dimension, coordinates, and the fundamental subspaces of a matrix.'
 date: '2026-07-17'
 category: study
-subcategory: mathematics
 keywords: ['linear algebra', 'vector spaces', 'basis', 'dimension', 'rank']
 ---
 

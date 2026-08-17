@@ -4,7 +4,6 @@ title: |-
 excerpt: '홍예리, 「인식적 독단론에 제기되는 베이즈주의적 비판에 대한 새로운 제안」, 『논리연구』 18-3 (2015), pp. 389–436.'
 date: '2026-08-02'
 category: study
-subcategory: analytic-philosophy
 ---
 
 이 논문은 화이트(White)의 독단론 비판과 프라이어(Pryor)의 대응 논쟁을 재검토하고 저자의 대안을 제시하며 논쟁의 지형을 재구성한다.

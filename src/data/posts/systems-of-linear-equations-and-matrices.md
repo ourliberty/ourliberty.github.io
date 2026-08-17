@@ -5,7 +5,6 @@ title: |-
 excerpt: 'The algebra of matrices, elimination made rigorous, and the theory of invertibility: a complete pass through a standard first chapter of linear algebra.'
 date: '2026-07-14'
 category: study
-subcategory: mathematics
 keywords: ['linear algebra', 'matrices', 'Gaussian elimination', 'invertibility']
 ---
 

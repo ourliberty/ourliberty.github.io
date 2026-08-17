@@ -5,7 +5,6 @@ title: |-
 excerpt: 'Structure-preserving maps between vector spaces: kernel and range, the dimension theorem, isomorphism, matrix representation, change of basis, and similarity.'
 date: '2026-07-19'
 category: study
-subcategory: mathematics
 keywords: ['linear algebra', 'linear transformations', 'isomorphism', 'similarity', 'change of basis']
 ---
 
