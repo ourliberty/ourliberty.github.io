@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="300" viewBox="0 0 640 300" role="img" aria-label="MBTI Form M 결과: I 5, N 8, T 3, J 4 (INTJ)">
+  <g font-family="Helvetica, Arial, sans-serif">
+    <!-- header -->
+    <text x="40" y="34" font-size="15" font-weight="600" letter-spacing="1.5" fill="#1a1a1a">MBTI · Form M</text>
+    <text x="600" y="34" font-size="12" letter-spacing="1" fill="#9a9a9a" text-anchor="end">2026.08.03 · INTJ</text>
+    <line x1="40" y1="50" x2="600" y2="50" stroke="#e6e6e6" stroke-width="1" />
+
+    <!-- rows: center at x=320, 6px per unit, track 140..500 -->
+    <!-- Row 1: E — I, 5 toward I (right) -->
+    <line x1="140" y1="88" x2="500" y2="88" stroke="#ededed" stroke-width="10" stroke-linecap="round" />
+    <rect x="320" y="80" width="30" height="16" rx="3" fill="#a9c1d9" />
+    <text x="34" y="93" font-size="15" fill="#b8b8b8" text-anchor="end">E</text>
+    <text x="606" y="93" font-size="15" font-weight="700" fill="#1a1a1a">I</text>
+    <text x="362" y="93" font-size="12" fill="#6f6f6f">5</text>
+
+    <!-- Row 2: S — N, 8 toward N (right) -->
+    <line x1="140" y1="140" x2="500" y2="140" stroke="#ededed" stroke-width="10" stroke-linecap="round" />
+    <rect x="320" y="132" width="48" height="16" rx="3" fill="#a9c1d9" />
+    <text x="34" y="145" font-size="15" fill="#b8b8b8" text-anchor="end">S</text>
+    <text x="606" y="145" font-size="15" font-weight="700" fill="#1a1a1a">N</text>
+    <text x="380" y="145" font-size="12" fill="#6f6f6f">8</text>
+
+    <!-- Row 3: T — F, 3 toward T (left) -->
+    <line x1="140" y1="192" x2="500" y2="192" stroke="#ededed" stroke-width="10" stroke-linecap="round" />
+    <rect x="302" y="184" width="18" height="16" rx="3" fill="#a9c1d9" />
+    <text x="34" y="197" font-size="15" font-weight="700" fill="#1a1a1a" text-anchor="end">T</text>
+    <text x="606" y="197" font-size="15" fill="#b8b8b8">F</text>
+    <text x="294" y="197" font-size="12" fill="#6f6f6f" text-anchor="end">3</text>
+
+    <!-- Row 4: J — P, 4 toward J (left) -->
+    <line x1="140" y1="244" x2="500" y2="244" stroke="#ededed" stroke-width="10" stroke-linecap="round" />
+    <rect x="296" y="236" width="24" height="16" rx="3" fill="#a9c1d9" />
+    <text x="34" y="249" font-size="15" font-weight="700" fill="#1a1a1a" text-anchor="end">J</text>
+    <text x="606" y="249" font-size="15" fill="#b8b8b8">P</text>
+    <text x="288" y="249" font-size="12" fill="#6f6f6f" text-anchor="end">4</text>
+
+    <!-- center line -->
+    <line x1="320" y1="68" x2="320" y2="264" stroke="#cfcfcf" stroke-width="1" stroke-dasharray="2 3" />
+  </g>
+</svg>
