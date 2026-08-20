@@ -76,7 +76,7 @@ export default function Home() {
         draggable={false}
         className="mx-auto w-full max-w-sm select-none rounded-lg"
       />
-      <div className="mt-9 flex justify-center gap-8">
+      <div className="mt-24 flex justify-center gap-8">
         {CONTACTS.map((contact) => (
           <a
             key={contact.label}
