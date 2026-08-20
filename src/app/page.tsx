@@ -68,13 +68,13 @@ const CONTACTS = [
 export default function Home() {
   return (
     <section className="mx-auto max-w-xl pt-8">
-      {/* 끝없이 스스로 움직이는 계단 (public/images/staircase.svg) */}
+      {/* 움직이는 이미지 (public/images/giphy.gif) */}
       <img
-        src="/images/staircase.svg"
+        src="/images/giphy.gif"
         alt=""
         aria-hidden
         draggable={false}
-        className="mx-auto w-full max-w-md select-none"
+        className="mx-auto w-full max-w-sm select-none rounded-lg"
       />
       <div className="mt-9 flex justify-center gap-8">
         {CONTACTS.map((contact) => (
