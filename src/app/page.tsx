@@ -71,23 +71,9 @@ export default function Home() {
       <p className="text-center font-serif text-2xl tracking-tight">Hello,</p>
       <div className="mt-10 space-y-6 text-[0.92rem] leading-[1.95]">
         <p>
-          I am an undergraduate at Ewha Womans University, studying philosophy,
-          the social sciences, and computer science.
-        </p>
-        <p>
-          My research ambition lies at the intersection of these disciplines:
-          to map the future of finance with both empirical rigor and
-          interpretive depth. I believe that data, the hardware of positivist
-          inquiry, becomes truly meaningful only when integrated with the
-          software of human psychology and context, as illuminated by
-          hermeneutics and phenomenology. Through causal inference and
-          empirical validation, I aim to build models of financial futures
-          that are not merely statistically sound, but genuinely attuned to
-          the human realities they describe.
-        </p>
-        <p>
-          This blog serves as a record of my studies, reflections on works of
-          art and literature, and occasional personal writings.
+          ㄲ ㅓ ㄷ ㅡ ㄹ ㅓ ㄱ . . .
+ 
+    
         </p>
         <p>You may reach me through the following channels:</p>
       </div>
