@@ -1,0 +1,38 @@
+<svg width="460" height="340" viewBox="0 0 460 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="끝없이 움직이는 계단">
+  <defs>
+    <g id="step">
+      <path d="M0,0 L44,0 L44,30 L0,30 Z" fill="#ececec" stroke="#141414" stroke-width="1.4" stroke-linejoin="round" />
+      <path d="M0,0 L44,0 L66,-14 L22,-14 Z" fill="#ffffff" stroke="#141414" stroke-width="1.4" stroke-linejoin="round" />
+    </g>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0" />
+      <stop offset="0.16" stop-color="#fff" stop-opacity="1" />
+      <stop offset="0.84" stop-color="#fff" stop-opacity="1" />
+      <stop offset="1" stop-color="#fff" stop-opacity="0" />
+    </linearGradient>
+    <mask id="fadeMask"><rect width="460" height="340" fill="url(#fade)" /></mask>
+  </defs>
+  <g mask="url(#fadeMask)">
+    <g>
+      <animateTransform attributeName="transform" type="translate" from="0 0" to="44 -30" dur="5s" repeatCount="indefinite" />
+      <use href="#step" x="648" y="-110" />
+      <use href="#step" x="604" y="-80" />
+      <use href="#step" x="560" y="-50" />
+      <use href="#step" x="516" y="-20" />
+      <use href="#step" x="472" y="10" />
+      <use href="#step" x="428" y="40" />
+      <use href="#step" x="384" y="70" />
+      <use href="#step" x="340" y="100" />
+      <use href="#step" x="296" y="130" />
+      <use href="#step" x="252" y="160" />
+      <use href="#step" x="208" y="190" />
+      <use href="#step" x="164" y="220" />
+      <use href="#step" x="120" y="250" />
+      <use href="#step" x="76" y="280" />
+      <use href="#step" x="32" y="310" />
+      <use href="#step" x="-12" y="340" />
+      <use href="#step" x="-56" y="370" />
+      <use href="#step" x="-100" y="400" />
+    </g>
+  </g>
+</svg>

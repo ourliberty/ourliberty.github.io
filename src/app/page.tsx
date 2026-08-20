@@ -68,15 +68,14 @@ const CONTACTS = [
 export default function Home() {
   return (
     <section className="mx-auto max-w-xl pt-8">
-      <p className="text-center font-serif text-2xl tracking-tight">Hello,</p>
-      <div className="mt-10 space-y-6 text-[0.92rem] leading-[1.95]">
-        <p>
-          ㄲ ㅓ ㄷ ㅡ ㄹ ㅓ ㄱ . . .
- 
-    
-        </p>
-        <p>You may reach me through the following channels:</p>
-      </div>
+      {/* 끝없이 스스로 움직이는 계단 (public/images/staircase.svg) */}
+      <img
+        src="/images/staircase.svg"
+        alt=""
+        aria-hidden
+        draggable={false}
+        className="mx-auto w-full max-w-md select-none"
+      />
       <div className="mt-9 flex justify-center gap-8">
         {CONTACTS.map((contact) => (
           <a
