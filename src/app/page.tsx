@@ -74,7 +74,7 @@ export default function Home() {
         alt=""
         aria-hidden
         draggable={false}
-        className="mx-auto w-full max-w-sm select-none rounded-lg"
+        className="mx-auto w-full max-w-sm translate-x-2 select-none rounded-lg"
       />
       <div className="mt-24 flex justify-center gap-8">
         {CONTACTS.map((contact) => (
