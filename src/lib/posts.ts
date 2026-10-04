@@ -6,6 +6,7 @@ import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
+import rehypeRaw from "rehype-raw";
 import rehypeKatex from "rehype-katex";
 import rehypeHighlight from "rehype-highlight";
 import rehypeStringify from "rehype-stringify";
@@ -122,7 +123,8 @@ export async function getPost(slug: string): Promise<Post> {
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath) // $...$ / $$...$$ 수식 문법 인식
-    .use(remarkRehype)
+    .use(remarkRehype, { allowDangerousHtml: true }) // 본문 내 HTML(iframe 등) 통과
+    .use(rehypeRaw) // 통과된 HTML을 실제 노드로 파싱 (영상·PDF 임베드용)
     .use(rehypeKatex) // 수식을 KaTeX로 렌더링
     .use(rehypeHighlight)
     .use(rehypeStringify)
