@@ -121,7 +121,7 @@ export async function getPost(slug: string): Promise<Post> {
 
   const processed = await unified()
     .use(remarkParse)
-    .use(remarkGfm)
+    .use(remarkGfm, { singleTilde: false }) // 단일 ~ 는 취소선 아님 (20~30% 같은 범위 표기 보호)
     .use(remarkMath) // $...$ / $$...$$ 수식 문법 인식
     .use(remarkRehype, { allowDangerousHtml: true }) // 본문 내 HTML(iframe 등) 통과
     .use(rehypeRaw) // 통과된 HTML을 실제 노드로 파싱 (영상·PDF 임베드용)
