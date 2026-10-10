@@ -1,6 +1,6 @@
 ---
 title: 'Violent Hermeneutics: AI and the Weak Technical Event'
-excerpt: 'Marc Heimann'
+excerpt: 'Restaging Heidegger and Lacan in the transformer, and the weak technical event(2026)'
 date: '2026-10-10'
 category: study
 keywords: ['AI', '언어철학', '하이데거', '라캉']
