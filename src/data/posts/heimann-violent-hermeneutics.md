@@ -10,9 +10,7 @@ keywords: ['AI', '언어철학', '하이데거', '라캉']
 ## Study Log: Heimann, "Violent Hermeneutics: AI and the Weak Technical Event"
 
 
-### In brief
-
-Marc Heimann's "Violent Hermeneutics" makes one claim I want to keep: a prompt can change what a frozen language model is able to say without changing what the model is. He calls the result a "weak technical event". It is not a Badiouian rupture but "a temporary redrawing of adjacency and accessibility within latent space" (abstract, p. 332). Having checked the paper against its sources in both of my fields, I think this concept survives, but the routes the paper takes to it are uneven.
+Marc Heimann's Violent Hermeneutics makes one claim I want to keep: a prompt can change what a frozen language model is able to say without changing what the model is. He calls the result a "weak technical event". It is not a Badiouian rupture but "a temporary redrawing of adjacency and accessibility within latent space" (abstract, p. 332). Having checked the paper against its sources in both of my fields, I think this concept survives, but the routes the paper takes to it are uneven.
 
 The Heidegger mapping is the most textually exposed. Read against Being and Time, the hermeneutic "as" relates things in use, not words, and §34 has words accruing to meanings rather than meanings arising between words. Read against the later Heidegger, the paper's emphasis on the word fares better, although the decisive relation there is still between word and thing. The Lacan mapping, which assigns metonymy to learned vectors and metaphor to attention, is suggestive; but transformer operations do not divide cleanly along Jakobson's axes, so neither that assignment nor its inverse is forced by the architecture.
 
@@ -306,4 +304,3 @@ The philosophical questions are harder. Can attention weights, or standardized s
 
 <iframe src="/files/heimann-violent-hermeneutics.pdf" title="Violent Hermeneutics (PDF)" style="width:100%;height:80vh;border:1px solid #e5e5e5;border-radius:8px;margin:1.5rem 0;" loading="lazy"></iframe>
 
-[📄 PDF 내려받기 / 새 탭에서 보기](/files/heimann-violent-hermeneutics.pdf)
