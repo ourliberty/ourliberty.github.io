@@ -1,4 +1,5 @@
 ---
+private: true
 title: '9月 4日.. 스탯, XP, F값'
 excerpt: ''
 date: '2026-09-04'
