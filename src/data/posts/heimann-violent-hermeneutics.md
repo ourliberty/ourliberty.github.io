@@ -10,11 +10,7 @@ Marc Heimann, "Violent Hermeneutics: AI and the Weak Technical Event," *The Even
 
 트랜스포머 기반 LLM이 하이데거의 als-Relation과 라캉의 은유 작동을 우연히 재연하면서 동시에 그 한계를 드러낸다고 보는 논문이다. 벡터적 연상주의를 하이데거의 as-구조에, 어텐션을 라캉적 은유의 국소적 재배치에 겹쳐 읽고, 그 결과로 나타나는 것은 바디우적 '사건'이 아니라 잠재공간 안에서 인접성과 접근성이 일시적으로 다시 그려지는 '약한 기술적 사건(weak technical event)'이라고 규정한다. 따라서 인간-AI 상호작용은 이데올로기나 주체성이 아니라 기입(inscription)이 계산 가능한 장을 재조직하는 리터러시 혹은 해석학으로 이해하는 편이 낫다는 주장.
 
-전문은 아래 첨부.
-
-<iframe src="/files/heimann-violent-hermeneutics.pdf" title="Violent Hermeneutics (PDF)" style="width:100%;height:80vh;border:1px solid #e5e5e5;border-radius:8px;margin:1.5rem 0;" loading="lazy"></iframe>
-
-[📄 PDF 내려받기 / 새 탭에서 보기](/files/heimann-violent-hermeneutics.pdf)
+전문(PDF)은 글 맨 아래에 첨부.
 
 ---
 
@@ -316,62 +312,6 @@ The empirical ones come first. The neon protocol of Close reading III should be 
 
 The philosophical questions are harder. Can attention weights, or standardized similarities, serve as a working stand-in for Badiou's degrees of identity, so that the weak technical event could be stated in his own formal terms? Does architectural invariance settle anything? The paper argues that scaffolding changes only "the circuitry of inscription", because everything still passes through the same invariant process of tokenizing, attending and predicting (p. 342). Brains are not invariant in that way, since synaptic plasticity changes them while they run, but every physical system runs on some invariant dynamics, so invariance alone cannot be what rules out world-disclosure, and the paper needs to say which further feature does. Finally, is the self-feeding loop that the paper calls quasi-endogenous (p. 344) a candidate site? A process whose outputs re-enter its own inputs at least resembles a multiple that counts itself, and I do not know whether the resemblance survives scrutiny.
 
-### References
+<iframe src="/files/heimann-violent-hermeneutics.pdf" title="Violent Hermeneutics (PDF)" style="width:100%;height:80vh;border:1px solid #e5e5e5;border-radius:8px;margin:1.5rem 0;" loading="lazy"></iframe>
 
-The paper: Marc Heimann, "Violent Hermeneutics: AI and the Weak Technical Event", in M. Nyírő, Zs. Lurcza and P. Makai (eds.), EVENT and Its Mediation, Miskolc University Press, 2026, 332–349, [doi:10.70832/EVENTanditsMediation.18](https://doi.org/10.70832/EVENTanditsMediation.18) ([publisher's landing page](https://ojs.uni-miskolc.hu/index.php/event2026/article/view/4819)).
-
-#### Primary texts
-
-- Martin Heidegger, Being and Time, trans. John Macquarrie and Edward Robinson (Harper & Row, 1962), cited by German pagination; trans. Joan Stambaugh (SUNY Press, 1996), [catalogue record](https://cmu.marmot.org/Record/.b13577189).
-- Martin Heidegger, "Letter on Humanism"; "The Question Concerning Technology"; On the Way to Language, especially "The Nature of Language" and "Words".
-- Jacques Lacan, Écrits: The First Complete Edition in English, trans. Bruce Fink (Norton, 2006): "Seminar on 'The Purloined Letter'", "The Instance of the Letter in the Unconscious", "The Subversion of the Subject and the Dialectic of Desire".
-- Jacques Lacan, The Psychoses (Seminar III), trans. Russell Grigg (Norton, 1993); The Other Side of Psychoanalysis (Seminar XVII), trans. Russell Grigg (Norton), hardcover dated 17 December 2006 in this [bookseller record](https://mitpressbookstore.mit.edu/book/9780393062632).
-- Alain Badiou, Being and Event, trans. Oliver Feltham (Continuum); Logics of Worlds, trans. Alberto Toscano (Continuum, 2009).
-- Ferdinand de Saussure, Course in General Linguistics; Roman Jakobson and Morris Halle, Fundamentals of Language (1956); René Dirven and Ralf Pörings (eds.), Metaphor and Metonymy in Comparison and Contrast, [catalogue record](https://ci.nii.ac.jp/ncid/BA63290565).
-- Jorge Luis Borges, "The Library of Babel".
-- Félix Guattari, [The Machinic Unconscious: Essays in Schizoanalysis](https://mitpressbookstore.mit.edu/book/9781584350880), trans. Taylor Adkins (Semiotext(e)).
-- Andreas Malm, How to Blow Up a Pipeline (Verso, 2021), [British Library record](https://eld.bl.uk/catalog/020010838).
-
-#### Secondary sources in philosophy and history
-
-- [Cahiers pour l'Analyse, "Metaphor/Metonymy"](https://cahiers.kingston.ac.uk/concepts/metaphor-and-metonymy.html), Kingston University.
-- ["Paradigmatic / Syntagmatic relations"](https://arkiv.inf.ku.dk/KoLifeboat/CONCEPTS/paradigmatic.htm), University of Copenhagen teaching archive, on Saussure's "associative" relations.
-- Lydia H. Liu, ["The Cybernetic Unconscious: Rethinking Lacan, Poe, and French Theory"](https://www.journals.uchicago.edu/doi/10.1086/648527), Critical Inquiry 36:2 (2010), 288–320.
-- Paul M. Livingston, [review of Logics of Worlds](https://ndpr.nd.edu/news/logics-of-worlds-being-and-event-ii/), Notre Dame Philosophical Reviews, 2009.
-- Lorenzo Chiesa, ["The Body of Structural Dialectic: Badiou, Lacan, and the 'Human Animal'"](https://kar.kent.ac.uk/42703/), Badiou Studies 3:1 (2014).
-- Hubert L. Dreyfus and Stuart E. Dreyfus, ["Making a Mind Versus Modeling the Brain: Artificial Intelligence Back at a Branchpoint"](https://www.amacad.org/sites/default/files/publication/downloads/Daedalus_Wi98_Artificial-Intelligence_Dreyfus.pdf), Daedalus, Winter 1988, 15–43.
-
-#### Computer science
-
-- Llama 3.2 1B configuration, [AMD's public copy](https://huggingface.co/amd/Llama-3.2-1B-FP8-KV/blob/87020edc0aef828d71b4d29582b90dac01ad1cb4/config.json) of the base model's `config.json`; Hugging Face transformers 4.46.3, `models/llama/modeling_llama.py`, read locally.
-- Ashish Vaswani et al., "Attention Is All You Need", NIPS 2017.
-- Nelson Elhage et al., ["A Mathematical Framework for Transformer Circuits"](https://transformer-circuits.pub/2021/framework/), 2021.
-- Mor Geva et al., ["Transformer Feed-Forward Layers Are Key-Value Memories"](https://aclanthology.org/2021.emnlp-main.446/), EMNLP 2021; ["Transformer Feed-Forward Layers Build Predictions by Promoting Concepts in the Vocabulary Space"](https://arxiv.org/abs/2203.14680), EMNLP 2022.
-- Kevin Meng et al., ["Locating and Editing Factual Associations in GPT"](https://cris.iucc.ac.il/en/publications/locating-and-editing-factual-associations-in-gpt/), NeurIPS 2022, Advances in Neural Information Processing Systems 35.
-- Oliver Kramer, ["Conceptual Metaphor Theory as a Prompting Paradigm for Large Language Models"](https://arxiv.org/abs/2502.01901v1), arXiv:2502.01901, 2025.
-- Emily M. Bender et al., ["On the Dangers of Stochastic Parrots: Can Language Models Be Too Big?"](https://archive.org/details/stochastic-parrots-3442188.3445922), FAccT 2021.
-- Sang Michael Xie et al., ["An Explanation of In-context Learning as Implicit Bayesian Inference"](https://arxiv.org/abs/2111.02080), ICLR 2022.
-- Shivam Garg et al., ["What Can Transformers Learn In-Context? A Case Study of Simple Function Classes"](https://neurips.cc/virtual/2022/poster/53586), NeurIPS 2022.
-- Johannes von Oswald et al., ["Transformers Learn In-Context by Gradient Descent"](https://icml.cc/virtual/2023/poster/23828), ICML 2023.
-- Jerry Wei et al., "Larger Language Models Do In-Context Learning Differently", arXiv:2303.03846, 2023, summarized in this [Google Research post](https://research.google/blog/larger-language-models-do-in-context-learning-differently/).
-- Roee Hendel, Mor Geva and Amir Globerson, ["In-Context Learning Creates Task Vectors"](https://arxiv.org/abs/2310.15916v1), Findings of EMNLP 2023.
-- Kawin Ethayarajh, ["How Contextual are Contextualized Word Representations?"](https://arxiv.org/pdf/1909.00512), EMNLP 2019.
-- Mingjie Sun et al., ["Massive Activations in Large Language Models"](https://arxiv.org/abs/2402.17762), arXiv:2402.17762, 2024.
-- William Timkey and Marten van Schijndel, ["All Bark and No Bite: Rogue Dimensions in Transformer Language Models Obscure Representational Quality"](https://aclanthology.org/2021.emnlp-main.372), EMNLP 2021.
-- Magnus Sahlgren, [The Word-Space Model](https://linguistlist.org/issues/17/2666), doctoral dissertation, Stockholm University, 2006.
-- Omer Levy and Yoav Goldberg, ["Dependency-Based Word Embeddings"](https://2014.aclweb.org/P14-2/xml/P14-2050.xhtml.html), ACL 2014.
-- John Hewitt and Christopher D. Manning, ["A Structural Probe for Finding Syntax in Word Representations"](https://aclanthology.org/N19-1419/), NAACL 2019.
-- John Hewitt and Percy Liang, ["Designing and Interpreting Probes with Control Tasks"](https://aclanthology.org/D19-1275/), EMNLP-IJCNLP 2019.
-- Eric Wallace et al., ["The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions"](https://openai.com/index/the-instruction-hierarchy/), 2024.
-- Andy Zou et al., ["Universal and Transferable Adversarial Attacks on Aligned Language Models"](https://arxiv.org/html/2307.15043v2), 2023.
-- Brian Lester, Rami Al-Rfou and Noah Constant, ["The Power of Scale for Parameter-Efficient Prompt Tuning"](https://aclanthology.org/2021.emnlp-main.243), EMNLP 2021.
-- Xiang Lisa Li and Percy Liang, ["Prefix-Tuning: Optimizing Continuous Prompts for Generation"](https://aclanthology.org/2021.acl-long.353), ACL 2021.
-- Alexander Matt Turner et al., ["Steering Language Models With Activation Engineering"](https://arxiv.org/abs/2308.10248v4), first released as "Activation Addition", 2023.
-- Anthropic, ["Golden Gate Claude"](https://www.anthropic.com/news/golden-gate-claude), 23 May 2024.
-- Yongchao Zhou et al., ["Large Language Models are Human-Level Prompt Engineers"](https://iclr.cc/virtual/2023/poster/10850), ICLR 2023.
-- Melanie Sclar et al., ["Quantifying Language Models' Sensitivity to Spurious Features in Prompt Design"](https://iclr.cc/virtual/2024/poster/18650), ICLR 2024.
-- Erik Brynjolfsson, Bharat Chandar and Ruyu Chen, ["Canaries in the Coal Mine? Six Facts about the Recent Employment Effects of Artificial Intelligence"](https://siepr.stanford.edu/publications/working-paper/canaries-coal-mine-six-facts-about-recent-employment-effects-artificial), Stanford working paper, August 2025.
-
-#### Further reading
-
-- Hubert L. Dreyfus, What Computers Can't Do (1972), and "Why Heideggerian AI Failed and How Fixing It Would Require Making It More Heideggerian" (2007).
+[📄 PDF 내려받기 / 새 탭에서 보기](/files/heimann-violent-hermeneutics.pdf)
