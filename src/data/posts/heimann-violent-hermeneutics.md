@@ -9,7 +9,6 @@ keywords: ['AI', '언어철학', '하이데거', '라캉']
 
 ## Study Log: Heimann, "Violent Hermeneutics: AI and the Weak Technical Event"
 
-Oct 8, 2026 · @Juha Shin
 
 ### In brief
 
