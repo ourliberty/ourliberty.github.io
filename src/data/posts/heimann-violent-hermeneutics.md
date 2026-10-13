@@ -6,9 +6,6 @@ category: study
 ---
 
 
-## Study Log: Heimann, "Violent Hermeneutics: AI and the Weak Technical Event"
-
-
 Marc Heimann's Violent Hermeneutics makes one claim I want to keep: a prompt can change what a frozen language model is able to say without changing what the model is. He calls the result a "weak technical event". It is not a Badiouian rupture but "a temporary redrawing of adjacency and accessibility within latent space" (abstract, p. 332). Having checked the paper against its sources in both of my fields, I think this concept survives, but the routes the paper takes to it are uneven.
 
 The Heidegger mapping is the most textually exposed. Read against Being and Time, the hermeneutic "as" relates things in use, not words, and §34 has words accruing to meanings rather than meanings arising between words. Read against the later Heidegger, the paper's emphasis on the word fares better, although the decisive relation there is still between word and thing. The Lacan mapping, which assigns metonymy to learned vectors and metaphor to attention, is suggestive; but transformer operations do not divide cleanly along Jakobson's axes, so neither that assignment nor its inverse is forced by the architecture.
@@ -18,8 +15,6 @@ The three demonstrations are offered as illustrations, yet they carry conclusion
 I study across a computer science department and a philosophy department, and most writing on language models stays on one side. This paper at least tries to say what in-context conditioning is. That deserves a reading that checks both halves, which is what the rest of this post attempts. A referee-style report on the first version of this post, with everything I corrected, is in the second tab.
 
 ### The paper, and how I read it
-
-The article appears in M. Nyírő, Zs. Lurcza and P. Makai (eds.), EVENT and Its Mediation: Interdisciplinary Perspectives in Philosophy, Religious Studies, Literary Studies, and Cultural Theory (Miskolc University Press, 2026), pp. 332–349, with the DOI [10.70832/EVENTanditsMediation.18](https://doi.org/10.70832/EVENTanditsMediation.18). The press's platform lists it as published on 28 August 2026, and the PDF carries a CC BY-NC 4.0 licence. Its author, Marc Heimann, is affiliated with Hochschule Niederrhein in Krefeld and Mönchengladbach. The text runs to seven sections, thirty footnotes, twenty-seven bibliography entries and one figure. It builds on two articles co-written with Anne-Friederike Hübener: "Material Calculation and Its Unconscious" (Psychoanalysis, Culture & Society, 2023) and "Circling the Void" (Cognitive Systems Research, 2025). I could not access the second, so some of my objections may already be answered there.
 
 I read the PDF twice, once for the argument and once footnote by footnote. Bibliographic corrections were checked against publisher, proceedings or catalogue records, listed at the end, and quotations from the paper were checked against the PDF together with their page numbers. Philosophical claims were checked against the passages they lean on: Being and Time §§27 and 32–35, Heidegger's late essays on language, Lacan's "The Instance of the Letter in the Unconscious", Meditation 17 of Being and Event and Book V of Logics of Worlds. Technical claims were checked against the papers that define the terms and, in one case, against library source code.
 
