@@ -59,6 +59,52 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
 #mailbox.has-note .note{opacity:1;transform:none;animation:sway 5s ease-in-out infinite}
 @keyframes sway{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.4deg)}}
 
+/* the alien */
+#alien{position:absolute;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  transition:left 1.4s cubic-bezier(.45,0,.2,1),top 1.4s cubic-bezier(.45,0,.2,1),width 1s,height 1s}
+#alien[hidden]{display:none}
+#alien svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+#alien .egg,#alien.is-egg .being{display:none}
+#alien.is-egg .egg{display:block}
+#alien g{transform-box:fill-box}
+#alien .hop{transform-origin:50% 100%;animation:bob 3.4s ease-in-out infinite}
+#alien .breathe{transform-origin:50% 100%;animation:breathe 4.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-2.5px)}}
+@keyframes breathe{50%{transform:scale(1.025,.975)}}
+#alien .eye{transform-origin:50% 50%;animation:blink 5.3s infinite}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}96.5%{transform:scaleY(.08)}}
+#alien .ant,#alien .ant2{transform-origin:0% 100%;animation:feel 3.6s ease-in-out infinite}
+#alien .ant2{animation-delay:-1.4s}
+@keyframes feel{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(6deg)}}
+#alien .tip{fill:#f2b49b}
+[data-time=dusk] #alien .tip,[data-time=night] #alien .tip{fill:#ffd6c2;filter:drop-shadow(0 0 4px #ffb595)}
+[data-time=night] #alien .being,[data-time=night] #alien .egg{filter:drop-shadow(0 0 12px rgba(190,240,210,.32))}
+#alien .ant2,#alien .eye3,#alien .spots{display:none}
+#alien.st2 .ant2,#alien.st3 .ant2,#alien.st3 .eye3,#alien.st3 .spots{display:inline}
+#alien .spots circle{fill:#effff4;opacity:.85}
+[data-time=night] #alien .spots circle{filter:drop-shadow(0 0 3px #d8ffe9)}
+#alien .shut,#alien .zz{display:none}
+#alien.sleep .open{display:none}
+#alien.sleep .shut,#alien.sleep .zz{display:inline}
+#alien.sleep .hop{animation:none;transform:translateY(3%) scaleY(.93)}
+#alien.sleep .breathe{animation-duration:6.5s}
+#alien .zz circle{fill:none;stroke:var(--fg);stroke-width:1;opacity:0;animation:zz 3.6s ease-in infinite}
+#alien .zz circle:nth-child(2){animation-delay:1.2s}
+#alien .zz circle:nth-child(3){animation-delay:2.4s}
+@keyframes zz{0%{opacity:0;transform:translateY(6px)}30%{opacity:.7}100%{opacity:0;transform:translateY(-8px)}}
+#alien.jump .hop{animation:jump .8s cubic-bezier(.3,0,.3,1)}
+@keyframes jump{15%{transform:scale(1.12,.86)}45%{transform:translateY(-26%) scale(.94,1.08)}75%{transform:translateY(0) scale(1.08,.92)}}
+#alien .shell{transform-origin:50% 100%;animation:rest 6s ease-in-out infinite}
+@keyframes rest{0%,88%,100%{transform:rotate(0)}91%{transform:rotate(-4deg)}94%{transform:rotate(3deg)}97%{transform:rotate(-1.5deg)}}
+#alien.wobble .shell{animation:wob .7s ease-in-out}
+@keyframes wob{20%{transform:rotate(-9deg)}45%{transform:rotate(8deg)}70%{transform:rotate(-4deg)}}
+#alien .crack{opacity:0;transition:opacity 1s}
+#alien.ready .crack{opacity:.85}
+#alien.hatching .shell{animation:crackle 1.1s ease-in forwards}
+@keyframes crackle{10%,30%,50%{transform:rotate(-7deg)}20%,40%{transform:rotate(7deg)}60%{transform:rotate(0)}100%{transform:scale(1.25);opacity:0}}
+#alien .heart{position:absolute;left:50%;top:6%;width:max(9px,15%);height:auto;fill:var(--stamp);opacity:0;pointer-events:none;animation:heart 1.5s ease-out forwards}
+@keyframes heart{0%{opacity:0;transform:translate(-50%,0) scale(.6)}20%{opacity:.9}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),-120%) scale(1)}}
+
 /* film */
 .grain{position:fixed;inset:-100%;pointer-events:none;z-index:90;opacity:var(--grain);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -206,7 +252,7 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
   .body,#note{font-size:15.5px}
 }
 @media (prefers-reduced-motion:reduce){
-  .grain,.fog,.leak,#mailbox.has-note .note{animation:none!important}
+  .grain,.fog,.leak,#mailbox.has-note .note,#alien *{animation:none!important}
   .track{animation-duration:.01s}
 }
 </style>
@@ -262,6 +308,48 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
         <path d="M40.5 47 L58.6 48.2 M40.3 51 L55 52" stroke="#191a17" stroke-opacity=".28" stroke-width=".55"/>
       </g>
       <rect x="13" y="112" width="74" height="4.5" fill="#1d1712"/>
+    </svg>
+  </div>
+  <div id="alien" hidden>
+    <svg class="egg" viewBox="0 0 100 110" aria-hidden="true">
+      <defs>
+        <radialGradient id="eggSkin" cx=".36" cy=".3" r=".85">
+          <stop offset="0" stop-color="#f6f4ea"/><stop offset=".65" stop-color="#dde3d3"/><stop offset="1" stop-color="#b9c8b8"/>
+        </radialGradient>
+      </defs>
+      <ellipse cx="50" cy="106" rx="20" ry="3" fill="#000" opacity=".22"/>
+      <g class="shell">
+        <path d="M50 38C66 38 76 64 76 82C76 97 65 105 50 105C35 105 24 97 24 82C24 64 34 38 50 38Z" fill="url(#eggSkin)"/>
+        <circle cx="41" cy="58" r="2.2" fill="#93b8a3" opacity=".55"/><circle cx="60" cy="66" r="3" fill="#93b8a3" opacity=".45"/>
+        <circle cx="45" cy="92" r="2.6" fill="#93b8a3" opacity=".45"/><circle cx="66" cy="88" r="1.8" fill="#93b8a3" opacity=".55"/>
+        <path class="crack" d="M27 76 L35 71 L41 78 L48 70 L55 77 L62 70 L68 75 L73 72" fill="none" stroke="#3b4a40" stroke-width="1.4" stroke-linejoin="round"/>
+      </g>
+    </svg>
+    <svg class="being" viewBox="0 0 100 110" aria-hidden="true">
+      <defs>
+        <radialGradient id="alienSkin" cx=".38" cy=".32" r=".8">
+          <stop offset="0" stop-color="#eef6ec"/><stop offset=".6" stop-color="#c3dcc9"/><stop offset="1" stop-color="#93b8a3"/>
+        </radialGradient>
+      </defs>
+      <ellipse cx="50" cy="106" rx="24" ry="3" fill="#000" opacity=".22"/>
+      <g class="hop"><g class="breathe">
+        <g class="ant"><path d="M47 34 Q43 18 52 10" fill="none" stroke="#93b8a3" stroke-width="2.6" stroke-linecap="round"/><circle class="tip" cx="52" cy="10" r="4.2"/></g>
+        <g class="ant2"><path d="M61 37 Q67 25 76 22" fill="none" stroke="#93b8a3" stroke-width="2.3" stroke-linecap="round"/><circle class="tip" cx="76" cy="22" r="3.4"/></g>
+        <ellipse cx="36" cy="102" rx="9" ry="4.5" fill="#93b8a3"/>
+        <ellipse cx="64" cy="102" rx="9" ry="4.5" fill="#93b8a3"/>
+        <path d="M50 30C73 30 86 52 86 76C86 95 71 103 50 103C29 103 14 95 14 76C14 52 27 30 50 30Z" fill="url(#alienSkin)"/>
+        <g class="spots"><circle cx="29" cy="58" r="2.2"/><circle cx="73" cy="62" r="1.8"/><circle cx="66" cy="92" r="2"/><circle cx="24" cy="86" r="1.5"/></g>
+        <g class="open">
+          <g class="eye"><g class="pupil"><ellipse cx="38" cy="68" rx="7" ry="9" fill="#1b1e1a"/><circle cx="40.6" cy="64.4" r="2.3" fill="#fff"/></g></g>
+          <g class="eye"><g class="pupil"><ellipse cx="62" cy="68" rx="7" ry="9" fill="#1b1e1a"/><circle cx="64.6" cy="64.4" r="2.3" fill="#fff"/></g></g>
+          <g class="eye eye3"><g class="pupil"><ellipse cx="50" cy="49" rx="4" ry="5" fill="#1b1e1a"/><circle cx="51.4" cy="47" r="1.3" fill="#fff"/></g></g>
+        </g>
+        <g class="shut" fill="none" stroke="#1b1e1a" stroke-width="1.8" stroke-linecap="round"><path d="M31 69 Q38 74 45 69"/><path d="M55 69 Q62 74 69 69"/></g>
+        <ellipse cx="27" cy="81" rx="5.5" ry="3" fill="#f2b49b" opacity=".45"/>
+        <ellipse cx="73" cy="81" rx="5.5" ry="3" fill="#f2b49b" opacity=".45"/>
+        <path d="M46 83 Q50 86.5 54 83" fill="none" stroke="#1b1e1a" stroke-width="1.6" stroke-linecap="round"/>
+      </g></g>
+      <g class="zz"><circle cx="76" cy="42" r="2.2"/><circle cx="83" cy="31" r="3"/><circle cx="91" cy="18" r="3.8"/></g>
     </svg>
   </div>
   <div class="fog f2"></div>
@@ -399,6 +487,7 @@ const hexRgb = (h) => { h = h.trim().replace("#", ""); return [0, 2, 4].map((i) 
 const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
 const rgba = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 
+var LAYOUT = null, PET = null; // mailbox geometry, and the one who lives beside it
 const back = $("#back"), front = $("#front"), box = $("#mailbox");
 function layoutBox(W, H) {
   const h = Math.max(120, Math.min(240, H * 0.24));
@@ -414,6 +503,7 @@ function drawForest() {
     fog: hexRgb(cs.getPropertyValue("--fog")), tree: hexRgb(cs.getPropertyValue("--tree")), ground: hexRgb(cs.getPropertyValue("--ground")) };
   const mb = layoutBox(W, H);
   Object.assign(box.style, { left: `${mb.x - mb.w / 2}px`, top: `${mb.base - mb.h}px`, width: `${mb.w}px`, height: `${mb.h}px` });
+  LAYOUT = mb; if (PET) PET.place();
 
   for (const c of [back, front]) { c.width = W * dpr; c.height = H * dpr; }
   const b = back.getContext("2d"), f = front.getContext("2d");
@@ -565,44 +655,51 @@ function localStore() {
       const all = LS.get(`fm:local:${boxId}`, []);
       const id = newId(rec.at); all.push({ id, ...rec }); LS.set(`fm:local:${boxId}`, all); return id;
     },
+    async getPet(boxId) { return LS.get(`fm:localpet:${boxId}`, null); },
+    async putPet(boxId, mutate) { LS.set(`fm:localpet:${boxId}`, await mutate(LS.get(`fm:localpet:${boxId}`, null))); },
   };
 }
-// one sealed JSON file per box in a private repo: boxes/<boxId>.json
+// files in a private repo: boxes/<boxId>.json (letters), boxes/<boxId>-pet.json (the alien)
 function githubStore(token) {
   const H = (accept, extra = {}) => ({ Authorization: `Bearer ${token}`, Accept: accept, "X-GitHub-Api-Version": "2022-11-28", ...extra });
-  const url = (boxId) => `https://api.github.com/repos/${GHC.repo}/contents/boxes/${boxId}.json`;
+  const url = (name) => `https://api.github.com/repos/${GHC.repo}/contents/boxes/${name}.json`;
   const guard = (r) => { if (r.status === 401 || r.status === 403) throw new StaleKey(`github ${r.status}`); };
-  async function read(boxId) {
-    const r = await fetch(url(boxId), { headers: H("application/vnd.github.object+json"), cache: "no-store" });
-    if (r.status === 404) return { sha: null, letters: [] };
+  async function read(name) {
+    const r = await fetch(url(name), { headers: H("application/vnd.github.object+json"), cache: "no-store" });
+    if (r.status === 404) return { sha: null, data: null };
     guard(r); if (!r.ok) throw new Error(`read ${r.status}`);
     const j = await r.json();
     let text;
     if (j.content) text = atob(j.content.replace(/\s/g, ""));
     else { // > 1MB: ask for the raw file
-      const raw = await fetch(url(boxId), { headers: H("application/vnd.github.raw+json"), cache: "no-store" });
+      const raw = await fetch(url(name), { headers: H("application/vnd.github.raw+json"), cache: "no-store" });
       guard(raw); if (!raw.ok) throw new Error(`read ${raw.status}`); text = await raw.text();
     }
-    return { sha: j.sha, letters: JSON.parse(text).letters || [] };
+    return { sha: j.sha, data: JSON.parse(text) };
+  }
+  async function write(name, mutate) {
+    for (let i = 0; i < 5; i++) {
+      const { sha, data } = await read(name);
+      const body = { message: "·", content: btoa(JSON.stringify(await mutate(data))) }; // all-ASCII JSON
+      if (sha) body.sha = sha;
+      const r = await fetch(url(name), { method: "PUT", body: JSON.stringify(body),
+        headers: H("application/vnd.github+json", { "Content-Type": "application/json" }) });
+      if (r.ok) return;
+      guard(r);
+      if (r.status === 409 || r.status === 422) { await sleep(500 * (i + 1)); continue; } // someone wrote at the same moment
+      throw new Error(`write ${r.status}`);
+    }
+    throw new Error("busy");
   }
   return {
-    async list(boxId) { return (await read(boxId)).letters; },
+    async list(boxId) { return (await read(boxId)).data?.letters || []; },
     async add(boxId, rec) {
       const id = newId(rec.at);
-      for (let i = 0; i < 5; i++) {
-        const { sha, letters } = await read(boxId);
-        letters.push({ id, ...rec });
-        const body = { message: "·", content: btoa(JSON.stringify({ v: 1, letters })) }; // all-ASCII JSON
-        if (sha) body.sha = sha;
-        const r = await fetch(url(boxId), { method: "PUT", body: JSON.stringify(body),
-          headers: H("application/vnd.github+json", { "Content-Type": "application/json" }) });
-        if (r.ok) return id;
-        guard(r);
-        if (r.status === 409 || r.status === 422) { await sleep(500 * (i + 1)); continue; } // someone wrote at the same moment
-        throw new Error(`write ${r.status}`);
-      }
-      throw new Error("busy");
+      await write(boxId, (d) => ({ v: 1, letters: [...(d?.letters || []), { id, ...rec }] }));
+      return id;
     },
+    async getPet(boxId) { return (await read(`${boxId}-pet`)).data; },
+    async putPet(boxId, mutate) { return write(`${boxId}-pet`, mutate); },
   };
 }
 
@@ -632,6 +729,7 @@ function toast(msg) {
 async function enter(bits, remember) {
   BOX = await openWith(bits);
   if (remember) LS.set("fm:key", b64(bits));
+  PET.connect(BOX);
   await refresh();
   show("inside");
 }
@@ -738,7 +836,7 @@ $("#prevBtn").addEventListener("click", () => current > 0 && openLetter(current 
 $("#nextBtn").addEventListener("click", () => current < LETTERS.length - 1 && openLetter(current + 1));
 
 $("#forgetBtn").addEventListener("click", () => {
-  LS.del("fm:key"); BOX = null; LETTERS = [];
+  LS.del("fm:key"); BOX = null; LETTERS = []; PET.forget();
   show(null); box.classList.remove("has-note");
 });
 
@@ -821,16 +919,126 @@ $("#copyBtn").addEventListener("click", async () => {
   const c = $("#copyBtn"); c.textContent = "✓"; setTimeout(() => (c.textContent = "복사"), 1600);
 });
 
+/* ───────── the alien we raise ─────────
+   shared (sealed) state: { born, love, last, hatched }
+   egg → hatches ~20h after it appears, with a few taps · grows with days and taps
+   sleeps if nobody came for 3+ days · sits on the mailbox when a letter waits */
+PET = (() => {
+  const el = $("#alien");
+  const pupils = [...el.querySelectorAll(".pupil")];
+  const DAY = 864e5, HATCH_AFTER = 20 * 3600e3, SIZE = { "-1": 0.46, 0: 0.55, 1: 0.7, 2: 0.86, 3: 1 };
+  let s = LS.get("fm:pet-cache", null);
+  let conn = null, asleep = false, eggTaps = 0, saveT = 0, lastPointer = 0, onBox = false;
+  const daySpot = ["left", "right", "left", "top"][Math.floor(Date.now() / DAY) % 4];
+
+  const stageOf = (p) => {
+    if (!p || !p.hatched) return -1;
+    const d = (Date.now() - p.born) / DAY + (p.love || 0) / 50;
+    return d < 7 ? 0 : d < 30 ? 1 : d < 100 ? 2 : 3;
+  };
+  const merge = (a, b) => !a ? b : !b ? a : {
+    born: Math.min(a.born, b.born), love: Math.max(a.love || 0, b.love || 0),
+    last: Math.max(a.last || 0, b.last || 0), hatched: !!(a.hatched || b.hatched),
+  };
+
+  function render() {
+    if (!s) { el.hidden = true; return; }
+    const st = stageOf(s);
+    el.hidden = false;
+    el.setAttribute("class", [`st${st}`, st < 0 && "is-egg", st < 0 && Date.now() - s.born >= HATCH_AFTER && "ready", st >= 0 && asleep && "sleep"].filter(Boolean).join(" "));
+    place();
+  }
+  function place() {
+    const mb = LAYOUT; if (!mb || !s) return;
+    const st = stageOf(s);
+    const h = mb.h * 0.42 * SIZE[st], w = h * (100 / 110);
+    const where = st < 0 ? "left" : onBox ? "top" : daySpot;
+    let cx, bottom;
+    if (where === "top") { cx = mb.x; bottom = mb.base - mb.h + mb.h * (30 / 230) + h * 0.055; }
+    else { cx = mb.x + (where === "left" ? -1 : 1) * (mb.w * 0.55 + w * 0.5); bottom = mb.base + h * 0.03; }
+    Object.assign(el.style, { left: `${cx - w / 2}px`, top: `${bottom - h}px`, width: `${w}px`, height: `${h}px` });
+  }
+  function bump(cls) { el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls); setTimeout(() => el.classList.remove(cls), 900); }
+  function hearts(n) {
+    for (let i = 0; i < n; i++) {
+      el.insertAdjacentHTML("beforeend", `<svg class="heart" viewBox="0 0 10 9" style="--dx:${Math.round((Math.random() - 0.5) * 60)}px;animation-delay:${i * 140}ms"><path d="M5 8.6 1.1 4.7A2.4 2.4 0 0 1 5 1.8a2.4 2.4 0 0 1 3.9 2.9Z"/></svg>`);
+      const h = el.lastElementChild; setTimeout(() => h.remove(), 1700 + i * 140);
+    }
+  }
+  function hatch() {
+    el.classList.add("hatching");
+    setTimeout(() => { s.hatched = true; render(); bump("jump"); hearts(4); persist(300); }, 1100);
+  }
+  function tap(e) {
+    e.stopPropagation();
+    if (!s) return;
+    if (stageOf(s) < 0) {
+      bump("wobble");
+      if (Date.now() - s.born >= HATCH_AFTER && ++eggTaps >= 3) hatch();
+      return;
+    }
+    if (asleep) { asleep = false; render(); }
+    bump("jump"); hearts(2 + (Math.random() * 2 | 0));
+    s.love = (s.love || 0) + 1; persist(4000);
+  }
+  function persist(ms) { LS.set("fm:pet-cache", s); clearTimeout(saveT); saveT = setTimeout(save, ms); }
+  async function save() {
+    if (!conn || !s) return;
+    const { store, key, id } = conn, mine = s;
+    try {
+      await store.putPet(id, async (remote) => {
+        const r = remote && remote.ct ? await unseal(key, remote.iv, remote.ct).catch(() => null) : null;
+        const m = merge(r, mine); s = { ...m, love: Math.max(m.love, s.love || 0) }; LS.set("fm:pet-cache", s);
+        return { v: 1, ...(await seal(key, m)) };
+      });
+    } catch { /* it'll remember next time */ }
+  }
+  async function connect(b) {
+    if (conn && conn.id === b.id) return;
+    conn = { store: b.store, key: b.key, id: b.id };
+    let remote = null, ok = true;
+    try { const f = await b.store.getPet(b.id); if (f && f.ct) remote = await unseal(b.key, f.iv, f.ct); }
+    catch { ok = false; }
+    const now = Date.now();
+    s = merge(remote, s) || (ok ? { born: now, love: 0, last: now, hatched: false } : null);
+    if (!s) return;
+    asleep = stageOf(s) >= 0 && now - (s.last || now) > 3 * DAY;
+    s.last = now;
+    render(); persist(1500);
+  }
+  function look(x, y) {
+    const r = el.getBoundingClientRect(); if (!r.width) return;
+    const dx = x - (r.left + r.width / 2), dy = y - (r.top + r.height * 0.6), d = Math.hypot(dx, dy) || 1, m = Math.min(1, d / 160) * 2.8;
+    for (const p of pupils) p.setAttribute("transform", `translate(${(dx / d * m).toFixed(2)} ${(dy / d * m).toFixed(2)})`);
+  }
+  addEventListener("pointermove", (e) => { lastPointer = Date.now(); look(e.clientX, e.clientY); }, { passive: true });
+  addEventListener("pointerdown", (e) => { lastPointer = Date.now(); look(e.clientX, e.clientY); }, { passive: true });
+  setInterval(() => {
+    if (el.hidden || Date.now() - lastPointer < 4000) return;
+    const r = el.getBoundingClientRect();
+    look(r.left + r.width / 2 + (Math.random() - 0.5) * 400, r.top + (Math.random() - 0.4) * 300);
+  }, 3200);
+  el.addEventListener("click", tap);
+  render();
+  return {
+    connect, place,
+    toSlot(on) { if (onBox !== on) { onBox = on; place(); } },
+    forget() { conn = null; s = null; LS.del("fm:pet-cache"); render(); },
+  };
+})();
+
 /* if this device remembers the word, peek: is something tucked in the slot? */
 async function checkSlot() {
   const bits = await tryRemembered();
   if (!bits) { box.classList.remove("has-note"); return; }
   try {
     const b = BOX && hex(BOX.bits) === hex(bits) ? BOX : await openWith(bits);
+    PET.connect(b);
     const raw = await b.store.list(b.id);
     const read = new Set(LS.get(`fm:read:${b.id}`, []));
     const n = raw.filter((r) => !read.has(r.id)).length;
     box.classList.toggle("has-note", n > 0);
+    PET.toSlot(n > 0);
   } catch { /* the forest is quiet */ }
 }
 checkSlot();
