@@ -98,15 +98,15 @@ body.dim .credit,body.dim .caption,body.dim .frame{opacity:0}
 .layer.on{opacity:1;visibility:visible;transition:opacity .9s ease}
 
 /* gate */
-#gate{color:#ece7da;flex-direction:column;text-align:center;padding:24px}
-#gate .kicker{font:500 9.5px/1 var(--mono);letter-spacing:.3em;text-transform:uppercase;opacity:.6;margin-bottom:26px}
-#gate h2{font:400 clamp(19px,3.2vw,24px)/1.7 var(--kr);letter-spacing:.06em;margin:0 0 6px;font-weight:400}
-#gate p.en{font:italic 400 17px/1.4 var(--serif);margin:0 0 38px;opacity:.6}
-#gate form{display:flex;flex-direction:column;align-items:center;gap:22px;width:min(78vw,340px)}
-#word{width:100%;background:transparent;border:0;border-bottom:1px solid rgba(236,231,218,.45);padding:10px 2px;
+.whisper{color:#ece7da;flex-direction:column;text-align:center;padding:24px;overflow:auto}
+.whisper .kicker{font:500 9.5px/1 var(--mono);letter-spacing:.3em;text-transform:uppercase;opacity:.6;margin-bottom:26px}
+.whisper h2{font:400 clamp(19px,3.2vw,24px)/1.7 var(--kr);letter-spacing:.06em;margin:0 0 6px;font-weight:400}
+.whisper p.en{font:italic 400 17px/1.4 var(--serif);margin:0 0 38px;opacity:.6}
+.whisper form{display:flex;flex-direction:column;align-items:center;gap:22px;width:min(78vw,340px)}
+#word,.whisper .wl{width:100%;background:transparent;border:0;border-bottom:1px solid rgba(236,231,218,.45);padding:10px 2px;
   text-align:center;font:400 18px/1.4 var(--kr);letter-spacing:.24em;outline:none;color:#f2ede1;border-radius:0}
-#word:focus{border-bottom-color:#f2ede1}
-#word::placeholder{color:rgba(236,231,218,.35);letter-spacing:.14em;font-size:14px}
+#word:focus,.whisper .wl:focus{border-bottom-color:#f2ede1}
+#word::placeholder,.whisper .wl::placeholder{color:rgba(236,231,218,.35);letter-spacing:.14em;font-size:14px}
 .row{display:flex;align-items:center;justify-content:space-between;width:100%;
   font:400 9.5px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase}
 .check{display:flex;align-items:center;gap:8px;opacity:.65;cursor:pointer;user-select:none}
@@ -114,8 +114,16 @@ body.dim .credit,body.dim .caption,body.dim .frame{opacity:0}
 .check input:checked{background:currentColor;box-shadow:inset 0 0 0 2px #2a2d29}
 .go{font:500 10px/1 var(--mono);letter-spacing:.26em;text-transform:uppercase;padding:10px 0;border-bottom:1px solid currentColor}
 .go:disabled{opacity:.4;cursor:wait}
-#gate .back{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font:400 9.5px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;opacity:.5}
-#gate .err{min-height:20px;font:400 12.5px/1.6 var(--kr);letter-spacing:.06em;opacity:.75}
+.whisper .back{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font:400 9.5px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;opacity:.5}
+.whisper .err{min-height:20px;font:400 12.5px/1.6 var(--kr);letter-spacing:.06em;opacity:.75}
+
+#setup form{gap:16px}
+#setup .wl{font-size:14px;letter-spacing:.1em;padding:8px 2px}
+#setup .note{font:400 12.5px/1.9 var(--kr);letter-spacing:.04em;opacity:.7;max-width:420px;margin:0 0 18px}
+#setupOut{display:flex;flex-direction:column;align-items:center;gap:16px;width:min(86vw,560px)}
+#setupOut[hidden],#setupForm[hidden]{display:none}
+#sOut{width:100%;height:200px;resize:none;background:rgba(236,231,218,.06);border:1px solid rgba(236,231,218,.25);
+  color:#f2ede1;font:400 11px/1.7 var(--mono);padding:12px 14px;outline:none;border-radius:0;word-break:break-all}
 
 /* inside — the album back cover */
 #inside{align-items:stretch;justify-content:stretch;padding:14px}
@@ -300,7 +308,7 @@ body.dim .credit,body.dim .caption,body.dim .frame{opacity:0}
 <p class="caption" id="caption"></p>
 
 <!-- gate -->
-<section class="layer" id="gate" aria-label="우체통 열기">
+<section class="layer whisper" id="gate" aria-label="우체통 열기">
   <div class="kicker">— whisper —</div>
   <h2>우리만 아는 말을 속삭이면<br>우체통이 열린다.</h2>
   <p class="en">say the word only the two of us know.</p>
@@ -375,6 +383,32 @@ body.dim .credit,body.dim .caption,body.dim .frame{opacity:0}
       <button class="send" id="sendBtn" type="submit">접어서 넣기</button>
     </div>
   </form>
+</section>
+
+<!-- setup: seal the GitHub key with the word (open /forest/#setup) -->
+<section class="layer whisper" id="setup" aria-label="열쇠 봉인">
+  <div class="kicker">— setup · 처음 한 번 —</div>
+  <h2>숲의 열쇠를 봉인한다.</h2>
+  <p class="en">seal the key with the word only you two know.</p>
+  <form id="setupForm" autocomplete="off">
+    <p class="note">GitHub 토큰을 둘만 아는 말로 잠가요. 토큰은 이 브라우저 밖으로 나가지 않고, 잠긴 값만 만들어져요.</p>
+    <label class="sr" for="sRepo">저장소</label>
+    <input class="wl" id="sRepo" value="ourliberty/forest-letters" spellcheck="false" autocapitalize="off">
+    <label class="sr" for="sToken">GitHub 토큰</label>
+    <input class="wl" id="sToken" type="password" placeholder="GitHub 토큰 (github_pat_…)" spellcheck="false" autocapitalize="off">
+    <label class="sr" for="sWord">둘만 아는 말</label>
+    <input class="wl" id="sWord" type="password" placeholder="둘만 아는 말 (8자 이상)" autocapitalize="off">
+    <label class="sr" for="sWord2">한 번 더</label>
+    <input class="wl" id="sWord2" type="password" placeholder="한 번 더" autocapitalize="off">
+    <div class="row"><span></span><button class="go" id="sealBtn" type="submit">봉인하기 →</button></div>
+    <div class="err" id="setupErr" role="status"></div>
+  </form>
+  <div id="setupOut" hidden>
+    <p class="note">봉인했다. 아래 내용으로 <b>public/forest/config.js</b>를 통째로 바꾸면 끝.<br>이 값은 공개돼도 괜찮아요 — 둘만 아는 말 없이는 열 수 없으니까.</p>
+    <textarea id="sOut" readonly></textarea>
+    <div class="row"><span id="setupWarn"></span><button class="go" id="copyBtn" type="button">복사 →</button></div>
+  </div>
+  <button class="back" type="button" data-close>← 숲으로</button>
 </section>
 
 <div class="toast" id="toast" role="status"></div>
@@ -594,9 +628,17 @@ async function deriveBits(word) {
   return new Uint8Array(await crypto.subtle.deriveBits(
     { name: "PBKDF2", salt: te.encode("forest-mailbox/v1/ourliberty"), iterations: 310000, hash: "SHA-256" }, base, 512));
 }
+const keyFrom = (bits) => crypto.subtle.importKey("raw", bits.slice(0, 32), "AES-GCM", false, ["encrypt", "decrypt"]);
 async function openWith(bits) {
-  const key = await crypto.subtle.importKey("raw", bits.slice(0, 32), "AES-GCM", false, ["encrypt", "decrypt"]);
-  return { key, id: hex(bits.slice(32, 48)), bits };
+  const key = await keyFrom(bits);
+  let store = localStore();
+  if (REMOTE) {
+    const [iv, ct] = String(GHC.sealed).split(".");
+    let token;
+    try { token = (await unseal(key, iv, ct)).token; } catch { throw new WrongWord(); }
+    store = githubStore(token);
+  }
+  return { key, id: hex(bits.slice(32, 48)), bits, store };
 }
 async function seal(key, obj) {
   const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -609,41 +651,60 @@ async function unseal(key, iv, ct) {
 }
 
 /* ───────── where letters live ───────── */
-const CFG = (window.FOREST_CONFIG && window.FOREST_CONFIG.firebase) || {};
-const REMOTE = !!(CFG.apiKey && CFG.projectId);
-const Store = REMOTE ? {
-  base: `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(CFG.projectId)}/databases/(default)/documents/boxes`,
-  async list(boxId) {
-    const out = []; let token = "";
-    do {
-      const u = `${this.base}/${boxId}/letters?pageSize=300&key=${encodeURIComponent(CFG.apiKey)}${token ? `&pageToken=${encodeURIComponent(token)}` : ""}`;
-      const r = await fetch(u);
-      if (!r.ok) throw new Error(`list ${r.status}`);
-      const j = await r.json();
-      for (const d of j.documents || []) {
-        const fl = d.fields || {};
-        out.push({ id: d.name.split("/").pop(), iv: fl.iv?.stringValue, ct: fl.ct?.stringValue, at: Number(fl.at?.integerValue || 0) });
+const GHC = (window.FOREST_CONFIG && window.FOREST_CONFIG.github) || {};
+const REMOTE = !!(GHC.repo && GHC.sealed);
+class WrongWord extends Error {}
+class StaleKey extends Error {}
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const newId = (at) => `${at.toString(36)}-${hex(crypto.getRandomValues(new Uint8Array(4)))}`;
+
+function localStore() {
+  return {
+    async list(boxId) { return LS.get(`fm:local:${boxId}`, []); },
+    async add(boxId, rec) {
+      const all = LS.get(`fm:local:${boxId}`, []);
+      const id = newId(rec.at); all.push({ id, ...rec }); LS.set(`fm:local:${boxId}`, all); return id;
+    },
+  };
+}
+// one sealed JSON file per box in a private repo: boxes/<boxId>.json
+function githubStore(token) {
+  const H = (accept, extra = {}) => ({ Authorization: `Bearer ${token}`, Accept: accept, "X-GitHub-Api-Version": "2022-11-28", ...extra });
+  const url = (boxId) => `https://api.github.com/repos/${GHC.repo}/contents/boxes/${boxId}.json`;
+  const guard = (r) => { if (r.status === 401 || r.status === 403) throw new StaleKey(`github ${r.status}`); };
+  async function read(boxId) {
+    const r = await fetch(url(boxId), { headers: H("application/vnd.github.object+json"), cache: "no-store" });
+    if (r.status === 404) return { sha: null, letters: [] };
+    guard(r); if (!r.ok) throw new Error(`read ${r.status}`);
+    const j = await r.json();
+    let text;
+    if (j.content) text = atob(j.content.replace(/\s/g, ""));
+    else { // > 1MB: ask for the raw file
+      const raw = await fetch(url(boxId), { headers: H("application/vnd.github.raw+json"), cache: "no-store" });
+      guard(raw); if (!raw.ok) throw new Error(`read ${raw.status}`); text = await raw.text();
+    }
+    return { sha: j.sha, letters: JSON.parse(text).letters || [] };
+  }
+  return {
+    async list(boxId) { return (await read(boxId)).letters; },
+    async add(boxId, rec) {
+      const id = newId(rec.at);
+      for (let i = 0; i < 5; i++) {
+        const { sha, letters } = await read(boxId);
+        letters.push({ id, ...rec });
+        const body = { message: "·", content: btoa(JSON.stringify({ v: 1, letters })) }; // all-ASCII JSON
+        if (sha) body.sha = sha;
+        const r = await fetch(url(boxId), { method: "PUT", body: JSON.stringify(body),
+          headers: H("application/vnd.github+json", { "Content-Type": "application/json" }) });
+        if (r.ok) return id;
+        guard(r);
+        if (r.status === 409 || r.status === 422) { await sleep(500 * (i + 1)); continue; } // someone wrote at the same moment
+        throw new Error(`write ${r.status}`);
       }
-      token = j.nextPageToken || "";
-    } while (token);
-    return out;
-  },
-  async add(boxId, rec) {
-    const r = await fetch(`${this.base}/${boxId}/letters?key=${encodeURIComponent(CFG.apiKey)}`, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fields: { iv: { stringValue: rec.iv }, ct: { stringValue: rec.ct }, at: { integerValue: String(rec.at) } } }),
-    });
-    if (!r.ok) throw new Error(`add ${r.status}`);
-    return (await r.json()).name.split("/").pop();
-  },
-} : {
-  async list(boxId) { return LS.get(`fm:local:${boxId}`, []); },
-  async add(boxId, rec) {
-    const all = LS.get(`fm:local:${boxId}`, []);
-    const id = hex(crypto.getRandomValues(new Uint8Array(8)));
-    all.push({ id, ...rec }); LS.set(`fm:local:${boxId}`, all); return id;
-  },
-};
+      throw new Error("busy");
+    },
+  };
+}
 $("#mode").textContent = REMOTE ? "주인을 알 수 없음" : "LOCAL · 이 기기에만 보관됨";
 
 /* ───────── state ───────── */
@@ -655,7 +716,7 @@ const readKey = () => `fm:read:${BOX.id}`;
 const readSet = () => new Set(LS.get(readKey(), []));
 function markRead(id) { const s = readSet(); s.add(id); LS.set(readKey(), [...s]); }
 
-const layers = { gate: $("#gate"), inside: $("#inside"), reader: $("#reader"), compose: $("#compose") };
+const layers = { setup: $("#setup"), gate: $("#gate"), inside: $("#inside"), reader: $("#reader"), compose: $("#compose") };
 function show(name) {
   for (const [k, el] of Object.entries(layers)) {
     const on = k === name || (k === "inside" && (name === "reader" || name === "compose"));
@@ -680,7 +741,7 @@ async function enter(bits, remember) {
 }
 
 async function refresh() {
-  const raw = await Store.list(BOX.id);
+  const raw = await BOX.store.list(BOX.id);
   const out = [];
   for (const r of raw) {
     if (!r.iv || !r.ct) continue;
@@ -716,9 +777,8 @@ function renderInside() {
   if (!LETTERS.length) {
     const e = document.createElement("div"); e.className = "empty";
     e.innerHTML = "우체통 안은 비어 있다.<br>먼저 한 장 넣어 두면, 다음에 오는 사람이 보게 될 것이다.";
-    const em = document.createElement("em");
-    em.textContent = "— or perhaps it was a different word.";
-    e.append(em); list.append(e); return;
+    if (!REMOTE) { const em = document.createElement("em"); em.textContent = "— or perhaps it was a different word."; e.append(em); }
+    list.append(e); return;
   }
   const lh = document.createElement("div"); lh.className = "lh";
   lh.innerHTML = "<span>No.</span><span>Date</span><span>When</span><span></span>"; list.append(lh);
@@ -761,9 +821,20 @@ async function tryRemembered() {
   if (!saved) return null;
   try { return unb64(saved); } catch { return null; }
 }
+function sayError(err) {
+  if (err instanceof WrongWord) return "그 말이 아닌 것 같다.";
+  if (err instanceof StaleKey) return "열쇠가 낡았다. (토큰 만료 — README 참고)";
+  return "숲이 조용하다. 잠시 후 다시 와 줘.";
+}
 async function knock() {
   const bits = await tryRemembered();
-  if (bits) { try { await enter(bits, true); return; } catch { toast("숲이 조용하다. 잠시 후 다시."); return; } }
+  if (bits) {
+    try { await enter(bits, true); return; }
+    catch (err) {
+      if (!(err instanceof WrongWord)) { toast(sayError(err)); return; }
+      LS.del("fm:key"); // the word changed; ask again
+    }
+  }
   $("#gateErr").textContent = "";
   show("gate");
   setTimeout(() => $("#word").focus(), 500);
@@ -782,12 +853,13 @@ $("#gateForm").addEventListener("submit", async (e) => {
     await enter(bits, $("#remember").checked);
     $("#word").value = "";
   } catch (err) {
-    console.error(err);
-    $("#gateErr").textContent = "숲이 조용하다. 잠시 후 다시 와 줘.";
+    if (!(err instanceof WrongWord)) console.error(err);
+    $("#gateErr").textContent = sayError(err);
   } finally { btn.disabled = false; btn.textContent = "열기 →"; }
 });
 
-document.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => { show(null); checkSlot(); }));
+function leave() { if (location.hash) history.replaceState(null, "", location.pathname); show(null); checkSlot(); }
+document.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", leave));
 document.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", () => { renderInside(); show("inside"); }));
 $("#prevBtn").addEventListener("click", () => current > 0 && openLetter(current - 1));
 $("#nextBtn").addEventListener("click", () => current < LETTERS.length - 1 && openLetter(current + 1));
@@ -817,7 +889,7 @@ $("#composeForm").addEventListener("submit", async (e) => {
   try {
     const at = Date.now();
     const sealed = await seal(BOX.key, { v: 1, t: text, f: from });
-    const id = await Store.add(BOX.id, { ...sealed, at });
+    const id = await BOX.store.add(BOX.id, { ...sealed, at });
     markRead(id);
     $("#composeForm").classList.add("away");
     await new Promise((r) => setTimeout(r, 1150));
@@ -827,19 +899,56 @@ $("#composeForm").addEventListener("submit", async (e) => {
     toast("접어서 넣었다.");
   } catch (err) {
     console.error(err);
-    toast("넣지 못했다. 잠시 후 다시.");
+    toast(err instanceof StaleKey ? sayError(err) : "넣지 못했다. 잠시 후 다시.");
   } finally { btn.disabled = false; }
 });
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     if (layers.reader.classList.contains("on") || layers.compose.classList.contains("on")) { renderInside(); show("inside"); }
-    else if (layers.inside.classList.contains("on") || layers.gate.classList.contains("on")) { show(null); checkSlot(); }
+    else if (document.body.classList.contains("dim")) leave();
   }
   if (layers.reader.classList.contains("on")) {
     if (e.key === "ArrowLeft") $("#prevBtn").click();
     if (e.key === "ArrowRight") $("#nextBtn").click();
   }
+});
+
+/* ───────── setup: seal the GitHub key with the word ───────── */
+function openSetup() { $("#setupOut").hidden = true; $("#setupForm").hidden = false; show("setup"); }
+if (location.hash === "#setup") openSetup();
+addEventListener("hashchange", () => { if (location.hash === "#setup") openSetup(); });
+const normWord = (w) => w.normalize("NFC").trim().replace(/\s+/g, " ").toLowerCase();
+$("#setupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const err = $("#setupErr"); err.textContent = "";
+  const repo = $("#sRepo").value.trim().replace(/^https?:\/\/github\.com\//, "").replace(/\.git$/, "").replace(/\/+$/, "");
+  const token = $("#sToken").value.trim(), w1 = $("#sWord").value, w2 = $("#sWord2").value;
+  if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { err.textContent = "저장소는 아이디/이름 꼴로 적어 줘."; return; }
+  if (!token) { err.textContent = "토큰을 적어 줘."; return; }
+  if ([...normWord(w1)].length < 8) { err.textContent = "말은 8자 이상으로. 짧으면 누군가 맞혀 볼 수 있어."; return; }
+  if (normWord(w1) !== normWord(w2)) { err.textContent = "두 번 적은 말이 다르다."; return; }
+  const btn = $("#sealBtn"); btn.disabled = true; btn.textContent = "확인하는 중…";
+  try {
+    const r = await fetch(`https://api.github.com/repos/${repo}`, { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }, cache: "no-store" });
+    if (r.status === 401) { err.textContent = "토큰이 맞지 않는다."; return; }
+    if (!r.ok) { err.textContent = "저장소를 찾을 수 없다. 이름, 또는 토큰에 이 저장소 권한을 줬는지 확인해 줘."; return; }
+    const info = await r.json();
+    btn.textContent = "봉인하는 중…";
+    const key = await keyFrom(await deriveBits(w1));
+    const sealed = await seal(key, { v: 1, token });
+    $("#sOut").value = `// 숲 속의 우체통 — 설정 (${fmtDate(new Date())} 봉인)\n// 토큰은 둘만 아는 말로 잠겨 있어요. 공개돼도 괜찮아요.\nwindow.FOREST_CONFIG = {\n  github: {\n    repo: "${repo}",\n    sealed: "${sealed.iv}.${sealed.ct}",\n  },\n};\n`;
+    $("#setupWarn").textContent = info.private === false ? "※ 이 저장소는 공개 상태. 비공개를 권해요." : "";
+    $("#sToken").value = $("#sWord").value = $("#sWord2").value = "";
+    $("#setupForm").hidden = true; $("#setupOut").hidden = false;
+  } catch (x) {
+    console.error(x); err.textContent = "GitHub에 닿지 않는다. 잠시 후 다시.";
+  } finally { btn.disabled = false; btn.textContent = "봉인하기 →"; }
+});
+$("#copyBtn").addEventListener("click", async () => {
+  const t = $("#sOut");
+  try { await navigator.clipboard.writeText(t.value); } catch { t.select(); document.execCommand("copy"); }
+  toast("복사했다.");
 });
 
 /* if this device remembers the word, peek: is something tucked in the slot? */
@@ -848,7 +957,7 @@ async function checkSlot() {
   if (!bits) { box.classList.remove("has-note"); return; }
   try {
     const b = BOX && hex(BOX.bits) === hex(bits) ? BOX : await openWith(bits);
-    const raw = await Store.list(b.id);
+    const raw = await b.store.list(b.id);
     const read = new Set(LS.get(`fm:read:${b.id}`, []));
     const n = raw.filter((r) => !read.has(r.id)).length;
     box.classList.toggle("has-note", n > 0);
