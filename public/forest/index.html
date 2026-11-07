@@ -94,7 +94,7 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
 @keyframes zz{0%{opacity:0;transform:translateY(6px)}30%{opacity:.7}100%{opacity:0;transform:translateY(-8px)}}
 #alien.jump .hop{animation:jump .8s cubic-bezier(.3,0,.3,1)}
 @keyframes jump{15%{transform:scale(1.12,.86)}45%{transform:translateY(-26%) scale(.94,1.08)}75%{transform:translateY(0) scale(1.08,.92)}}
-#alien .shell{transform-origin:50% 100%;animation:rest 6s ease-in-out infinite}
+#alien .shell{transform-origin:50% 100%;animation:rest 3.8s ease-in-out infinite}
 @keyframes rest{0%,88%,100%{transform:rotate(0)}91%{transform:rotate(-4deg)}94%{transform:rotate(3deg)}97%{transform:rotate(-1.5deg)}}
 #alien.wobble .shell{animation:wob .7s ease-in-out}
 @keyframes wob{20%{transform:rotate(-9deg)}45%{transform:rotate(8deg)}70%{transform:rotate(-4deg)}}
@@ -316,12 +316,12 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
     <svg class="egg" viewBox="0 0 100 110" aria-hidden="true">
       <defs>
         <radialGradient id="eggSkin" cx=".36" cy=".3" r=".85">
-          <stop offset="0" stop-color="#f6f4ea"/><stop offset=".65" stop-color="#dde3d3"/><stop offset="1" stop-color="#b9c8b8"/>
+          <stop offset="0" stop-color="#f4f6ec"/><stop offset=".6" stop-color="#cfe0cf"/><stop offset="1" stop-color="#9fbcaa"/>
         </radialGradient>
       </defs>
-      <ellipse cx="50" cy="106" rx="20" ry="3" fill="#000" opacity=".22"/>
+      <ellipse cx="50" cy="106" rx="22" ry="3.4" fill="#000" opacity=".3"/>
       <g class="shell">
-        <path d="M50 38C66 38 76 64 76 82C76 97 65 105 50 105C35 105 24 97 24 82C24 64 34 38 50 38Z" fill="url(#eggSkin)"/>
+        <path d="M50 38C66 38 76 64 76 82C76 97 65 105 50 105C35 105 24 97 24 82C24 64 34 38 50 38Z" fill="url(#eggSkin)" stroke="#6f8f7c" stroke-opacity=".45" stroke-width="1.2"/>
         <circle cx="41" cy="58" r="2.2" fill="#93b8a3" opacity=".55"/><circle cx="60" cy="66" r="3" fill="#93b8a3" opacity=".45"/>
         <circle cx="45" cy="92" r="2.6" fill="#93b8a3" opacity=".45"/><circle cx="66" cy="88" r="1.8" fill="#93b8a3" opacity=".55"/>
         <path class="crack" d="M27 76 L35 71 L41 78 L48 70 L55 77 L62 70 L68 75 L73 72" fill="none" stroke="#3b4a40" stroke-width="1.4" stroke-linejoin="round"/>
@@ -936,7 +936,7 @@ $("#copyBtn").addEventListener("click", async () => {
 PET = (() => {
   const el = $("#alien");
   const pupils = [...el.querySelectorAll(".pupil")];
-  const DAY = 864e5, HATCH_AFTER = 20 * 3600e3, SIZE = { "-1": 0.46, 0: 0.55, 1: 0.7, 2: 0.86, 3: 1 };
+  const DAY = 864e5, HATCH_AFTER = 20 * 3600e3, SIZE = { "-1": 0.6, 0: 0.6, 1: 0.7, 2: 0.86, 3: 1 };
   let s = LS.get("fm:pet-cache", null);
   let conn = null, asleep = false, eggTaps = 0, saveT = 0, lastPointer = 0, onBox = false;
   const daySpot = ["left", "right", "left", "top"][Math.floor(Date.now() / DAY) % 4];
