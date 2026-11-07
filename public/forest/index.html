@@ -87,6 +87,7 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
 .whisper form{display:flex;flex-direction:column;align-items:center;gap:22px;width:min(78vw,340px)}
 #word,.whisper .wl{width:100%;background:transparent;border:0;border-bottom:1px solid rgba(236,231,218,.45);padding:10px 2px;
   text-align:center;font:400 18px/1.4 var(--kr);letter-spacing:.24em;outline:none;color:#f2ede1;border-radius:0}
+.secret{-webkit-text-security:disc;text-security:disc}
 #word:focus,.whisper .wl:focus{border-bottom-color:#f2ede1}
 #word::placeholder,.whisper .wl::placeholder{color:rgba(236,231,218,.35);letter-spacing:.14em;font-size:14px}
 .go{font:500 10px/1 var(--mono);letter-spacing:.26em;text-transform:uppercase;padding:10px 0;border-bottom:1px solid currentColor}
@@ -274,7 +275,7 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
 <section class="layer whisper" id="gate" aria-label="우체통 열기">
   <form id="gateForm" class="line" autocomplete="off">
     <label class="sr" for="word">둘만 아는 말</label>
-    <input id="word" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+    <input id="word" class="secret" type="text" lang="ko" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required>
     <button class="go" id="goBtn" type="submit" aria-label="열기">→</button>
   </form>
   <div class="err" id="gateErr" role="status"></div>
@@ -337,9 +338,9 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
     <label class="sr" for="sToken">GitHub 토큰</label>
     <input class="wl" id="sToken" type="password" placeholder="토큰" spellcheck="false" autocapitalize="off">
     <label class="sr" for="sWord">둘만 아는 말</label>
-    <input class="wl" id="sWord" type="password" placeholder="말" autocapitalize="off">
+    <input class="wl secret" id="sWord" type="text" lang="ko" placeholder="말" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
     <label class="sr" for="sWord2">한 번 더</label>
-    <input class="wl" id="sWord2" type="password" placeholder="말 · 한 번 더" autocapitalize="off">
+    <input class="wl secret" id="sWord2" type="text" lang="ko" placeholder="말 · 한 번 더" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
     <div class="srow"><span></span><button class="go" id="sealBtn" type="submit">봉인 →</button></div>
     <div class="err" id="setupErr" role="status"></div>
   </form>
@@ -712,6 +713,7 @@ async function knock() {
 box.addEventListener("click", knock);
 box.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); knock(); } });
 
+$("#word").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.isComposing || e.keyCode === 229)) e.preventDefault(); });
 $("#gateForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const word = $("#word").value;
