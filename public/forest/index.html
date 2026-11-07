@@ -930,24 +930,29 @@ $("#copyBtn").addEventListener("click", async () => {
 
 /* ───────── the alien we raise ─────────
    shared (sealed) state: { born, love, last, hatched }
-   egg → hatches once the two of you have tapped it enough · grows with days and taps
+   egg → hatches once the two of you have tapped it enough
+   then grows a little every day from its hatching day (pats add a little) · 2nd antenna at 30 days, 3rd eye at 100
    sleeps if nobody came for 3+ days · sits on the mailbox when a letter waits */
 PET = (() => {
   const el = $("#alien");
   const pupils = [...el.querySelectorAll(".pupil")];
-  const DAY = 864e5, HATCH_TAPS = 20, SIZE = { "-1": 0.6, 0: 0.6, 1: 0.7, 2: 0.86, 3: 1 };
+  const DAY = 864e5, HATCH_TAPS = 20;
   let s = LS.get("fm:pet-cache", null);
   let conn = null, asleep = false, saveT = 0, lastPointer = 0, onBox = false;
   const daySpot = ["left", "right", "left", "top"][Math.floor(Date.now() / DAY) % 4];
 
+  const ageOf = (p) => Math.max(0, (Date.now() - (p.hatchedAt || p.born)) / DAY + (p.love || 0) / 50);
+  // 0.6 at hatching, easing toward full size: ~0.66 at a week, ~0.8 at a month, ~0.96 at 100 days
+  const sizeOf = (p) => !p || !p.hatched ? 0.6 : 0.6 + 0.4 * (1 - Math.exp(-ageOf(p) / 45));
   const stageOf = (p) => {
     if (!p || !p.hatched) return -1;
-    const d = (Date.now() - p.born) / DAY + (p.love || 0) / 50;
+    const d = ageOf(p);
     return d < 7 ? 0 : d < 30 ? 1 : d < 100 ? 2 : 3;
   };
   const merge = (a, b) => !a ? b : !b ? a : {
     born: Math.min(a.born, b.born), love: Math.max(a.love || 0, b.love || 0),
     last: Math.max(a.last || 0, b.last || 0), hatched: !!(a.hatched || b.hatched), taps: Math.max(a.taps || 0, b.taps || 0),
+    hatchedAt: a.hatchedAt && b.hatchedAt ? Math.min(a.hatchedAt, b.hatchedAt) : a.hatchedAt || b.hatchedAt || undefined,
   };
 
   function render() {
@@ -961,7 +966,7 @@ PET = (() => {
   function place() {
     const mb = LAYOUT; if (!mb || !s) return;
     const st = stageOf(s);
-    const h = mb.h * 0.42 * SIZE[st], w = h * (100 / 110);
+    const h = mb.h * 0.42 * sizeOf(s), w = h * (100 / 110);
     const where = st < 0 ? "left" : onBox ? "top" : daySpot;
     let cx, bottom;
     if (where === "top") { cx = mb.x; bottom = mb.base - mb.h + mb.h * (30 / 230) + h * 0.055; }
@@ -977,7 +982,7 @@ PET = (() => {
   }
   function hatch() {
     el.classList.add("hatching");
-    setTimeout(() => { s.hatched = true; render(); bump("jump"); hearts(4); persist(300); }, 1100);
+    setTimeout(() => { s.hatched = true; s.hatchedAt = s.hatchedAt || Date.now(); render(); bump("jump"); hearts(4); persist(300); }, 1100);
   }
   function tap(e) {
     e.stopPropagation();
@@ -1000,7 +1005,7 @@ PET = (() => {
     try {
       await store.putPet(id, async (remote) => {
         const r = remote && remote.ct ? await unseal(key, remote.iv, remote.ct).catch(() => null) : null;
-        const m = merge(r, mine); s = { ...m, love: Math.max(m.love, s.love || 0), taps: Math.max(m.taps || 0, s.taps || 0), hatched: m.hatched || s.hatched }; LS.set("fm:pet-cache", s);
+        const m = merge(r, mine); s = { ...m, love: Math.max(m.love, s.love || 0), taps: Math.max(m.taps || 0, s.taps || 0), hatched: m.hatched || s.hatched, hatchedAt: m.hatchedAt || s.hatchedAt }; LS.set("fm:pet-cache", s);
         return { v: 1, ...(await seal(key, m)) };
       });
     } catch { /* it'll remember next time */ }
