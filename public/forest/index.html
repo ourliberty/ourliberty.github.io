@@ -121,7 +121,9 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
 .frame{position:fixed;inset:14px;border:1px solid var(--line);pointer-events:none;z-index:20;transition:opacity 1s}
 .credit{position:fixed;z-index:21;font:400 9.5px/1.6 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--fg);
   transition:opacity 1s, color 1s;text-shadow:0 0 10px var(--sky2),0 0 3px var(--sky2)}
+.c-tl{top:28px;left:30px}
 .c-tr{top:28px;right:30px;text-align:right}
+#days.mark{color:#d9826b}
 
 /* ───────── overlays ───────── */
 .layer{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
@@ -238,7 +240,7 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
 @media (max-width:760px){
-  .c-tr{top:26px;right:26px}
+  .c-tl{top:26px;left:26px}.c-tr{top:26px;right:26px}
   #inside{padding:8px}
   .sleeve{grid-template-columns:1fr;grid-template-rows:auto auto 1fr}
   .s-head{padding:15px 18px 12px}
@@ -357,6 +359,7 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
 </div>
 
 <div class="frame"></div>
+<div class="credit c-tl"><span id="days"></span></div>
 <div class="credit c-tr"><span id="clock"></span></div>
 
 <!-- gate -->
@@ -471,10 +474,17 @@ const fmtTime = (d) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 
 const now = new Date();
 html.dataset.time = sky(now.getHours());
+const SINCE = [2025, 12, 19]; // the day we began — counted as day 1
 function tick() {
   const d = new Date();
   const h = d.getHours();
   $("#clock").textContent = `${pad(h)}:${pad(d.getMinutes())}`;
+  const today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const n = Math.round((today - new Date(SINCE[0], SINCE[1] - 1, SINCE[2])) / 864e5) + 1;
+  const el = $("#days");
+  el.textContent = `${n}일`;
+  // every hundredth day, and every December 19th, it blushes
+  el.classList.toggle("mark", n % 100 === 0 || (d.getMonth() + 1 === SINCE[1] && d.getDate() === SINCE[2] && n > 1));
 }
 tick(); setInterval(tick, 15000);
 
