@@ -482,7 +482,7 @@ function tick() {
   const today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
   const n = Math.round((today - new Date(SINCE[0], SINCE[1] - 1, SINCE[2])) / 864e5) + 1;
   const el = $("#days");
-  el.textContent = `${n}일`;
+  el.textContent = String(n);
   // every hundredth day, and every December 19th, it blushes
   el.classList.toggle("mark", n % 100 === 0 || (d.getMonth() + 1 === SINCE[1] && d.getDate() === SINCE[2] && n > 1));
 }
