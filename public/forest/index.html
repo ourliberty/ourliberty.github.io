@@ -109,7 +109,7 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
 #gate .err{margin-top:18px;font:400 10px/1 var(--mono);letter-spacing:.2em}
 .shake{animation:shake .45s cubic-bezier(.36,.07,.19,.97)}
 @keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
-.s-head .acts{display:flex;gap:22px}
+.s-head .acts{display:flex;gap:22px;margin-left:auto}
 .s-head .acts button{font:400 11px/1 var(--kr);letter-spacing:.14em;color:var(--ink-dim)}
 .s-head .acts button[data-close]{font:400 13px/1 var(--mono);color:var(--ink)}
 #setup .note{font:400 9.5px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;opacity:.5;margin:0}
@@ -285,7 +285,6 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
 <section class="layer" id="inside" aria-label="쌓인 쪽지">
   <div class="sleeve">
     <header class="s-head">
-      <span class="t">숲 속의 우체통</span>
       <span class="acts"><button type="button" id="forgetBtn">잊기</button><button type="button" data-close aria-label="닫기">✕</button></span>
     </header>
     <aside class="s-side">
