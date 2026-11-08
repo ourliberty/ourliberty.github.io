@@ -3,7 +3,6 @@ title: 'Qu’est-ce que l’acte de création?'
 excerpt: ''
 date: '2026-11-08'
 category: review
-keywords: ['들뢰즈', '영화', '리뷰']
 ---
 
 DELEUZE\
