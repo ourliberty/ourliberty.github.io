@@ -114,6 +114,18 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
   box-shadow:0 6px 18px rgba(0,0,0,.2);opacity:0;transform:translate(-50%,calc(-100% + 5px));transition:opacity .5s,transform .5s}
 #bubble::after{content:"";position:absolute;left:var(--tail,50%);top:100%;margin-left:-4px;border:4px solid transparent;border-top-color:var(--paper)}
 #bubble.on{opacity:1;transform:translate(-50%,-100%)}
+#bubble .t{display:block}
+#bubble .opts{display:none}
+#bubble.ask{pointer-events:auto;text-align:center;padding:10px 10px 9px}
+#bubble.ask .opts{display:flex;gap:6px;margin-top:10px}
+#bubble .opts button{font:400 11.5px/1 var(--kr);letter-spacing:.06em;padding:8px 10px;background:var(--ink);color:var(--paper);white-space:nowrap;transition:background .25s}
+#bubble .opts button:hover{background:var(--stamp)}
+/* leaving */
+#alien.walk,#alien.rise{z-index:9}
+#alien.walk .hop{animation:waddle .55s ease-in-out infinite}
+@keyframes waddle{0%,100%{transform:rotate(-5deg)}50%{transform:translateY(-7%) rotate(5deg)}}
+#alien.rise .being{filter:drop-shadow(0 0 14px rgba(225,255,238,.95)) brightness(1.15)}
+#alien.rise .hop{animation:none}
 /* held in your hand */
 #alien.held{z-index:9;cursor:grabbing}
 #alien.held .hop{animation:none;transform:scale(.93,1.09)}
@@ -372,7 +384,7 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
   <div class="peek-tree" id="pt1" aria-hidden="true"></div>
   <div class="fog f2"></div>
   <canvas id="front"></canvas>
-  <div id="bubble" aria-live="polite"></div>
+  <div id="bubble" aria-live="polite"><span class="t"></span><span class="opts"><button type="button" data-c="earth">지구에 남기</button><button type="button" data-c="space">유학 보내기</button></span></div>
 </div>
 
 <div class="frame"></div>
@@ -515,6 +527,13 @@ const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
 const rgba = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 
 var LAYOUT = null, PET = null, PEEK = []; // mailbox geometry, and the one who lives beside it
+var MEMORIES = [], MEMPOS = {};           // the ones who grew up and left, and where their keepsakes are
+function memPos(gen, choice, W, H) {
+  const r = mulberry(gen * 7919 + (choice === "space" ? 17 : 29));
+  if (choice === "space") return { x: W * (0.1 + 0.8 * r()), y: H * (0.1 + 0.18 * r()) };
+  const side = r() < 0.5 ? -1 : 1;
+  return { x: W * 0.5 + side * W * (0.12 + 0.22 * r()), y: H * (0.87 + 0.09 * r()) };
+}
 const back = $("#back"), front = $("#front"), box = $("#mailbox");
 function layoutBox(W, H) {
   const h = Math.max(120, Math.min(240, H * 0.24));
@@ -599,6 +618,20 @@ function drawForest() {
   g.addColorStop(0, rgba(mix(C.fog, C.ground, 0.4), 0)); g.addColorStop(0.18, rgba(mix(C.fog, C.ground, 0.55)));
   g.addColorStop(1, rgba(mix(C.ground, C.tree, 0.45)));
   b.fillStyle = g; b.fillRect(0, H * 0.74, W, H * 0.26);
+  // stars: the ones studying on other planets
+  MEMPOS = {};
+  const dark = html.dataset.time === "night" || html.dataset.time === "dusk";
+  const sc = dark ? [255, 248, 228] : [232, 160, 132];
+  for (const m of MEMORIES) {
+    const pt = memPos(m.gen, m.choice, W, H); MEMPOS[m.gen] = pt;
+    if (m.choice !== "space") continue;
+    const gr = b.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, 11);
+    gr.addColorStop(0, rgba(sc, 0.6)); gr.addColorStop(1, rgba(sc, 0));
+    b.fillStyle = gr; b.fillRect(pt.x - 11, pt.y - 11, 22, 22);
+    b.strokeStyle = rgba(sc, 0.9); b.lineWidth = 0.8; b.beginPath();
+    b.moveTo(pt.x - 5.5, pt.y); b.lineTo(pt.x + 5.5, pt.y); b.moveTo(pt.x, pt.y - 5.5); b.lineTo(pt.x, pt.y + 5.5); b.stroke();
+    b.fillStyle = rgba(sc, 1); b.beginPath(); b.arc(pt.x, pt.y, 1.6, 0, 7); b.fill();
+  }
   // a worn path to the box
   b.save(); b.globalAlpha = 0.18; b.fillStyle = rgba(C.fog);
   b.beginPath(); b.moveTo(mb.x - mb.w * 0.6, mb.base);
@@ -637,6 +670,18 @@ function drawForest() {
   g = f.createLinearGradient(0, H * 0.82, 0, H);
   g.addColorStop(0, rgba(C.fog, 0)); g.addColorStop(1, rgba(C.fog, 0.22));
   f.fillStyle = g; f.fillRect(0, H * 0.82, W, H * 0.18);
+  // flowers: the ones who stayed on earth, among people
+  const PETAL = ["#f4ede0", "#f2c4b4", "#e6e0f0", "#f3e2a6"];
+  for (const m of MEMORIES) {
+    if (m.choice !== "earth") continue;
+    const pt = MEMPOS[m.gen], k = Math.max(0.8, scale) * 1.1;
+    f.strokeStyle = rgba(mix(C.tree, C.ground, 0.3)); f.lineWidth = 1.2 * k; f.lineCap = "round";
+    f.beginPath(); f.moveTo(pt.x, pt.y); f.quadraticCurveTo(pt.x - 3 * k, pt.y - 8 * k, pt.x, pt.y - 17 * k); f.stroke();
+    f.fillStyle = PETAL[(m.gen - 1) % PETAL.length];
+    for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2; f.beginPath(); f.arc(pt.x + Math.cos(a) * 3.2 * k, pt.y - 17 * k + Math.sin(a) * 3.2 * k, 2.6 * k, 0, 7); f.fill(); }
+    f.fillStyle = "#d9a441"; f.beginPath(); f.arc(pt.x, pt.y - 17 * k, 1.6 * k, 0, 7); f.fill();
+    MEMPOS[m.gen] = { x: pt.x, y: pt.y - 22 * k };
+  }
 }
 let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(drawForest, 120); });
 drawForest();
@@ -961,11 +1006,15 @@ $("#copyBtn").addEventListener("click", async () => {
    then grows a little every day from its hatching day (pats add a little) · 2nd antenna at 30 days, 3rd eye at 100
    sleeps if nobody came for 3+ days · sits on the mailbox when a letter waits */
 PET = (() => {
-  const el = $("#alien");
+  const el = $("#alien"), bubble = $("#bubble");
   const pupils = [...el.querySelectorAll(".pupil")];
-  const DAY = 864e5, HATCH_TAPS = 20;
+  const DAY = 864e5, HATCH_TAPS = 20, ADULT_AGE = 100, EMPTY_DAYS = 7;
+  const NAMES = ["풀숲이"]; // by generation — a new child's name goes here once it has one
+  const nameOf = (g) => NAMES[g - 1] || "";
+  const genOf = (p) => (p && p.gen) || 1;
   let s = LS.get("fm:pet-cache", null);
-  let conn = null, asleep = false, saveT = 0, lastPointer = 0, onBox = false;
+  let conn = null, asleep = false, saveT = 0, lastPointer = 0, onBox = false, leaving = false;
+
   // where it might be: beside the post, on the mailbox, right under it, out in the grass, or peeking from behind a tree
   const SPOTS = ["left", "right", "top", "under", "grass", "grass", "peek", "peek"];
   function pickSpot(prev) {
@@ -987,24 +1036,39 @@ PET = (() => {
   }
   let spot = pickSpot();
 
+  // growth: days since hatching + pats/50 + 3 days per letter left since hatching
   let letterAts = LS.get("fm:letters-at", []);
   const lettersSince = (p) => letterAts.filter((t) => t >= (p.hatchedAt || p.born)).length;
   const ageOf = (p) => Math.max(0, (Date.now() - (p.hatchedAt || p.born)) / DAY + (p.love || 0) / 50 + 3 * lettersSince(p));
   // 0.6 at hatching, easing toward full size: ~0.66 at a week, ~0.8 at a month, ~0.96 at 100 days
   const sizeOf = (p) => !p || !p.hatched ? 0.6 : 0.6 + 0.4 * (1 - Math.exp(-ageOf(p) / 45));
+  const absent = (p) => !p || Date.now() < p.born; // the quiet days between one child and the next
   const stageOf = (p) => {
-    if (!p || !p.hatched) return -1;
+    if (absent(p)) return -2;
+    if (!p.hatched) return -1;
     const d = ageOf(p);
-    return d < 7 ? 0 : d < 30 ? 1 : d < 100 ? 2 : 3;
+    return d < 7 ? 0 : d < 30 ? 1 : d < ADULT_AGE ? 2 : 3;
   };
-  const merge = (a, b) => !a ? b : !b ? a : {
-    born: Math.min(a.born, b.born), love: Math.max(a.love || 0, b.love || 0),
-    last: Math.max(a.last || 0, b.last || 0), hatched: !!(a.hatched || b.hatched), taps: Math.max(a.taps || 0, b.taps || 0),
-    hatchedAt: a.hatchedAt && b.hatchedAt ? Math.min(a.hatchedAt, b.hatchedAt) : a.hatchedAt || b.hatchedAt || undefined,
+  const grownUp = () => s && s.hatched && !absent(s) && !leaving && ageOf(s) >= ADULT_AGE;
+  const merge = (a, b) => {
+    if (!a) return b; if (!b) return a;
+    const past = ((a.past || []).length >= (b.past || []).length ? a.past : b.past) || [];
+    if (genOf(a) !== genOf(b)) return { ...(genOf(a) > genOf(b) ? a : b), past }; // a newer child wins
+    return {
+      gen: genOf(a), past,
+      born: Math.min(a.born, b.born), love: Math.max(a.love || 0, b.love || 0),
+      last: Math.max(a.last || 0, b.last || 0), hatched: !!(a.hatched || b.hatched), taps: Math.max(a.taps || 0, b.taps || 0),
+      hatchedAt: a.hatchedAt && b.hatchedAt ? Math.min(a.hatchedAt, b.hatchedAt) : a.hatchedAt || b.hatchedAt || undefined,
+    };
   };
 
+  function syncMemories() {
+    const past = (s && s.past) || [];
+    if (past.length !== MEMORIES.length) { MEMORIES = past; drawForest(); }
+  }
   function render() {
-    if (!s) { el.hidden = true; return; }
+    syncMemories();
+    if (!s || absent(s)) { el.hidden = true; return; }
     const st = stageOf(s);
     el.hidden = false;
     const peeking = st >= 0 && !onBox && spot && spot.peek != null;
@@ -1013,7 +1077,7 @@ PET = (() => {
     place();
   }
   function place() {
-    const mb = LAYOUT; if (!mb || !s) return;
+    const mb = LAYOUT; if (!mb || !s || leaving) return;
     const st = stageOf(s);
     let h = mb.h * 0.42 * sizeOf(s), w = h * (100 / 110);
     const where = st < 0 ? "left" : onBox ? "top" : spot;
@@ -1042,30 +1106,48 @@ PET = (() => {
       const h = el.lastElementChild; setTimeout(() => h.remove(), 1700 + i * 140);
     }
   }
-  let queue = [], speaking = false;
-  function say(...lines) { queue.push(...lines); flush(); }
+
+  /* ── speaking: plain, short, spoken words. an item is a line, a question (ask), or a keepsake's line (at) ── */
+  let queue = [], speaking = false, endT = 0;
+  const say = (...items) => { queue.push(...items.map((x) => typeof x === "string" ? { text: x } : x)); flush(); };
+  function canSpeak(it) {
+    if (speaking || document.body.classList.contains("dim")) return false;
+    return it.at ? true : !!(s && s.hatched && !el.hidden && !asleep);
+  }
   function flush() {
-    if (speaking || !queue.length || !s || !s.hatched || el.hidden || asleep || document.body.classList.contains("dim")) return;
-    speaking = true;
-    const b = $("#bubble"); b.textContent = queue.shift(); bump("jump");
+    if (!queue.length || !canSpeak(queue[0])) return;
+    const it = queue.shift(); speaking = true;
+    bubble.classList.toggle("ask", !!it.ask); resetChoice();
+    bubble.querySelector(".t").textContent = it.text;
+    if (!it.at) bump("jump");
     const follow = () => {
       if (!speaking) return;
-      const r = el.getBoundingClientRect(), bw = b.offsetWidth, W = innerWidth;
-      const ax = r.left + r.width / 2, x = Math.max(bw / 2 + 10, Math.min(W - bw / 2 - 10, ax));
-      b.style.left = `${x}px`; b.style.top = `${r.top + r.height * 0.06 - 8}px`;
-      b.style.setProperty("--tail", `${Math.max(10, Math.min(bw - 10, bw / 2 + ax - x))}px`);
+      let ax, ay;
+      if (it.at) { ax = it.at.x; ay = it.at.y - 10; }
+      else { const r = el.getBoundingClientRect(); ax = r.left + r.width / 2; ay = r.top + r.height * 0.06 - 8; }
+      const bw = bubble.offsetWidth, x = Math.max(bw / 2 + 10, Math.min(innerWidth - bw / 2 - 10, ax));
+      bubble.style.left = `${x}px`; bubble.style.top = `${Math.max(bubble.offsetHeight + 12, ay)}px`;
+      bubble.style.setProperty("--tail", `${Math.max(10, Math.min(bw - 10, bw / 2 + ax - x))}px`);
       requestAnimationFrame(follow);
     };
     follow();
-    requestAnimationFrame(() => requestAnimationFrame(() => b.classList.add("on")));
-    setTimeout(() => { b.classList.remove("on"); setTimeout(() => { speaking = false; setTimeout(flush, 400); }, 550); }, 3800);
+    requestAnimationFrame(() => requestAnimationFrame(() => bubble.classList.add("on")));
+    endT = setTimeout(endSpeech, it.ask ? 25000 : 3800);
+  }
+  function endSpeech() {
+    clearTimeout(endT); bubble.classList.remove("on");
+    setTimeout(() => { speaking = false; bubble.classList.remove("ask"); setTimeout(flush, 400); }, 550);
   }
   function greet() {
-    if (!s || !s.hatched || LS.get("fm:pet-intro", false)) return;
-    LS.set("fm:pet-intro", true);
-    say("나 풀숲이.", "쪽지가 쌓이면 나도 커.");
+    if (!s || !s.hatched || absent(s)) return;
+    const g = genOf(s), done = LS.get("fm:pet-intro-gen", LS.get("fm:pet-intro", false) ? 1 : 0);
+    if (done >= g) return;
+    LS.set("fm:pet-intro-gen", g);
+    const n = nameOf(g);
+    say(n ? `나 ${n}.` : "안녕. 나 새로 왔어.", "쪽지가 쌓이면 나도 커.");
   }
-  // now and then, a word when you pet it, pick it up, or set it on the mailbox — spoken, plain, short
+  const introduced = () => LS.get("fm:pet-intro-gen", LS.get("fm:pet-intro", false) ? 1 : 0) >= genOf(s);
+  // now and then, a word when you pet it, pick it up, or set it on the mailbox
   const CHAT = {
     pet: ["헤헤.", "좋아.", "간지러워.", "거기 좋아.", "또 해줘.", "보고 싶었어."],
     wake: ["음… 왔어?", "잘 잤다.", "기다렸어."],
@@ -1079,15 +1161,74 @@ PET = (() => {
     lastLine = pool[Math.random() * pool.length | 0]; lastChat = Date.now();
     say(lastLine);
   }
-  const GROW = ["쪽지 고마워. 한 뼘 컸어.", "조금 컸어.", "나 또 컸어."]; // always spoken, plain and short
+  const GROW = ["쪽지 고마워. 한 뼘 컸어.", "조금 컸어.", "나 또 컸어."];
+
+  /* ── grown up: stay on earth, or go study on another planet ── */
+  const FAREWELL = {
+    earth: ["사람들 사이에서 잘 살아볼게.", "가끔 보러 올게."],
+    space: ["다른 별에서 공부하고 올게.", "잘 지내."],
+  };
+  let lastOffer = 0;
+  function offer() {
+    if (!grownUp() || Date.now() - lastOffer < 30000 || queue.some((q) => q.ask) || (speaking && bubble.classList.contains("ask"))) return;
+    lastOffer = Date.now();
+    if (LS.get("fm:pet-adult-gen", 0) < genOf(s)) { LS.set("fm:pet-adult-gen", genOf(s)); say("나 이제 다 컸어."); }
+    say({ text: "어떻게 할까?", ask: true });
+  }
+  let pendingChoice = null, pendingT = 0;
+  const buttons = [...bubble.querySelectorAll(".opts button")];
+  buttons.forEach((btn) => (btn.dataset.label = btn.textContent));
+  function resetChoice() { pendingChoice = null; clearTimeout(pendingT); buttons.forEach((btn) => (btn.textContent = btn.dataset.label)); }
+  buttons.forEach((btn) => btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const c = btn.dataset.c;
+    if (pendingChoice !== c) { resetChoice(); pendingChoice = c; btn.textContent = "정말?"; pendingT = setTimeout(resetChoice, 4000); return; }
+    resetChoice(); endSpeech(); choose(c);
+  }));
+  function choose(c) {
+    if (!grownUp()) return;
+    const g = genOf(s), now = Date.now();
+    const entry = { gen: g, name: nameOf(g), born: s.born, hatchedAt: s.hatchedAt, leftAt: now, choice: c };
+    const next = { gen: g + 1, born: now + EMPTY_DAYS * DAY, love: 0, last: now, hatched: false, taps: 0, past: [...(s.past || []), entry] };
+    LS.set("fm:pet-cache", next); LS.set("fm:pet-seen-past", next.past.length); // remember the decision even if the page closes now
+    say(...FAREWELL[c]);
+    leaving = true; onBox = false;
+    setTimeout(() => depart(c, g, () => { s = next; leaving = false; render(); persist(100); }), FAREWELL[c].length * 4750 + 600);
+  }
+  function depart(c, g, done) {
+    el.classList.remove("peek", "sleep");
+    const r = el.getBoundingClientRect();
+    if (c === "earth") { // down the path, toward you, out into the world of people
+      el.classList.add("walk");
+      const w = r.width * 2.4, h = r.height * 2.4;
+      el.style.transition = "left 4.6s ease-in, top 4.6s cubic-bezier(.5,0,.9,.6), width 4.6s ease-in, height 4.6s ease-in";
+      Object.assign(el.style, { left: `${innerWidth * 0.5 - w / 2}px`, top: `${innerHeight + 24}px`, width: `${w}px`, height: `${h}px` });
+      setTimeout(() => { el.classList.remove("walk"); el.style.transition = ""; done(); }, 4800);
+    } else { // up into the sky, to become a small star
+      el.classList.add("rise");
+      const pt = memPos(g, "space", innerWidth, innerHeight);
+      el.style.transition = "left 5.6s cubic-bezier(.4,0,.6,1), top 5.6s cubic-bezier(.5,0,.5,1), width 5.6s ease-in, height 5.6s ease-in, opacity 1.2s ease 4.6s";
+      Object.assign(el.style, { left: `${pt.x - 5}px`, top: `${pt.y - 6}px`, width: "10px", height: "11px", opacity: "0" });
+      setTimeout(() => { el.classList.remove("rise"); el.style.transition = ""; el.style.opacity = ""; done(); }, 6000);
+    }
+  }
+  // the other one wasn't here to say goodbye: the newest keepsake says its last words, once
+  function recap() {
+    const past = (s && s.past) || [];
+    const seen = LS.get("fm:pet-seen-past", 0);
+    if (past.length <= seen) return;
+    LS.set("fm:pet-seen-past", past.length);
+    const e = past[past.length - 1], at = MEMPOS[e.gen];
+    if (at) say(...FAREWELL[e.choice].map((text) => ({ text, at })));
+  }
+
   function hatch() {
     el.classList.add("hatching");
     setTimeout(() => { s.hatched = true; s.hatchedAt = s.hatchedAt || Date.now(); render(); bump("jump"); hearts(4); persist(300); setTimeout(greet, 900); }, 1100);
   }
   function tap(e) {
     e.stopPropagation();
-    if (justDragged) return;
-    if (!s) return;
+    if (justDragged || !s || leaving || absent(s)) return;
     if (stageOf(s) < 0) {
       bump("wobble");
       s.taps = (s.taps || 0) + 1;
@@ -1098,17 +1239,20 @@ PET = (() => {
     const woke = asleep;
     if (asleep) { asleep = false; render(); setTimeout(flush, 900); }
     bump("jump"); hearts(2 + (Math.random() * 2 | 0));
-    woke ? chatter("wake", 0.8) : chatter("pet", 0.2);
     s.love = (s.love || 0) + 1; persist(4000);
+    if (grownUp()) offer();
+    else woke ? chatter("wake", 0.8) : chatter("pet", 0.2);
   }
-  function persist(ms) { LS.set("fm:pet-cache", s); clearTimeout(saveT); saveT = setTimeout(save, ms); }
+  function persist(ms) { if (leaving) return; LS.set("fm:pet-cache", s); clearTimeout(saveT); saveT = setTimeout(save, ms); }
   async function save() {
-    if (!conn || !s) return;
+    if (!conn || !s || leaving) return;
     const { store, key, id } = conn, mine = s;
     try {
       await store.putPet(id, async (remote) => {
         const r = remote && remote.ct ? await unseal(key, remote.iv, remote.ct).catch(() => null) : null;
-        const m = merge(r, mine); s = { ...m, love: Math.max(m.love, s.love || 0), taps: Math.max(m.taps || 0, s.taps || 0), hatched: m.hatched || s.hatched, hatchedAt: m.hatchedAt || s.hatchedAt }; LS.set("fm:pet-cache", s);
+        const m = merge(r, mine);
+        s = genOf(m) !== genOf(s) ? m : { ...m, love: Math.max(m.love || 0, s.love || 0), taps: Math.max(m.taps || 0, s.taps || 0), hatched: m.hatched || s.hatched, hatchedAt: m.hatchedAt || s.hatchedAt };
+        LS.set("fm:pet-cache", s);
         return { v: 1, ...(await seal(key, m)) };
       });
     } catch { /* it'll remember next time */ }
@@ -1120,12 +1264,13 @@ PET = (() => {
     try { const f = await b.store.getPet(b.id); if (f && f.ct) remote = await unseal(b.key, f.iv, f.ct); }
     catch { ok = false; }
     const now = Date.now();
-    s = merge(remote, s) || (ok ? { born: now, love: 0, last: now, hatched: false } : null);
+    s = merge(remote, s) || (ok ? { gen: 1, born: now, love: 0, last: now, hatched: false, past: [] } : null);
     if (!s) return;
     asleep = stageOf(s) >= 0 && now - (s.last || now) > 3 * DAY;
     s.last = now;
-    render(); persist(1500); greet();
+    render(); persist(1500); recap(); greet(); offer();
   }
+
   function look(x, y) {
     const r = el.getBoundingClientRect(); if (!r.width) return;
     const dx = x - (r.left + r.width / 2), dy = y - (r.top + r.height * 0.6), d = Math.hypot(dx, dy) || 1, m = Math.min(1, d / 160) * 2.8;
@@ -1140,7 +1285,7 @@ PET = (() => {
   }, 3200);
   // poof — and it's somewhere else
   function relocate(next) {
-    if (el.hidden) return;
+    if (el.hidden || leaving) return;
     el.classList.add("away");
     setTimeout(() => {
       if (next) spot = next;
@@ -1149,16 +1294,18 @@ PET = (() => {
     }, 480);
   }
   function wander() {
-    if (!s || el.hidden || stageOf(s) < 0 || asleep || onBox || document.hidden) return; // eggs stay; sleepers stay
+    if (!s || el.hidden || leaving || stageOf(s) < 0 || asleep || onBox || document.hidden) return; // eggs stay; sleepers stay
     relocate(pickSpot(spot));
   }
   let wanderT = setInterval(wander, 5 * 60 * 1000);
   const rewander = () => { clearInterval(wanderT); wanderT = setInterval(wander, 5 * 60 * 1000); };
+  // after the quiet days, a new egg
+  setInterval(() => { if (s && !leaving && el.hidden && !absent(s)) render(); }, 60 * 1000);
 
-  // press and drag to carry 풀숲이; let go and it drops to the ground (or onto the mailbox)
+  // press and drag to carry it; let go and it drops to the ground (or onto the mailbox)
   let drag = null, justDragged = false;
   el.addEventListener("pointerdown", (e) => {
-    if (!s || !s.hatched || (e.button && e.button !== 0)) return;
+    if (!s || !s.hatched || leaving || (e.button && e.button !== 0)) return;
     drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false };
     try { el.setPointerCapture(e.pointerId); } catch {}
   });
@@ -1187,7 +1334,7 @@ PET = (() => {
     el.classList.remove("held");
     el.style.transition = "top .5s cubic-bezier(.55,0,.8,.4), left .25s ease, width .5s, height .5s"; // falls
     render();
-    setTimeout(() => { el.style.transition = ""; bump("jump"); if (onMailbox) chatter("top", 0.5); }, 520);
+    setTimeout(() => { el.style.transition = ""; bump("jump"); if (onMailbox && !grownUp()) chatter("top", 0.5); }, 520);
     rewander();
   };
   el.addEventListener("pointerup", drop);
@@ -1195,16 +1342,17 @@ PET = (() => {
   el.addEventListener("click", tap);
   render();
   return {
-    connect, place, wander, flush,
-    // every letter (from either of us) after hatching adds a little growth — and 풀숲이 says so
+    connect, wander, flush,
+    place() { syncMemories(); place(); },
+    // every letter (from either of us) after hatching adds a little growth — and it says so
     letters(ats) {
       const n = ats.length, seen = LS.get("fm:pet-seen-letters", null);
       letterAts = ats; LS.set("fm:letters-at", ats);
       LS.set("fm:pet-seen-letters", n);
-      if (s) render();
-      if (seen !== null && n > seen && s && s.hatched && LS.get("fm:pet-intro", false)) say(GROW[n % GROW.length]);
+      if (s && !leaving) render();
+      if (seen !== null && n > seen && s && s.hatched && !absent(s) && introduced()) { say(GROW[n % GROW.length]); offer(); }
     },
-    toSlot(on) { if (onBox !== on) { onBox = on; relocate(); } },
+    toSlot(on) { if (onBox !== on && !leaving) { onBox = on; relocate(); } },
     forget() { conn = null; s = null; LS.del("fm:pet-cache"); render(); },
   };
 })();
