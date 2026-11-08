@@ -105,6 +105,16 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
 #alien .heart{position:absolute;left:50%;top:6%;width:max(9px,15%);height:auto;fill:var(--stamp);opacity:0;pointer-events:none;animation:heart 1.5s ease-out forwards}
 @keyframes heart{0%{opacity:0;transform:translate(-50%,0) scale(.6)}20%{opacity:.9}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),-120%) scale(1)}}
 
+.peek-tree{position:absolute;pointer-events:none;clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);
+  -webkit-mask-image:linear-gradient(to bottom,#000 95%,transparent);mask-image:linear-gradient(to bottom,#000 95%,transparent)}
+#alien.peek svg{transform:rotate(var(--tilt,0deg));transform-origin:50% 100%}
+/* 풀숲이's little speech bubble */
+.bubble{position:absolute;left:50%;bottom:100%;margin-bottom:8px;white-space:nowrap;pointer-events:none;
+  background:var(--paper);color:var(--ink);font:400 12.5px/1 var(--kr);letter-spacing:.06em;padding:8px 11px 7px;
+  box-shadow:0 6px 18px rgba(0,0,0,.2);opacity:0;transform:translate(-50%,5px);transition:opacity .5s,transform .5s}
+.bubble::after{content:"";position:absolute;left:50%;top:100%;margin-left:-4px;border:4px solid transparent;border-top-color:var(--paper)}
+.bubble.on{opacity:1;transform:translate(-50%,0)}
+
 /* film */
 .grain{position:fixed;inset:-100%;pointer-events:none;z-index:90;opacity:var(--grain);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -312,7 +322,7 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
       <rect x="13" y="112" width="74" height="4.5" fill="#1d1712"/>
     </svg>
   </div>
-  <div id="alien" hidden>
+  <div id="alien" hidden aria-label="풀숲이">
     <svg class="egg" viewBox="0 0 100 110" aria-hidden="true">
       <defs>
         <radialGradient id="eggSkin" cx=".36" cy=".3" r=".85">
@@ -354,6 +364,8 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
       <g class="zz"><circle cx="76" cy="42" r="2.2"/><circle cx="83" cy="31" r="3"/><circle cx="91" cy="18" r="3.8"/></g>
     </svg>
   </div>
+  <div class="peek-tree" id="pt0" aria-hidden="true"></div>
+  <div class="peek-tree" id="pt1" aria-hidden="true"></div>
   <div class="fog f2"></div>
   <canvas id="front"></canvas>
 </div>
@@ -497,7 +509,7 @@ const hexRgb = (h) => { h = h.trim().replace("#", ""); return [0, 2, 4].map((i) 
 const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
 const rgba = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 
-var LAYOUT = null, PET = null; // mailbox geometry, and the one who lives beside it
+var LAYOUT = null, PET = null, PEEK = []; // mailbox geometry, and the one who lives beside it
 const back = $("#back"), front = $("#front"), box = $("#mailbox");
 function layoutBox(W, H) {
   const h = Math.max(120, Math.min(240, H * 0.24));
@@ -513,7 +525,15 @@ function drawForest() {
     fog: hexRgb(cs.getPropertyValue("--fog")), tree: hexRgb(cs.getPropertyValue("--tree")), ground: hexRgb(cs.getPropertyValue("--ground")) };
   const mb = layoutBox(W, H);
   Object.assign(box.style, { left: `${mb.x - mb.w / 2}px`, top: `${mb.base - mb.h}px`, width: `${mb.w}px`, height: `${mb.h}px` });
-  LAYOUT = mb; if (PET) PET.place();
+  LAYOUT = mb;
+  // two near trees, as elements, so 풀숲이 can hide behind them
+  const ptCol = rgba(mix(C.fog, C.tree, 0.86));
+  PEEK = [[W < 700 ? 0.17 : 0.3, 0.16], [W < 700 ? 0.84 : 0.79, 0.3]].map(([fx, depth], i) => {
+    const base = mb.base + (H * 0.93 - mb.base) * depth, wb = mb.w * 0.8 * (1 + depth * 0.8), x = W * fx;
+    Object.assign($(`#pt${i}`).style, { left: `${x - wb / 2}px`, top: "-20px", width: `${wb}px`, height: `${base + 20}px`, background: ptCol });
+    return { x, base, wb, depth };
+  });
+  if (PET) PET.place();
 
   for (const c of [back, front]) { c.width = W * dpr; c.height = H * dpr; }
   const b = back.getContext("2d"), f = front.getContext("2d");
@@ -754,6 +774,7 @@ async function refresh() {
   }
   out.sort((a, b) => a.at - b.at);
   LETTERS = out;
+  PET.letters(out.map((l) => l.at));
   renderInside();
 }
 
@@ -839,7 +860,7 @@ $("#gateForm").addEventListener("submit", async (e) => {
   } finally { btn.disabled = false; btn.textContent = "→"; }
 });
 
-function leave() { if (location.hash) history.replaceState(null, "", location.pathname); show(null); checkSlot(); }
+function leave() { if (location.hash) history.replaceState(null, "", location.pathname); show(null); checkSlot(); setTimeout(PET.flush, 900); }
 document.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", leave));
 document.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", () => { renderInside(); show("inside"); }));
 $("#prevBtn").addEventListener("click", () => current > 0 && openLetter(current - 1));
@@ -940,11 +961,16 @@ PET = (() => {
   const DAY = 864e5, HATCH_TAPS = 20;
   let s = LS.get("fm:pet-cache", null);
   let conn = null, asleep = false, saveT = 0, lastPointer = 0, onBox = false;
-  // where it might be: beside the post, on the mailbox, right under it, or somewhere out in the grass
-  const SPOTS = ["left", "right", "top", "under", "grass", "grass"];
+  // where it might be: beside the post, on the mailbox, right under it, out in the grass, or peeking from behind a tree
+  const SPOTS = ["left", "right", "top", "under", "grass", "grass", "peek", "peek"];
   function pickSpot(prev) {
     for (;;) {
       const k = SPOTS[Math.random() * SPOTS.length | 0];
+      if (k === "peek") {
+        const t = Math.random() < 0.5 ? 0 : 1;
+        if (prev && prev.peek === t) continue;
+        return { peek: t };
+      }
       if (k === "grass") {
         const mb = LAYOUT, W = innerWidth;
         const g = { gx: 0.14 + Math.random() * 0.72, gy: 0.1 + Math.random() * 0.75 };
@@ -956,7 +982,9 @@ PET = (() => {
   }
   let spot = pickSpot();
 
-  const ageOf = (p) => Math.max(0, (Date.now() - (p.hatchedAt || p.born)) / DAY + (p.love || 0) / 50);
+  let letterAts = LS.get("fm:letters-at", []);
+  const lettersSince = (p) => letterAts.filter((t) => t >= (p.hatchedAt || p.born)).length;
+  const ageOf = (p) => Math.max(0, (Date.now() - (p.hatchedAt || p.born)) / DAY + (p.love || 0) / 50 + 3 * lettersSince(p));
   // 0.6 at hatching, easing toward full size: ~0.66 at a week, ~0.8 at a month, ~0.96 at 100 days
   const sizeOf = (p) => !p || !p.hatched ? 0.6 : 0.6 + 0.4 * (1 - Math.exp(-ageOf(p) / 45));
   const stageOf = (p) => {
@@ -974,7 +1002,8 @@ PET = (() => {
     if (!s) { el.hidden = true; return; }
     const st = stageOf(s);
     el.hidden = false;
-    el.setAttribute("class", [`st${st}`, st < 0 && "is-egg", st >= 0 && asleep && "sleep"].filter(Boolean).join(" "));
+    const peeking = st >= 0 && !onBox && spot && spot.peek != null;
+    el.setAttribute("class", [`st${st}`, st < 0 && "is-egg", st >= 0 && asleep && "sleep", peeking && "peek", el.classList.contains("away") && "away"].filter(Boolean).join(" "));
     el.style.setProperty("--crack", String(1 - Math.min(1, (s.taps || 0) / HATCH_TAPS)));
     place();
   }
@@ -986,6 +1015,12 @@ PET = (() => {
     let cx, bottom;
     if (where === "top") { cx = mb.x; bottom = mb.base - mb.h + mb.h * (30 / 230) + h * 0.055; }
     else if (where === "under") { cx = mb.x + mb.w * 0.08; bottom = mb.base + h * 0.1; }
+    else if (where && where.peek != null && PEEK[where.peek]) { // half hidden behind a near tree, leaning out toward the mailbox
+      const t = PEEK[where.peek], side = t.x < mb.x ? 1 : -1, k = 1 + t.depth * 0.7; h *= k; w *= k;
+      bottom = t.base - t.wb * 0.04;
+      cx = t.x + side * (t.wb * 0.47 - w * 0.12);
+      el.style.setProperty("--tilt", `${side * 9}deg`);
+    }
     else if (typeof where === "object") { // out in the grass: nearer the bottom = nearer to you = a little bigger
       const near = mb.base + 6, far = innerHeight * 0.93;
       bottom = near + (far - near) * where.gy;
@@ -1002,9 +1037,26 @@ PET = (() => {
       const h = el.lastElementChild; setTimeout(() => h.remove(), 1700 + i * 140);
     }
   }
+  let queue = [], speaking = false;
+  function say(...lines) { queue.push(...lines); flush(); }
+  function flush() {
+    if (speaking || !queue.length || !s || !s.hatched || el.hidden || asleep || document.body.classList.contains("dim")) return;
+    if (!onBox && spot && spot.peek != null) { relocate(Math.random() < 0.5 ? "left" : "right"); setTimeout(flush, 1000); return; } // come out to talk
+    speaking = true;
+    const b = document.createElement("div"); b.className = "bubble"; b.textContent = queue.shift();
+    el.append(b); bump("jump");
+    requestAnimationFrame(() => requestAnimationFrame(() => b.classList.add("on")));
+    setTimeout(() => { b.classList.remove("on"); setTimeout(() => { b.remove(); speaking = false; setTimeout(flush, 400); }, 550); }, 3800);
+  }
+  function greet() {
+    if (!s || !s.hatched || LS.get("fm:pet-intro", false)) return;
+    LS.set("fm:pet-intro", true);
+    say("나 풀숲이.", "쪽지가 쌓이면 나도 커.");
+  }
+  const GROW = ["쪽지 한 장에 한 뼘.", "조금 컸어.", "쪽지가 늘었다. 나도 컸다."];
   function hatch() {
     el.classList.add("hatching");
-    setTimeout(() => { s.hatched = true; s.hatchedAt = s.hatchedAt || Date.now(); render(); bump("jump"); hearts(4); persist(300); }, 1100);
+    setTimeout(() => { s.hatched = true; s.hatchedAt = s.hatchedAt || Date.now(); render(); bump("jump"); hearts(4); persist(300); setTimeout(greet, 900); }, 1100);
   }
   function tap(e) {
     e.stopPropagation();
@@ -1016,7 +1068,7 @@ PET = (() => {
       if (s.taps >= HATCH_TAPS) hatch(); else persist(3000);
       return;
     }
-    if (asleep) { asleep = false; render(); }
+    if (asleep) { asleep = false; render(); setTimeout(flush, 900); }
     bump("jump"); hearts(2 + (Math.random() * 2 | 0));
     s.love = (s.love || 0) + 1; persist(4000);
   }
@@ -1043,7 +1095,7 @@ PET = (() => {
     if (!s) return;
     asleep = stageOf(s) >= 0 && now - (s.last || now) > 3 * DAY;
     s.last = now;
-    render(); persist(1500);
+    render(); persist(1500); greet();
   }
   function look(x, y) {
     const r = el.getBoundingClientRect(); if (!r.width) return;
@@ -1063,7 +1115,7 @@ PET = (() => {
     el.classList.add("away");
     setTimeout(() => {
       if (next) spot = next;
-      el.style.transition = "none"; place(); void el.offsetWidth; el.style.transition = "";
+      el.style.transition = "none"; render(); void el.offsetWidth; el.style.transition = "";
       el.classList.remove("away");
     }, 480);
   }
@@ -1075,8 +1127,15 @@ PET = (() => {
   el.addEventListener("click", tap);
   render();
   return {
-    connect, place,
-    wander,
+    connect, place, wander, flush,
+    // every letter (from either of us) after hatching adds a little growth — and 풀숲이 says so
+    letters(ats) {
+      const n = ats.length, seen = LS.get("fm:pet-seen-letters", null);
+      letterAts = ats; LS.set("fm:letters-at", ats);
+      LS.set("fm:pet-seen-letters", n);
+      if (s) render();
+      if (seen !== null && n > seen && s && s.hatched && LS.get("fm:pet-intro", false)) say(GROW[n % GROW.length]);
+    },
     toSlot(on) { if (onBox !== on) { onBox = on; relocate(); } },
     forget() { conn = null; s = null; LS.del("fm:pet-cache"); render(); },
   };
@@ -1090,6 +1149,7 @@ async function checkSlot() {
     const b = BOX && hex(BOX.bits) === hex(bits) ? BOX : await openWith(bits);
     PET.connect(b);
     const raw = await b.store.list(b.id);
+    PET.letters(raw.map((r) => r.at || 0));
     const read = new Set(LS.get(`fm:read:${b.id}`, []));
     const n = raw.filter((r) => !read.has(r.id)).length;
     box.classList.toggle("has-note", n > 0);
