@@ -115,7 +115,15 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
 #bubble::after{content:"";position:absolute;left:var(--tail,50%);top:100%;margin-left:-4px;border:4px solid transparent;border-top-color:var(--paper)}
 #bubble.on{opacity:1;transform:translate(-50%,-100%)}
 #bubble .t{display:block}
-#bubble .opts{display:none}
+#bubble .opts,#bubble .nm{display:none}
+#bubble .t:empty{display:none}
+#bubble.naming{pointer-events:auto;padding:9px 10px 9px 12px}
+#bubble.naming .nm{display:flex;align-items:flex-end;gap:8px}
+#bubble .nm input{width:7.5em;background:transparent;border:0;border-bottom:1px solid var(--rule);border-radius:0;outline:none;padding:3px 1px;
+  font:400 14px/1.2 var(--kr);letter-spacing:.06em;color:var(--ink)}
+#bubble .nm input::placeholder{color:var(--ink-dim)}
+#bubble .nm button{font:400 14px/1 var(--mono);padding:3px 2px;color:var(--ink)}
+#bubble .nm button:hover{color:var(--stamp)}
 #bubble.ask{pointer-events:auto;text-align:center;padding:10px 10px 9px}
 #bubble.ask .opts{display:flex;gap:6px;margin-top:10px}
 #bubble .opts button{font:400 11.5px/1 var(--kr);letter-spacing:.06em;padding:8px 10px;background:var(--ink);color:var(--paper);white-space:nowrap;transition:background .25s}
@@ -384,7 +392,7 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
   <div class="peek-tree" id="pt1" aria-hidden="true"></div>
   <div class="fog f2"></div>
   <canvas id="front"></canvas>
-  <div id="bubble" aria-live="polite"><span class="t"></span><span class="opts"><button type="button" data-c="earth">지구에 남기</button><button type="button" data-c="space">유학 보내기</button></span></div>
+  <div id="bubble" aria-live="polite"><span class="t"></span><form class="nm" autocomplete="off"><input maxlength="12" placeholder="이름" aria-label="이름" lang="ko" autocorrect="off" autocapitalize="off" spellcheck="false"><button type="submit" aria-label="정하기">→</button></form><span class="opts"><button type="button" data-c="earth">지구에 남기</button><button type="button" data-c="space">유학 보내기</button></span></div>
 </div>
 
 <div class="frame"></div>
@@ -910,7 +918,7 @@ $("#gateForm").addEventListener("submit", async (e) => {
   } finally { btn.disabled = false; btn.textContent = "→"; }
 });
 
-function leave() { if (location.hash) history.replaceState(null, "", location.pathname); show(null); checkSlot(); setTimeout(PET.flush, 900); }
+function leave() { if (location.hash) history.replaceState(null, "", location.pathname); show(null); checkSlot(); setTimeout(() => { PET.flush(); PET.askName(); }, 900); }
 document.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", leave));
 document.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", () => { renderInside(); show("inside"); }));
 $("#prevBtn").addEventListener("click", () => current > 0 && openLetter(current - 1));
@@ -1009,8 +1017,8 @@ PET = (() => {
   const el = $("#alien"), bubble = $("#bubble");
   const pupils = [...el.querySelectorAll(".pupil")];
   const DAY = 864e5, HATCH_TAPS = 20, ADULT_AGE = 100, EMPTY_DAYS = 7;
-  const NAMES = ["풀숲이"]; // by generation — a new child's name goes here once it has one
-  const nameOf = (g) => NAMES[g - 1] || "";
+  const NAMES = ["풀숲이"]; // the first child; later children are named by the two of us, when their egg appears
+  const nameOf = (p) => (p && p.name) || NAMES[genOf(p) - 1] || "";
   const genOf = (p) => (p && p.gen) || 1;
   let s = LS.get("fm:pet-cache", null);
   let conn = null, asleep = false, saveT = 0, lastPointer = 0, onBox = false, leaving = false;
@@ -1055,7 +1063,7 @@ PET = (() => {
     const past = ((a.past || []).length >= (b.past || []).length ? a.past : b.past) || [];
     if (genOf(a) !== genOf(b)) return { ...(genOf(a) > genOf(b) ? a : b), past }; // a newer child wins
     return {
-      gen: genOf(a), past,
+      gen: genOf(a), past, name: a.name || b.name || undefined,
       born: Math.min(a.born, b.born), love: Math.max(a.love || 0, b.love || 0),
       last: Math.max(a.last || 0, b.last || 0), hatched: !!(a.hatched || b.hatched), taps: Math.max(a.taps || 0, b.taps || 0),
       hatchedAt: a.hatchedAt && b.hatchedAt ? Math.min(a.hatchedAt, b.hatchedAt) : a.hatchedAt || b.hatchedAt || undefined,
@@ -1112,13 +1120,16 @@ PET = (() => {
   const say = (...items) => { queue.push(...items.map((x) => typeof x === "string" ? { text: x } : x)); flush(); };
   function canSpeak(it) {
     if (speaking || document.body.classList.contains("dim")) return false;
+    if (it.naming) return !!(s && !absent(s) && !el.hidden && !leaving && !nameOf(s));
     return it.at ? true : !!(s && s.hatched && !el.hidden && !asleep);
   }
   function flush() {
     if (!queue.length || !canSpeak(queue[0])) return;
     const it = queue.shift(); speaking = true;
     bubble.classList.toggle("ask", !!it.ask); resetChoice();
-    bubble.querySelector(".t").textContent = it.text;
+    bubble.classList.toggle("naming", !!it.naming);
+    bubble.querySelector(".t").textContent = it.text || "";
+    if (it.naming) bubble.querySelector(".nm input").value = "";
     if (!it.at) bump("jump");
     const follow = () => {
       if (!speaking) return;
@@ -1132,20 +1143,38 @@ PET = (() => {
     };
     follow();
     requestAnimationFrame(() => requestAnimationFrame(() => bubble.classList.add("on")));
-    endT = setTimeout(endSpeech, it.ask ? 25000 : 3800);
+    endT = setTimeout(endSpeech, it.ask ? 25000 : it.naming ? 90000 : 3800);
   }
   function endSpeech() {
     clearTimeout(endT); bubble.classList.remove("on");
-    setTimeout(() => { speaking = false; bubble.classList.remove("ask"); setTimeout(flush, 400); }, 550);
+    setTimeout(() => { speaking = false; bubble.classList.remove("ask", "naming"); setTimeout(flush, 400); }, 550);
   }
   function greet() {
     if (!s || !s.hatched || absent(s)) return;
     const g = genOf(s), done = LS.get("fm:pet-intro-gen", LS.get("fm:pet-intro", false) ? 1 : 0);
-    if (done >= g) return;
+    if (done >= g || !nameOf(s)) return; // an unnamed child waits for its name, then says hello with it
     LS.set("fm:pet-intro-gen", g);
-    const n = nameOf(g);
-    say(n ? `나 ${n}.` : "안녕. 나 새로 왔어.", "쪽지가 쌓이면 나도 커.");
+    say(`나 ${nameOf(s)}.`, "쪽지가 쌓이면 나도 커.");
   }
+  /* ── a new child, still unnamed: a little name field shows up above the egg ── */
+  let lastNameAsk = 0;
+  function askName() {
+    if (!s || absent(s) || leaving || nameOf(s) || Date.now() - lastNameAsk < 45000 || queue.some((q) => q.naming) || bubble.classList.contains("naming")) return;
+    lastNameAsk = Date.now();
+    say({ naming: true });
+  }
+  const nameForm = bubble.querySelector(".nm"), nameInput = nameForm.querySelector("input");
+  nameInput.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.isComposing || e.keyCode === 229)) e.preventDefault(); });
+  nameForm.addEventListener("click", (e) => e.stopPropagation());
+  nameForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const n = nameInput.value.normalize("NFC").trim().replace(/\s+/g, " ").slice(0, 12);
+    if (!n || !s || nameOf(s)) return;
+    s.name = n; persist(300);
+    nameInput.blur(); endSpeech();
+    bump(s.hatched ? "jump" : "wobble"); hearts(3);
+    if (s.hatched) setTimeout(() => { if (introduced()) say(`나 ${n}.`); else greet(); }, 700);
+  });
   const introduced = () => LS.get("fm:pet-intro-gen", LS.get("fm:pet-intro", false) ? 1 : 0) >= genOf(s);
   // now and then, a word when you pet it, pick it up, or set it on the mailbox
   const CHAT = {
@@ -1188,7 +1217,7 @@ PET = (() => {
   function choose(c) {
     if (!grownUp()) return;
     const g = genOf(s), now = Date.now();
-    const entry = { gen: g, name: nameOf(g), born: s.born, hatchedAt: s.hatchedAt, leftAt: now, choice: c };
+    const entry = { gen: g, name: nameOf(s), born: s.born, hatchedAt: s.hatchedAt, leftAt: now, choice: c };
     const next = { gen: g + 1, born: now + EMPTY_DAYS * DAY, love: 0, last: now, hatched: false, taps: 0, past: [...(s.past || []), entry] };
     LS.set("fm:pet-cache", next); LS.set("fm:pet-seen-past", next.past.length); // remember the decision even if the page closes now
     say(...FAREWELL[c]);
@@ -1229,6 +1258,7 @@ PET = (() => {
   function tap(e) {
     e.stopPropagation();
     if (justDragged || !s || leaving || absent(s)) return;
+    askName();
     if (stageOf(s) < 0) {
       bump("wobble");
       s.taps = (s.taps || 0) + 1;
@@ -1268,7 +1298,7 @@ PET = (() => {
     if (!s) return;
     asleep = stageOf(s) >= 0 && now - (s.last || now) > 3 * DAY;
     s.last = now;
-    render(); persist(1500); recap(); greet(); offer();
+    render(); persist(1500); recap(); askName(); greet(); offer();
   }
 
   function look(x, y) {
@@ -1300,7 +1330,7 @@ PET = (() => {
   let wanderT = setInterval(wander, 5 * 60 * 1000);
   const rewander = () => { clearInterval(wanderT); wanderT = setInterval(wander, 5 * 60 * 1000); };
   // after the quiet days, a new egg
-  setInterval(() => { if (s && !leaving && el.hidden && !absent(s)) render(); }, 60 * 1000);
+  setInterval(() => { if (s && !leaving && el.hidden && !absent(s)) { render(); askName(); } }, 60 * 1000);
 
   // press and drag to carry it; let go and it drops to the ground (or onto the mailbox)
   let drag = null, justDragged = false;
@@ -1342,7 +1372,7 @@ PET = (() => {
   el.addEventListener("click", tap);
   render();
   return {
-    connect, wander, flush,
+    connect, wander, flush, askName,
     place() { syncMemories(); place(); },
     // every letter (from either of us) after hatching adds a little growth — and it says so
     letters(ats) {
