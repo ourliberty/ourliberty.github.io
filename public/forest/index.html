@@ -1065,6 +1065,20 @@ PET = (() => {
     LS.set("fm:pet-intro", true);
     say("나 풀숲이.", "쪽지가 쌓이면 나도 커.");
   }
+  // now and then, a word when you pet it, pick it up, or set it on the mailbox — spoken, plain, short
+  const CHAT = {
+    pet: ["헤헤.", "좋아.", "간지러워.", "거기 좋아.", "또 해줘.", "보고 싶었어."],
+    wake: ["음… 왔어?", "잘 잤다.", "기다렸어."],
+    held: ["높다!", "어디 가?", "우와.", "안아줘서 좋아."],
+    top: ["여기 좋다.", "멀리까지 보여.", "우체통 따뜻해."],
+  };
+  let lastChat = 0, lastLine = "";
+  function chatter(kind, chance) {
+    if (speaking || queue.length || Date.now() - lastChat < 20000 || Math.random() > chance) return;
+    const pool = CHAT[kind].filter((l) => l !== lastLine);
+    lastLine = pool[Math.random() * pool.length | 0]; lastChat = Date.now();
+    say(lastLine);
+  }
   const GROW = ["쪽지 고마워. 한 뼘 컸어.", "조금 컸어.", "나 또 컸어."]; // always spoken, plain and short
   function hatch() {
     el.classList.add("hatching");
@@ -1081,8 +1095,10 @@ PET = (() => {
       if (s.taps >= HATCH_TAPS) hatch(); else persist(3000);
       return;
     }
+    const woke = asleep;
     if (asleep) { asleep = false; render(); setTimeout(flush, 900); }
     bump("jump"); hearts(2 + (Math.random() * 2 | 0));
+    woke ? chatter("wake", 0.8) : chatter("pet", 0.2);
     s.love = (s.love || 0) + 1; persist(4000);
   }
   function persist(ms) { LS.set("fm:pet-cache", s); clearTimeout(saveT); saveT = setTimeout(save, ms); }
@@ -1153,6 +1169,7 @@ PET = (() => {
       drag.moved = true;
       if (asleep) { asleep = false; render(); }
       el.classList.add("held"); el.style.transition = "none";
+      chatter("held", 0.35);
     }
     const r = el.getBoundingClientRect();
     el.style.left = `${e.clientX - r.width / 2}px`; el.style.top = `${e.clientY - r.height * 0.4}px`; // held by the head
@@ -1170,7 +1187,7 @@ PET = (() => {
     el.classList.remove("held");
     el.style.transition = "top .5s cubic-bezier(.55,0,.8,.4), left .25s ease, width .5s, height .5s"; // falls
     render();
-    setTimeout(() => { el.style.transition = ""; bump("jump"); }, 520);
+    setTimeout(() => { el.style.transition = ""; bump("jump"); if (onMailbox) chatter("top", 0.5); }, 520);
     rewander();
   };
   el.addEventListener("pointerup", drop);
