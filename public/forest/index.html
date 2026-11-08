@@ -60,7 +60,7 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
 @keyframes sway{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.4deg)}}
 
 /* the alien */
-#alien{position:absolute;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+#alien{position:absolute;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
   transform-origin:50% 100%;transition:opacity .5s ease,transform .5s cubic-bezier(.5,0,.3,1.4),width 1s,height 1s}
 #alien.away{opacity:0;transform:scale(.3,1.5) translateY(-10%);transition:opacity .45s ease,transform .45s cubic-bezier(.6,0,.8,.4)}
 #alien[hidden]{display:none}
@@ -109,11 +109,15 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
   -webkit-mask-image:linear-gradient(to bottom,#000 95%,transparent);mask-image:linear-gradient(to bottom,#000 95%,transparent)}
 #alien.peek svg{transform:rotate(var(--tilt,0deg));transform-origin:50% 100%}
 /* 풀숲이's little speech bubble */
-.bubble{position:absolute;left:50%;bottom:100%;margin-bottom:8px;white-space:nowrap;pointer-events:none;
+#bubble{position:absolute;z-index:10;left:0;top:0;white-space:nowrap;pointer-events:none;
   background:var(--paper);color:var(--ink);font:400 12.5px/1 var(--kr);letter-spacing:.06em;padding:8px 11px 7px;
-  box-shadow:0 6px 18px rgba(0,0,0,.2);opacity:0;transform:translate(-50%,5px);transition:opacity .5s,transform .5s}
-.bubble::after{content:"";position:absolute;left:50%;top:100%;margin-left:-4px;border:4px solid transparent;border-top-color:var(--paper)}
-.bubble.on{opacity:1;transform:translate(-50%,0)}
+  box-shadow:0 6px 18px rgba(0,0,0,.2);opacity:0;transform:translate(-50%,calc(-100% + 5px));transition:opacity .5s,transform .5s}
+#bubble::after{content:"";position:absolute;left:var(--tail,50%);top:100%;margin-left:-4px;border:4px solid transparent;border-top-color:var(--paper)}
+#bubble.on{opacity:1;transform:translate(-50%,-100%)}
+/* held in your hand */
+#alien.held{z-index:9;cursor:grabbing}
+#alien.held .hop{animation:none;transform:scale(.93,1.09)}
+#alien.held .breathe{animation-duration:.9s}
 
 /* film */
 .grain{position:fixed;inset:-100%;pointer-events:none;z-index:90;opacity:var(--grain);
@@ -368,6 +372,7 @@ body.dim #scene{filter:blur(6px) brightness(.62) saturate(.8);transform:scale(1.
   <div class="peek-tree" id="pt1" aria-hidden="true"></div>
   <div class="fog f2"></div>
   <canvas id="front"></canvas>
+  <div id="bubble" aria-live="polite"></div>
 </div>
 
 <div class="frame"></div>
@@ -1041,12 +1046,19 @@ PET = (() => {
   function say(...lines) { queue.push(...lines); flush(); }
   function flush() {
     if (speaking || !queue.length || !s || !s.hatched || el.hidden || asleep || document.body.classList.contains("dim")) return;
-    if (!onBox && spot && spot.peek != null) { relocate(Math.random() < 0.5 ? "left" : "right"); setTimeout(flush, 1000); return; } // come out to talk
     speaking = true;
-    const b = document.createElement("div"); b.className = "bubble"; b.textContent = queue.shift();
-    el.append(b); bump("jump");
+    const b = $("#bubble"); b.textContent = queue.shift(); bump("jump");
+    const follow = () => {
+      if (!speaking) return;
+      const r = el.getBoundingClientRect(), bw = b.offsetWidth, W = innerWidth;
+      const ax = r.left + r.width / 2, x = Math.max(bw / 2 + 10, Math.min(W - bw / 2 - 10, ax));
+      b.style.left = `${x}px`; b.style.top = `${r.top + r.height * 0.06 - 8}px`;
+      b.style.setProperty("--tail", `${Math.max(10, Math.min(bw - 10, bw / 2 + ax - x))}px`);
+      requestAnimationFrame(follow);
+    };
+    follow();
     requestAnimationFrame(() => requestAnimationFrame(() => b.classList.add("on")));
-    setTimeout(() => { b.classList.remove("on"); setTimeout(() => { b.remove(); speaking = false; setTimeout(flush, 400); }, 550); }, 3800);
+    setTimeout(() => { b.classList.remove("on"); setTimeout(() => { speaking = false; setTimeout(flush, 400); }, 550); }, 3800);
   }
   function greet() {
     if (!s || !s.hatched || LS.get("fm:pet-intro", false)) return;
@@ -1060,6 +1072,7 @@ PET = (() => {
   }
   function tap(e) {
     e.stopPropagation();
+    if (justDragged) return;
     if (!s) return;
     if (stageOf(s) < 0) {
       bump("wobble");
@@ -1123,7 +1136,45 @@ PET = (() => {
     if (!s || el.hidden || stageOf(s) < 0 || asleep || onBox || document.hidden) return; // eggs stay; sleepers stay
     relocate(pickSpot(spot));
   }
-  setInterval(wander, 5 * 60 * 1000);
+  let wanderT = setInterval(wander, 5 * 60 * 1000);
+  const rewander = () => { clearInterval(wanderT); wanderT = setInterval(wander, 5 * 60 * 1000); };
+
+  // press and drag to carry 풀숲이; let go and it drops to the ground (or onto the mailbox)
+  let drag = null, justDragged = false;
+  el.addEventListener("pointerdown", (e) => {
+    if (!s || !s.hatched || (e.button && e.button !== 0)) return;
+    drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false };
+    try { el.setPointerCapture(e.pointerId); } catch {}
+  });
+  el.addEventListener("pointermove", (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    if (!drag.moved) {
+      if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 8) return;
+      drag.moved = true;
+      if (asleep) { asleep = false; render(); }
+      el.classList.add("held"); el.style.transition = "none";
+    }
+    const r = el.getBoundingClientRect();
+    el.style.left = `${e.clientX - r.width / 2}px`; el.style.top = `${e.clientY - r.height * 0.4}px`; // held by the head
+  });
+  const drop = (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const moved = drag.moved; drag = null;
+    if (!moved) return; // just a tap
+    justDragged = true; setTimeout(() => (justDragged = false), 0);
+    const mb = LAYOUT, r = el.getBoundingClientRect(), cx = r.left + r.width / 2, bottom = r.bottom;
+    const onMailbox = Math.abs(cx - mb.x) < mb.w * 0.6 && bottom > mb.base - mb.h - r.height * 0.7 && bottom < mb.base - mb.h * 0.45;
+    const near = mb.base + 6, far = innerHeight * 0.93;
+    onBox = false;
+    spot = onMailbox ? "top" : { gx: cx / innerWidth, gy: Math.max(0, Math.min(1, (bottom - near) / (far - near))) };
+    el.classList.remove("held");
+    el.style.transition = "top .5s cubic-bezier(.55,0,.8,.4), left .25s ease, width .5s, height .5s"; // falls
+    render();
+    setTimeout(() => { el.style.transition = ""; bump("jump"); }, 520);
+    rewander();
+  };
+  el.addEventListener("pointerup", drop);
+  el.addEventListener("pointercancel", drop);
   el.addEventListener("click", tap);
   render();
   return {
