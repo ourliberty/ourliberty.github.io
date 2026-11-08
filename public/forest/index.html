@@ -1053,7 +1053,7 @@ PET = (() => {
     LS.set("fm:pet-intro", true);
     say("나 풀숲이.", "쪽지가 쌓이면 나도 커.");
   }
-  const GROW = ["쪽지 한 장에 한 뼘.", "조금 컸어.", "쪽지가 늘었다. 나도 컸다."];
+  const GROW = ["쪽지 고마워. 한 뼘 컸어.", "조금 컸어.", "나 또 컸어."]; // always spoken, plain and short
   function hatch() {
     el.classList.add("hatching");
     setTimeout(() => { s.hatched = true; s.hatchedAt = s.hatchedAt || Date.now(); render(); bump("jump"); hearts(4); persist(300); setTimeout(greet, 900); }, 1100);
