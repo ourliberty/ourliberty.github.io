@@ -26,7 +26,19 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm run build
+      # 폰트를 구글에서 받아오다 가끔 실패하므로, 빌드가 깨지면 캐시를 비우고 자동으로 다시 시도합니다.
+      - name: Build (실패 시 자동 재시도)
+        run: |
+          for i in 1 2 3; do
+            echo "빌드 시도 $i/3"
+            if npm run build; then
+              exit 0
+            fi
+            echo "빌드 실패, 캐시를 비우고 다시 시도합니다"
+            rm -rf .next
+          done
+          echo "세 번 모두 실패했습니다"
+          exit 1
       - uses: actions/upload-pages-artifact@v3
         with:
           path: out
