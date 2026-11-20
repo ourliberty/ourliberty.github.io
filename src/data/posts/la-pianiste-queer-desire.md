@@ -1,4 +1,5 @@
 ---
+private: true
 title: '<피아니스트> (2001)'
 excerpt: '미하엘 하네케'
 date: '2026-11-17'
