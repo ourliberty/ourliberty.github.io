@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>총수요·총공급 모형</title>
+<style>
+  :root{
+    --paper:#ffffff; --ink:#111111; --soft:#8a8a8a; --line:#e6e6e6;
+    --ad:#2f4b86; --adghost:#b9c3d8; --accent:#9a2b2b;
+    --sans:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+    --serif:"Apple SD Gothic Neo","Noto Serif KR",serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;line-height:1.5;padding:4px 2px 14px}
+  .wrap{max-width:620px;margin:0 auto}
+  h1{font-family:var(--serif);font-weight:600;font-size:1.02rem;letter-spacing:-0.01em;margin:4px 2px 2px}
+  .sub{color:var(--soft);font-size:0.78rem;margin:0 2px 10px}
+  svg{display:block;width:100%;height:auto;touch-action:none}
+  .axis{stroke:var(--ink);stroke-width:1.2}
+  .tickline{stroke:var(--line);stroke-width:1}
+  .lras{stroke:var(--ink);stroke-width:2}
+  .sras{stroke:var(--ink);stroke-width:2}
+  .ad{stroke:var(--ad);stroke-width:2.4;fill:none}
+  .adghost{stroke:var(--adghost);stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+  .lbl{font-family:var(--sans);font-size:12.5px;fill:var(--ink)}
+  .lbl.ad{fill:var(--ad)}
+  .lbl.soft{fill:var(--soft)}
+  .axlbl{font-size:12px;fill:var(--soft)}
+  .ptB{fill:var(--ad);stroke:#fff;stroke-width:1.5}
+  .ptC{fill:#fff;stroke:var(--ink);stroke-width:1.8}
+  .ptA{fill:var(--soft)}
+  .arrow{stroke:var(--accent);stroke-width:1.6;fill:none;stroke-dasharray:2 3}
+  .guide{stroke:var(--soft);stroke-width:1;stroke-dasharray:3 3}
+  .controls{margin-top:12px;display:grid;gap:11px}
+  .row{display:grid;grid-template-columns:1fr;gap:3px}
+  .row .top{display:flex;justify-content:space-between;align-items:baseline}
+  .row label{font-size:0.86rem;font-weight:500}
+  .row .val{font-size:0.82rem;color:var(--ad);font-variant-numeric:tabular-nums;font-weight:600}
+  .row .hint{font-size:0.72rem;color:var(--soft)}
+  input[type=range]{width:100%;accent-color:var(--ad);height:22px}
+  .btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+  button{font-family:var(--sans);font-size:0.76rem;color:var(--ink);background:#fff;
+    border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer}
+  button:hover{border-color:var(--soft)}
+  button.reset{color:var(--soft)}
+  .readout{margin-top:13px;border-top:1px solid var(--line);padding-top:11px;
+    display:grid;grid-template-columns:1fr 1fr;gap:7px 16px}
+  .readout div{font-size:0.82rem;display:flex;justify-content:space-between;gap:8px}
+  .readout .k{color:var(--soft)}
+  .readout .v{font-variant-numeric:tabular-nums;font-weight:600}
+  .state{margin-top:11px;font-size:0.84rem;background:#f7f7f5;border-radius:8px;padding:9px 11px}
+  .state b{font-weight:600}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin:6px 2px 0;font-size:0.74rem;color:var(--soft)}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .sw{width:16px;height:0;border-top-width:2.4px;border-top-style:solid;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>총수요·총공급 모형 (AD-AS)</h1>
+  <p class="sub">값을 바꾸면 곡선이 움직입니다. AD는 <i>MV = PY</i>에서 <i>P = MV / Y</i>, LRAS는 수직(자연생산량 Ȳ), SRAS는 수평(고정된 물가 P̄). 공급충격은 SRAS를 위아래로 옮깁니다.</p>
+
+  <svg id="chart" viewBox="0 0 560 450" role="img" aria-label="총수요 총공급 그래프"></svg>
+
+  <div class="legend">
+    <span><i class="sw" style="border-color:#2f4b86"></i>총수요 AD</span>
+    <span><i class="sw" style="border-color:#111"></i>LRAS · SRAS</span>
+    <span><i class="sw" style="border-color:#b9c3d8"></i>이동 전 AD</span>
+    <span><i class="sw" style="border-color:#9a2b2b;border-top-style:dotted"></i>조정 경로</span>
+  </div>
+
+  <div class="controls">
+    <div class="row">
+      <div class="top"><label for="mM">통화량 M</label><span class="val" id="vM">100</span></div>
+      <input type="range" id="mM" min="70" max="140" value="100" step="1">
+      <span class="hint">M이 커지면 AD가 바깥(오른쪽)으로 이동한다.</span>
+    </div>
+    <div class="row">
+      <div class="top"><label for="mV">화폐유통속도 V</label><span class="val" id="vV">100</span></div>
+      <input type="range" id="mV" min="70" max="140" value="100" step="1">
+      <span class="hint">V가 작아지면(예: 화폐수요 증가) AD가 안쪽으로 이동한다. 수요충격.</span>
+    </div>
+    <div class="row">
+      <div class="top"><label for="mP">공급충격 (SRAS 높이 P̄)</label><span class="val" id="vP">100</span></div>
+      <input type="range" id="mP" min="70" max="140" value="100" step="1">
+      <span class="hint">불리한 공급충격은 P̄를 올려 SRAS를 위로 민다.</span>
+    </div>
+    <div class="btns">
+      <button id="b1">통화량 증가</button>
+      <button id="b2">불리한 수요충격</button>
+      <button id="b3">불리한 공급충격</button>
+      <button id="b0" class="reset">처음으로</button>
+    </div>
+  </div>
+
+  <div class="readout">
+    <div><span class="k">M · V (명목지출)</span><span class="v" id="rD">10000</span></div>
+    <div><span class="k">자연생산량 Ȳ</span><span class="v">100</span></div>
+    <div><span class="k">단기 생산량 Y</span><span class="v" id="rYs">100</span></div>
+    <div><span class="k">단기 물가 P</span><span class="v" id="rPs">100</span></div>
+    <div><span class="k">장기 생산량 Y</span><span class="v">100</span></div>
+    <div><span class="k">장기 물가 P</span><span class="v" id="rPl">100</span></div>
+  </div>
+
+  <div class="state" id="state"></div>
+</div>
+
+<script>
+(function(){
+  var S=560,H=450, ML=52,MR=96,MT=20,MB=46;
+  var PW=S-ML-MR, PH=H-MT-MB;
+  var DMAX=200; // data max for both axes
+  var YBAR=100, BASE=10000; // baseline M*V
+  var svg=document.getElementById('chart');
+  var SVGNS="http://www.w3.org/2000/svg";
+
+  function x(Y){ return ML + (Y/DMAX)*PW; }
+  function y(P){ return MT + PH - (P/DMAX)*PH; }
+  function el(n,a){ var e=document.createElementNS(SVGNS,n); for(var k in a) e.setAttribute(k,a[k]); return e; }
+  function clampP(p){ return Math.max(2,Math.min(DMAX-2,p)); }
+  function clampY(Y){ return Math.max(2,Math.min(DMAX-2,Y)); }
+
+  function adPath(D){
+    // P = D / Y , draw across visible plot, clipped to [0,DMAX] on both axes
+    var pts=[], steps=160;
+    for(var i=0;i<=steps;i++){
+      var Yv = (i/steps)*DMAX;
+      if(Yv<1) continue;
+      var Pv = D/Yv;
+      if(Pv>DMAX) continue;
+      pts.push(x(Yv)+","+y(Pv));
+    }
+    return "M"+pts.join(" L");
+  }
+
+  function draw(M,V,Pbar){
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    var D=M*V;
+    var Ys=D/Pbar;         // 단기 균형 생산량 (AD ∩ SRAS)
+    var Pl=D/YBAR;         // 장기 균형 물가 (AD ∩ LRAS)
+
+    // grid ticks
+    for(var t=50;t<=200;t+=50){
+      svg.appendChild(el('line',{x1:x(t),y1:MT,x2:x(t),y2:MT+PH,class:'tickline'}));
+      svg.appendChild(el('line',{x1:ML,y1:y(t),x2:ML+PW,y2:y(t),class:'tickline'}));
+    }
+    // axes
+    svg.appendChild(el('line',{x1:ML,y1:MT,x2:ML,y2:MT+PH,class:'axis'}));
+    svg.appendChild(el('line',{x1:ML,y1:MT+PH,x2:ML+PW,y2:MT+PH,class:'axis'}));
+    var ylab=el('text',{x:ML-8,y:MT+8,class:'axlbl','text-anchor':'end'}); ylab.textContent='물가수준 P'; svg.appendChild(ylab);
+    var xlab=el('text',{x:ML+PW,y:MT+PH+30,class:'axlbl','text-anchor':'end'}); xlab.textContent='소득, 생산량 Y'; svg.appendChild(xlab);
+
+    // ghost (baseline) AD if shifted
+    if(Math.abs(D-BASE)>1){
+      svg.appendChild(el('path',{d:adPath(BASE),class:'adghost'}));
+    }
+    // AD
+    svg.appendChild(el('path',{d:adPath(D),class:'ad'}));
+    var adL=el('text',{x:x(clampY(D/ (D/DMAX>2? (D/ (DMAX-6)):6) ))+0,y:0,class:'lbl ad'});
+    // place AD label near right-lower part of curve
+    var Yl=DMAX-6, Pl2=D/Yl;
+    if(Pl2>DMAX-6){ Yl=D/(DMAX-6); Pl2=DMAX-6; }
+    adL.setAttribute('x', x(Yl)-2); adL.setAttribute('y', y(Pl2)+14); adL.setAttribute('text-anchor','end');
+    adL.textContent='AD'; svg.appendChild(adL);
+
+    // LRAS vertical at YBAR
+    svg.appendChild(el('line',{x1:x(YBAR),y1:MT,x2:x(YBAR),y2:MT+PH,class:'lras'}));
+    var lr=el('text',{x:x(YBAR)+5,y:MT+12,class:'lbl'}); lr.textContent='LRAS'; svg.appendChild(lr);
+
+    // SRAS horizontal at Pbar
+    svg.appendChild(el('line',{x1:ML,y1:y(Pbar),x2:ML+PW,y2:y(Pbar),class:'sras'}));
+    var sr=el('text',{x:ML+PW+4,y:y(Pbar)+4,class:'lbl'}); sr.textContent='SRAS'; svg.appendChild(sr);
+
+    // initial equilibrium A (100,100)
+    svg.appendChild(el('circle',{cx:x(100),cy:y(100),r:3,class:'ptA'}));
+    var aL=el('text',{x:x(100)-6,y:y(100)-7,class:'lbl soft','text-anchor':'end'}); aL.textContent='A'; svg.appendChild(aL);
+
+    // long-run point C (YBAR, Pl)
+    var cx=x(YBAR), cy=y(clampP(Pl));
+    // short-run point B (Ys, Pbar)
+    var bx=x(clampY(Ys)), by=y(Pbar);
+
+    // adjustment path B -> C along AD (only if they differ)
+    if(Math.abs(Ys-YBAR)>1.5){
+      var seg=[], steps=40;
+      var Ya=Ys, Yb=YBAR;
+      for(var i=0;i<=steps;i++){
+        var Yv=Ya+(Yb-Ya)*(i/steps);
+        var Pv=D/Yv;
+        seg.push(x(clampY(Yv))+","+y(clampP(Pv)));
+      }
+      svg.appendChild(el('path',{d:"M"+seg.join(" L"),class:'arrow'}));
+    }
+
+    // guide dashed lines from B down to axis
+    svg.appendChild(el('line',{x1:bx,y1:by,x2:bx,y2:MT+PH,class:'guide'}));
+
+    // points
+    svg.appendChild(el('circle',{cx:bx,cy:by,r:4.5,class:'ptB'}));
+    var bL=el('text',{x:bx+7,y:by-7,class:'lbl'}); bL.textContent='B 단기'; svg.appendChild(bL);
+    svg.appendChild(el('circle',{cx:cx,cy:cy,r:4.5,class:'ptC'}));
+    var cL=el('text',{x:cx+7,y:cy+4,class:'lbl'}); cL.textContent='C 장기'; svg.appendChild(cL);
+
+    // readouts
+    document.getElementById('rD').textContent=Math.round(D);
+    document.getElementById('rYs').textContent=Math.round(Ys);
+    document.getElementById('rPs').textContent=Math.round(Pbar);
+    document.getElementById('rPl').textContent=Math.round(Pl);
+
+    // state text
+    var gap=Ys-YBAR;
+    var demand = Math.abs(D-BASE)>1;
+    var supply = Math.abs(Pbar-100)>0.5;
+    var msg='';
+    if(Math.abs(gap)<=2){
+      msg='<b>완전고용.</b> 단기 생산량이 자연생산량 Ȳ와 거의 같다. 경제가 장기균형에 있다.';
+    }else if(gap>2){
+      msg='<b>호황.</b> 단기 생산량이 자연율보다 약 '+Math.round(gap)+' 많다. ';
+      msg+= supply&&!demand
+        ? '유리한 공급충격으로 P̄가 내려가 단기 생산량이 늘었다. 시간이 지나면 가격이 조정되어 생산량은 Ȳ로 돌아간다.'
+        : '단기에는 물가가 고정되어 생산량이 늘지만, 장기에는 물가가 올라 생산량이 Ȳ로 돌아간다(B→C).';
+    }else{
+      msg='<b>침체.</b> 단기 생산량이 자연율보다 약 '+Math.round(-gap)+' 적다. ';
+      msg+= supply&&!demand
+        ? '불리한 공급충격으로 P̄가 올라 생산량이 줄고 물가는 높아졌다. 스태그플레이션. 중앙은행이 가만히 있으면 가격이 서서히 내려 Ȳ로 돌아가고, 총수요를 늘려 수용하면 생산량은 Ȳ로 돌아오나 물가는 영구히 높아진다.'
+        : '단기에는 물가가 고정되어 생산량이 줄지만, 장기에는 물가가 내려 생산량이 Ȳ로 돌아간다(B→C).';
+    }
+    document.getElementById('state').innerHTML=msg;
+  }
+
+  var mM=document.getElementById('mM'), mV=document.getElementById('mV'), mP=document.getElementById('mP');
+  function sync(){
+    document.getElementById('vM').textContent=mM.value;
+    document.getElementById('vV').textContent=mV.value;
+    document.getElementById('vP').textContent=mP.value;
+    draw(+mM.value,+mV.value,+mP.value);
+  }
+  mM.addEventListener('input',sync); mV.addEventListener('input',sync); mP.addEventListener('input',sync);
+  function setv(a,b,c){ mM.value=a; mV.value=b; mP.value=c; sync(); }
+  document.getElementById('b1').addEventListener('click',function(){setv(130,100,100);});
+  document.getElementById('b2').addEventListener('click',function(){setv(100,75,100);});
+  document.getElementById('b3').addEventListener('click',function(){setv(100,100,130);});
+  document.getElementById('b0').addEventListener('click',function(){setv(100,100,100);});
+  sync();
+})();
+</script>
+</body>
+</html>
