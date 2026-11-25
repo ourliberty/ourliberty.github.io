@@ -1,5 +1,5 @@
 ---
-title: 'Hannah Arendt_Life is a Narrative'
+title: 'Hannah Arendt : Life is a Narrative'
 excerpt: '줄리아 크리스테바, 《한나 아렌트: 삶은 하나의 이야기다》(2001)'
 date: '2026-11-25'
 category: review
