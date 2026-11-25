@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IS-LM 모형</title>
+<style>
+  :root{
+    --paper:#ffffff; --ink:#111111; --soft:#8a8a8a; --line:#e6e6e6;
+    --is:#2f4b86; --isghost:#b9c3d8; --lm:#9a2b2b; --lmghost:#dcbcbc; --eq:#111111;
+    --sans:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+    --serif:"Apple SD Gothic Neo","Noto Serif KR",serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;line-height:1.5;padding:4px 2px 14px}
+  .wrap{max-width:620px;margin:0 auto}
+  h1{font-family:var(--serif);font-weight:600;font-size:1.02rem;letter-spacing:-0.01em;margin:4px 2px 2px}
+  .sub{color:var(--soft);font-size:0.78rem;margin:0 2px 10px}
+  svg{display:block;width:100%;height:auto;touch-action:none}
+  .axis{stroke:var(--ink);stroke-width:1.2}
+  .tickline{stroke:var(--line);stroke-width:1}
+  .is{stroke:var(--is);stroke-width:2.4;fill:none}
+  .isghost{stroke:var(--isghost);stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+  .lm{stroke:var(--lm);stroke-width:2.4;fill:none}
+  .lmghost{stroke:var(--lmghost);stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+  .lbl{font-family:var(--sans);font-size:12.5px;fill:var(--ink)}
+  .lbl.is{fill:var(--is)} .lbl.lm{fill:var(--lm)} .lbl.soft{fill:var(--soft)}
+  .axlbl{font-size:12px;fill:var(--soft)}
+  .eqpt{fill:var(--eq);stroke:#fff;stroke-width:1.5}
+  .ghostpt{fill:#fff;stroke:var(--soft);stroke-width:1.5}
+  .guide{stroke:var(--soft);stroke-width:1;stroke-dasharray:3 3}
+  .controls{margin-top:12px;display:grid;gap:11px}
+  .row .top{display:flex;justify-content:space-between;align-items:baseline}
+  .row label{font-size:0.86rem;font-weight:500}
+  .row .val{font-size:0.82rem;color:var(--is);font-variant-numeric:tabular-nums;font-weight:600}
+  .row .hint{font-size:0.72rem;color:var(--soft)}
+  input[type=range]{width:100%;accent-color:var(--is);height:22px}
+  .btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+  button{font-family:var(--sans);font-size:0.76rem;color:var(--ink);background:#fff;
+    border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer}
+  button:hover{border-color:var(--soft)}
+  button.reset{color:var(--soft)}
+  .eqbox{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;
+    display:flex;flex-wrap:wrap;gap:4px 18px;font-size:0.82rem;font-variant-numeric:tabular-nums}
+  .eqbox .is{color:var(--is);font-weight:600}
+  .eqbox .lm{color:var(--lm);font-weight:600}
+  .readout{margin-top:9px;display:grid;grid-template-columns:1fr 1fr;gap:7px 16px}
+  .readout div{font-size:0.82rem;display:flex;justify-content:space-between;gap:8px}
+  .readout .k{color:var(--soft)}
+  .readout .v{font-variant-numeric:tabular-nums;font-weight:600}
+  .state{margin-top:11px;font-size:0.84rem;background:#f7f7f5;border-radius:8px;padding:9px 11px}
+  .state b{font-weight:600}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin:6px 2px 0;font-size:0.74rem;color:var(--soft)}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .sw{width:16px;height:0;border-top-width:2.4px;border-top-style:solid;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>IS-LM 모형</h1>
+  <p class="sub">값을 바꾸면 곡선이 움직입니다. 모형은 교재 제12장 문제의 수치 그대로입니다. 소비 <i>C</i> = 50 + 0.75(<i>Y</i>−<i>T</i>), 투자 <i>I</i> = 150 − 10<i>r</i>, 통화수요 <i>L</i> = <i>Y</i> − 50<i>r</i>. 재정정책은 <i>G</i>·<i>T</i>로 IS를, 금융정책은 <i>M/P</i>로 LM을 옮깁니다.</p>
+
+  <svg id="chart" viewBox="0 0 560 450" role="img" aria-label="IS-LM 그래프"></svg>
+
+  <div class="legend">
+    <span><i class="sw" style="border-color:#2f4b86"></i>IS (재화시장)</span>
+    <span><i class="sw" style="border-color:#9a2b2b"></i>LM (화폐시장)</span>
+    <span><i class="sw" style="border-color:#b9c3d8"></i>이동 전 곡선</span>
+  </div>
+
+  <div class="controls">
+    <div class="row">
+      <div class="top"><label for="mG">정부지출 G</label><span class="val" id="vG">250</span></div>
+      <input type="range" id="mG" min="200" max="320" value="250" step="5">
+      <span class="hint">G가 커지면 IS가 오른쪽으로 이동한다. 확장적 재정정책.</span>
+    </div>
+    <div class="row">
+      <div class="top"><label for="mT">조세 T</label><span class="val" id="vT">200</span></div>
+      <input type="range" id="mT" min="150" max="250" value="200" step="5">
+      <span class="hint">T가 커지면 소비가 줄어 IS가 왼쪽으로 이동한다.</span>
+    </div>
+    <div class="row">
+      <div class="top"><label for="mM">통화공급 M/P</label><span class="val" id="vM">750</span></div>
+      <input type="range" id="mM" min="650" max="850" value="750" step="5">
+      <span class="hint">M/P가 커지면 LM이 오른쪽(아래)으로 이동한다. 확장적 금융정책.</span>
+    </div>
+    <div class="btns">
+      <button id="b1">확장 재정정책</button>
+      <button id="b2">증세</button>
+      <button id="b3">확장 금융정책</button>
+      <button id="b0" class="reset">처음으로</button>
+    </div>
+  </div>
+
+  <div class="eqbox">
+    <span class="is" id="eqIS">IS: Y = 1200 − 40r</span>
+    <span class="lm" id="eqLM">LM: Y = 750 + 50r</span>
+  </div>
+
+  <div class="readout">
+    <div><span class="k">균형 이자율 r</span><span class="v" id="rR">5.0</span></div>
+    <div><span class="k">균형 소득 Y</span><span class="v" id="rY">1000</span></div>
+  </div>
+
+  <div class="state" id="state"></div>
+</div>
+
+<script>
+(function(){
+  var S=560,H=450, ML=56,MR=74,MT=22,MB=46;
+  var PW=S-ML-MR, PH=H-MT-MB;
+  var YMAX=1500, RMAX=15;
+  var baseG=250, baseT=200, baseM=750;
+  var svg=document.getElementById('chart');
+  var NS="http://www.w3.org/2000/svg";
+
+  function x(Y){ return ML + (Y/YMAX)*PW; }
+  function y(r){ return MT + PH - (r/RMAX)*PH; }
+  function el(n,a){ var e=document.createElementNS(NS,n); for(var k in a) e.setAttribute(k,a[k]); return e; }
+  function Aof(G,T){ return 800 + 4*G - 3*T; }         // IS: Y = A - 40r
+  function clampY(Y){ return Math.max(0,Math.min(YMAX,Y)); }
+  function clampR(r){ return Math.max(0,Math.min(RMAX,r)); }
+
+  // line as polyline clipped to the box
+  function linePath(fr){ // fr(Y) -> r
+    var pts=[], steps=150;
+    for(var i=0;i<=steps;i++){
+      var Yv=(i/steps)*YMAX, rv=fr(Yv);
+      if(rv<0 || rv>RMAX) continue;
+      pts.push(x(Yv)+","+y(rv));
+    }
+    return pts.length? "M"+pts.join(" L") : "";
+  }
+
+  function draw(G,T,M){
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    var A=Aof(G,T);
+    var isR=function(Y){ return (A - Y)/40; };          // IS: r=(A-Y)/40
+    var lmR=function(Y){ return (Y - M)/50; };          // LM: r=(Y-M)/50
+    var rStar=(A - M)/90, yStar=M + 50*rStar;
+
+    // grid
+    for(var t=250;t<YMAX;t+=250){ svg.appendChild(el('line',{x1:x(t),y1:MT,x2:x(t),y2:MT+PH,class:'tickline'})); }
+    for(var s=5;s<RMAX;s+=5){ svg.appendChild(el('line',{x1:ML,y1:y(s),x2:ML+PW,y2:y(s),class:'tickline'})); }
+    // axes
+    svg.appendChild(el('line',{x1:ML,y1:MT,x2:ML,y2:MT+PH,class:'axis'}));
+    svg.appendChild(el('line',{x1:ML,y1:MT+PH,x2:ML+PW,y2:MT+PH,class:'axis'}));
+    var yl=el('text',{x:ML-8,y:MT+8,class:'axlbl','text-anchor':'end'}); yl.textContent='이자율 r'; svg.appendChild(yl);
+    var xl=el('text',{x:ML+PW,y:MT+PH+30,class:'axlbl','text-anchor':'end'}); xl.textContent='소득, 생산량 Y'; svg.appendChild(xl);
+
+    // ghost baseline curves if shifted
+    if(Math.abs(A-Aof(baseG,baseT))>0.5){
+      var A0=Aof(baseG,baseT);
+      svg.appendChild(el('path',{d:linePath(function(Y){return (A0-Y)/40;}),class:'isghost'}));
+    }
+    if(Math.abs(M-baseM)>0.5){
+      svg.appendChild(el('path',{d:linePath(function(Y){return (Y-baseM)/50;}),class:'lmghost'}));
+    }
+
+    // IS and LM
+    svg.appendChild(el('path',{d:linePath(isR),class:'is'}));
+    svg.appendChild(el('path',{d:linePath(lmR),class:'lm'}));
+
+    // labels: IS near bottom-right (low r), LM near top-right (high r)
+    var isLy=2.0, isLx=A-40*isLy; if(isLx>YMAX){isLx=YMAX; isLy=(A-YMAX)/40;}
+    var isl=el('text',{x:x(clampY(isLx))-4,y:y(clampR(isLy))+15,class:'lbl is','text-anchor':'end'}); isl.textContent='IS'; svg.appendChild(isl);
+    var lmLy=13, lmLx=M+50*lmLy; if(lmLx>YMAX){lmLx=YMAX; lmLy=(YMAX-M)/50;}
+    var lml=el('text',{x:x(clampY(lmLx))+4,y:y(clampR(lmLy))+4,class:'lbl lm'}); lml.textContent='LM'; svg.appendChild(lml);
+
+    // equilibrium guides + point
+    var ex=x(clampY(yStar)), ey=y(clampR(rStar));
+    svg.appendChild(el('line',{x1:ex,y1:ey,x2:ex,y2:MT+PH,class:'guide'}));
+    svg.appendChild(el('line',{x1:ML,y1:ey,x2:ex,y2:ey,class:'guide'}));
+    svg.appendChild(el('circle',{cx:ex,cy:ey,r:5,class:'eqpt'}));
+    var eqL=el('text',{x:ex+8,y:ey-8,class:'lbl'}); eqL.textContent='균형'; svg.appendChild(eqL);
+
+    // readouts
+    document.getElementById('eqIS').textContent='IS: Y = '+Math.round(A)+' − 40r';
+    document.getElementById('eqLM').textContent='LM: Y = '+Math.round(M)+' + 50r';
+    document.getElementById('rR').textContent=rStar.toFixed(1);
+    document.getElementById('rY').textContent=Math.round(yStar);
+
+    // state text
+    var dG=G-baseG, dT=T-baseT, dM=M-baseM;
+    var parts=[];
+    if(dG>0) parts.push('정부지출을 늘리면 IS가 오른쪽으로 이동해 소득과 이자율이 함께 오른다');
+    else if(dG<0) parts.push('정부지출을 줄이면 IS가 왼쪽으로 이동해 소득과 이자율이 함께 내린다');
+    if(dT>0) parts.push('증세는 소비를 줄여 IS를 왼쪽으로 옮기고 소득과 이자율을 낮춘다');
+    else if(dT<0) parts.push('감세는 IS를 오른쪽으로 옮겨 소득과 이자율을 높인다');
+    if(dM>0) parts.push('통화공급을 늘리면 LM이 오른쪽으로 이동해 소득은 늘고 이자율은 내린다');
+    else if(dM<0) parts.push('통화공급을 줄이면 LM이 왼쪽으로 이동해 소득은 줄고 이자율은 오른다');
+    var msg;
+    if(parts.length===0){
+      msg='<b>기준 균형.</b> 재화시장(IS)과 화폐시장(LM)이 동시에 균형을 이루는 점에서 이자율 r = 5, 소득 Y = 1,000이 결정된다. 교재 제12장 문제의 값과 같다.';
+    }else{
+      msg='<b>균형 이동.</b> '+parts.join('. ')+'. 지금 균형은 r = '+rStar.toFixed(1)+', Y = '+Math.round(yStar)+'이다.';
+    }
+    document.getElementById('state').innerHTML=msg;
+  }
+
+  var mG=document.getElementById('mG'), mT=document.getElementById('mT'), mM=document.getElementById('mM');
+  function sync(){
+    document.getElementById('vG').textContent=mG.value;
+    document.getElementById('vT').textContent=mT.value;
+    document.getElementById('vM').textContent=mM.value;
+    draw(+mG.value,+mT.value,+mM.value);
+  }
+  mG.addEventListener('input',sync); mT.addEventListener('input',sync); mM.addEventListener('input',sync);
+  function setv(g,t,m){ mG.value=g; mT.value=t; mM.value=m; sync(); }
+  document.getElementById('b1').addEventListener('click',function(){setv(300,200,750);});
+  document.getElementById('b2').addEventListener('click',function(){setv(250,240,750);});
+  document.getElementById('b3').addEventListener('click',function(){setv(250,200,820);});
+  document.getElementById('b0').addEventListener('click',function(){setv(250,200,750);});
+  sync();
+})();
+</script>
+</body>
+</html>
