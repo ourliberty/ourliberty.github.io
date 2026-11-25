@@ -1,4 +1,5 @@
 ---
+private: true
 title: '멀홀랜드-드라이브'
 excerpt: ''
 date: '2026-10-15'
