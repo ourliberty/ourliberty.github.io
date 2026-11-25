@@ -1,4 +1,5 @@
 ---
+private: true
 title: 'estaging Heidegger and Lacan in the transformer, and the weak technical event'
 excerpt: 'Violent Hermeneutics: AI and the Weak Technical Event(2026)'
 date: '2026-10-10'
