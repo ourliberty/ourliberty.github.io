@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>대공황의 두 가설</title>
+<style>
+  :root{
+    --paper:#ffffff; --ink:#111111; --soft:#8a8a8a; --line:#e6e6e6;
+    --is:#2f4b86; --isghost:#b9c3d8; --lm:#9a2b2b; --lmghost:#dcbcbc; --eq:#111111;
+    --sans:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+    --serif:"Apple SD Gothic Neo","Noto Serif KR",serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;line-height:1.5;padding:4px 2px 14px}
+  .wrap{max-width:620px;margin:0 auto}
+  h1{font-family:var(--serif);font-weight:600;font-size:1.02rem;letter-spacing:-0.01em;margin:4px 2px 2px}
+  .sub{color:var(--soft);font-size:0.78rem;margin:0 2px 10px}
+  svg{display:block;width:100%;height:auto;touch-action:none}
+  .axis{stroke:var(--ink);stroke-width:1.2}
+  .tickline{stroke:var(--line);stroke-width:1}
+  .is{stroke:var(--is);stroke-width:2.4;fill:none}
+  .isghost{stroke:var(--isghost);stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+  .lm{stroke:var(--lm);stroke-width:2.4;fill:none}
+  .lmghost{stroke:var(--lmghost);stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+  .lbl{font-family:var(--sans);font-size:12.5px;fill:var(--ink)}
+  .lbl.is{fill:var(--is)} .lbl.lm{fill:var(--lm)} .lbl.soft{fill:var(--soft)}
+  .axlbl{font-size:12px;fill:var(--soft)}
+  .eqpt{fill:var(--eq);stroke:#fff;stroke-width:1.5}
+  .eqpt0{fill:#fff;stroke:var(--soft);stroke-width:1.5}
+  .guide{stroke:var(--soft);stroke-width:1;stroke-dasharray:3 3}
+  .controls{margin-top:12px}
+  .btns{display:flex;flex-wrap:wrap;gap:6px}
+  button{font-family:var(--sans);font-size:0.78rem;color:var(--ink);background:#fff;
+    border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer}
+  button:hover{border-color:var(--soft)}
+  button.on{border-color:var(--ink);font-weight:600}
+  .eqbox{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;
+    display:flex;flex-wrap:wrap;gap:4px 18px;font-size:0.82rem;font-variant-numeric:tabular-nums}
+  .eqbox .is{color:var(--is);font-weight:600}
+  .eqbox .lm{color:var(--lm);font-weight:600}
+  .readout{margin-top:9px;display:grid;grid-template-columns:1fr 1fr;gap:7px 16px}
+  .readout div{font-size:0.82rem;display:flex;justify-content:space-between;gap:8px}
+  .readout .k{color:var(--soft)}
+  .readout .v{font-variant-numeric:tabular-nums;font-weight:600}
+  .state{margin-top:11px;font-size:0.84rem;background:#f7f7f5;border-radius:8px;padding:9px 11px}
+  .state b{font-weight:600}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin:6px 2px 0;font-size:0.74rem;color:var(--soft)}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .sw{width:16px;height:0;border-top-width:2.4px;border-top-style:solid;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>대공황: 지출 가설과 통화 가설</h1>
+  <p class="sub">대공황의 원인을 두고 두 가설이 맞선다. 지출 가설은 재화 수요가 외생적으로 줄어 IS가 왼쪽으로 옮겼다고 보고, 통화 가설은 통화량이 줄어 LM이 왼쪽으로 옮겼다고 본다. 어느 쪽이 자료와 맞는지 눌러서 비교해 보자.</p>
+
+  <svg id="chart" viewBox="0 0 560 450" role="img" aria-label="대공황 IS-LM 그래프"></svg>
+
+  <div class="legend">
+    <span><i class="sw" style="border-color:#2f4b86"></i>IS (재화시장)</span>
+    <span><i class="sw" style="border-color:#9a2b2b"></i>LM (화폐시장)</span>
+    <span><i class="sw" style="border-color:#b9c3d8"></i>공황 이전</span>
+  </div>
+
+  <div class="controls">
+    <div class="btns">
+      <button id="b0" class="on">1929년 이전</button>
+      <button id="b1">지출 가설 · IS 좌측</button>
+      <button id="b2">통화 가설 · LM 좌측</button>
+    </div>
+  </div>
+
+  <div class="eqbox">
+    <span class="is" id="eqIS">IS: Y = 3000 − 200r</span>
+    <span class="lm" id="eqLM">LM: Y = 1000 + 200r</span>
+  </div>
+
+  <div class="readout">
+    <div><span class="k">균형 이자율 r</span><span class="v" id="rR">5.0</span></div>
+    <div><span class="k">균형 소득 Y</span><span class="v" id="rY">2000</span></div>
+  </div>
+
+  <div class="state" id="state"></div>
+</div>
+
+<script>
+(function(){
+  var W=560,Hh=450, ML=56,MR=74,MT=22,MB=46;
+  var PW=W-ML-MR, PH=Hh-MT-MB;
+  var YMIN=1000, YMAX=3200, RMAX=10;
+  var svg=document.getElementById('chart');
+  var NS="http://www.w3.org/2000/svg";
+  var mode=0; // 0 base, 1 spending(IS left), 2 money(LM left)
+  // IS: Y = AIS - 200r ; LM: Y = M - 200... (store as Y = BLM + 200r)
+  var baseAIS=3000, baseBLM=1000;
+
+  function x(Y){ return ML + ((Y-YMIN)/(YMAX-YMIN))*PW; }
+  function y(r){ return MT + PH - (r/RMAX)*PH; }
+  function el(n,a){ var e=document.createElementNS(NS,n); for(var k in a) e.setAttribute(k,a[k]); return e; }
+  function txt(s,a){ var e=el('text',a); e.textContent=s; return e; }
+
+  function cfg(){
+    var AIS=baseAIS, BLM=baseBLM;
+    if(mode===1) AIS=2000;      // spending hypothesis: IS shifts left
+    if(mode===2) BLM=600;        // money hypothesis: LM shifts left (M/P falls 1000->600)
+    return {AIS:AIS, BLM:BLM};
+  }
+  function line(fr){
+    var pts=[], n=200;
+    for(var i=0;i<=n;i++){ var Yv=YMIN+(i/n)*(YMAX-YMIN), rv=fr(Yv);
+      if(rv<-0.001||rv>RMAX+0.001) continue; pts.push(x(Yv).toFixed(1)+","+y(rv).toFixed(1)); }
+    return pts.length? "M"+pts.join(" L") : "";
+  }
+
+  function draw(){
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    var c=cfg(), AIS=c.AIS, BLM=c.BLM;
+    var isR=function(Y){ return (AIS-Y)/200; };
+    var lmR=function(Y){ return (Y-BLM)/200; };
+    var rStar=(AIS-BLM)/400, yStar=BLM+200*rStar;
+    var r0=(baseAIS-baseBLM)/400, y0=baseBLM+200*r0; // baseline eq
+
+    // grid
+    for(var g=1200; g<YMAX; g+=400){ svg.appendChild(el('line',{x1:x(g),y1:MT,x2:x(g),y2:MT+PH,class:'tickline'})); }
+    for(var s=2;s<RMAX;s+=2){ svg.appendChild(el('line',{x1:ML,y1:y(s),x2:ML+PW,y2:y(s),class:'tickline'})); }
+    // axes
+    svg.appendChild(el('line',{x1:ML,y1:MT,x2:ML,y2:MT+PH,class:'axis'}));
+    svg.appendChild(el('line',{x1:ML,y1:MT+PH,x2:ML+PW,y2:MT+PH,class:'axis'}));
+    svg.appendChild(txt('이자율 r',{x:ML-8,y:MT+8,class:'axlbl','text-anchor':'end'}));
+    svg.appendChild(txt('소득, 생산량 Y',{x:ML+PW,y:MT+PH+30,class:'axlbl','text-anchor':'end'}));
+    for(var s2=2;s2<RMAX;s2+=2){ svg.appendChild(txt(String(s2),{x:ML-6,y:y(s2)+4,class:'axlbl','text-anchor':'end'})); }
+    for(var g2=1400; g2<YMAX; g2+=400){ svg.appendChild(txt(String(g2),{x:x(g2),y:MT+PH+16,class:'axlbl','text-anchor':'middle'})); }
+
+    // ghost baseline curve (the one that moved)
+    if(mode===1){ svg.appendChild(el('path',{d:line(function(Y){return (baseAIS-Y)/200;}),class:'isghost'})); }
+    if(mode===2){ svg.appendChild(el('path',{d:line(function(Y){return (Y-baseBLM)/200;}),class:'lmghost'})); }
+
+    // IS & LM
+    svg.appendChild(el('path',{d:line(isR),class:'is'}));
+    svg.appendChild(el('path',{d:line(lmR),class:'lm'}));
+
+    // labels
+    var isl=el('text',{x:x(Math.min(AIS-200*0.8,YMAX-30))-2,y:y(0.8)+15,class:'lbl is','text-anchor':'end'}); isl.textContent='IS'; svg.appendChild(isl);
+    var lmTopY=BLM+200*RMAX; if(lmTopY>YMAX)lmTopY=YMAX;
+    svg.appendChild(txt('LM',{x:x(lmTopY)+3,y:y(lmR(lmTopY))+2,class:'lbl lm'}));
+
+    // baseline equilibrium (hollow) when shifted
+    if(mode!==0){
+      var bx=x(y0), bby=y(r0);
+      svg.appendChild(el('circle',{cx:bx,cy:bby,r:4.5,class:'eqpt0'}));
+      svg.appendChild(txt('A',{x:bx+7,y:bby-7,class:'lbl soft'}));
+    }
+    // current equilibrium
+    var ex=x(yStar), ey=y(rStar);
+    svg.appendChild(el('line',{x1:ex,y1:ey,x2:ex,y2:MT+PH,class:'guide'}));
+    svg.appendChild(el('line',{x1:ML,y1:ey,x2:ex,y2:ey,class:'guide'}));
+    svg.appendChild(el('circle',{cx:ex,cy:ey,r:5,class:'eqpt'}));
+    svg.appendChild(txt(mode===0?'균형':'B',{x:ex+8,y:ey-8,class:'lbl'}));
+
+    // readouts
+    document.getElementById('eqIS').textContent='IS: Y = '+AIS+' − 200r';
+    document.getElementById('eqLM').textContent='LM: Y = '+BLM+' + 200r';
+    document.getElementById('rR').textContent=rStar.toFixed(1);
+    document.getElementById('rY').textContent=Math.round(yStar);
+
+    var msg;
+    if(mode===0){
+      msg='<b>1929년 이전.</b> 재화시장(IS)과 화폐시장(LM)이 만나는 점에서 이자율 r = 5, 소득 Y = 2,000이 결정된다. 여기서 두 가설이 공황을 어떻게 설명하는지 비교해 보자.';
+    } else if(mode===1){
+      msg='<b>지출 가설.</b> 주식시장 붕괴와 투자 위축, 긴축 재정정책으로 재화 수요가 외생적으로 줄어 IS가 왼쪽으로 옮긴다. 소득과 이자율이 함께 내려 r = '+rStar.toFixed(1)+', Y = '+Math.round(yStar)+'이 된다. 대공황기에 실제로 생산량과 이자율이 모두 떨어진 것과 들어맞는다.';
+    } else {
+      msg='<b>통화 가설.</b> 통화량이 1929~33년에 약 1/4 줄어 LM이 왼쪽으로 옮긴다. 소득은 줄지만 이자율은 r = '+rStar.toFixed(1)+'로 <b>오른다</b>. 그러나 공황기에 명목이자율은 오히려 하락했다. 이 점에서 통화 가설만으로는 자료를 설명하기 어렵고, 지출 가설이 더 들어맞는다. (물가 하락의 효과까지 보태면 통화량의 역할이 다시 커진다.)';
+    }
+    document.getElementById('state').innerHTML=msg;
+  }
+
+  function setMode(m){
+    mode=m;
+    document.getElementById('b0').classList.toggle('on',m===0);
+    document.getElementById('b1').classList.toggle('on',m===1);
+    document.getElementById('b2').classList.toggle('on',m===2);
+    draw();
+  }
+  document.getElementById('b0').addEventListener('click',function(){setMode(0);});
+  document.getElementById('b1').addEventListener('click',function(){setMode(1);});
+  document.getElementById('b2').addEventListener('click',function(){setMode(2);});
+  draw();
+})();
+</script>
+</body>
+</html>

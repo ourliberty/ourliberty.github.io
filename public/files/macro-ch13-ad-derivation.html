@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>총수요곡선 도출</title>
+<style>
+  :root{
+    --paper:#ffffff; --ink:#111111; --soft:#8a8a8a; --line:#e6e6e6;
+    --is:#2f4b86; --isghost:#b9c3d8; --lm:#9a2b2b; --lmghost:#dcbcbc;
+    --ad:#2f4b86; --adghost:#b9c3d8; --eq:#111111;
+    --sans:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+    --serif:"Apple SD Gothic Neo","Noto Serif KR",serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;line-height:1.5;padding:4px 2px 14px}
+  .wrap{max-width:620px;margin:0 auto}
+  h1{font-family:var(--serif);font-weight:600;font-size:1.02rem;letter-spacing:-0.01em;margin:4px 2px 2px}
+  .sub{color:var(--soft);font-size:0.78rem;margin:0 2px 10px}
+  svg{display:block;width:100%;height:auto;touch-action:none}
+  .axis{stroke:var(--ink);stroke-width:1.2}
+  .tickline{stroke:var(--line);stroke-width:1}
+  .is{stroke:var(--is);stroke-width:2.4;fill:none}
+  .isghost{stroke:var(--isghost);stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+  .lm{stroke:var(--lm);stroke-width:2.4;fill:none}
+  .lmghost{stroke:var(--lmghost);stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+  .ad{stroke:var(--ad);stroke-width:2.4;fill:none}
+  .adghost{stroke:var(--adghost);stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+  .lbl{font-family:var(--sans);font-size:12.5px;fill:var(--ink)}
+  .lbl.is{fill:var(--is)} .lbl.lm{fill:var(--lm)} .lbl.ad{fill:var(--ad)} .lbl.soft{fill:var(--soft)}
+  .axlbl{font-size:12px;fill:var(--soft)}
+  .panlbl{font-size:11.5px;fill:var(--soft)}
+  .eqpt{fill:var(--eq);stroke:#fff;stroke-width:1.5}
+  .guide{stroke:var(--soft);stroke-width:1;stroke-dasharray:3 3}
+  .link{stroke:var(--ink);stroke-width:1.1;stroke-dasharray:4 3;opacity:0.5}
+  .controls{margin-top:12px;display:grid;gap:11px}
+  .row .top{display:flex;justify-content:space-between;align-items:baseline}
+  .row label{font-size:0.86rem;font-weight:500}
+  .row .val{font-size:0.82rem;color:var(--is);font-variant-numeric:tabular-nums;font-weight:600}
+  .row .hint{font-size:0.72rem;color:var(--soft)}
+  input[type=range]{width:100%;accent-color:var(--is);height:22px}
+  .btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+  button{font-family:var(--sans);font-size:0.76rem;color:var(--ink);background:#fff;
+    border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer}
+  button:hover{border-color:var(--soft)}
+  button.on{border-color:var(--ink);font-weight:600}
+  button.reset{color:var(--soft)}
+  .eqbox{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;
+    display:flex;flex-wrap:wrap;gap:4px 18px;font-size:0.82rem;font-variant-numeric:tabular-nums}
+  .eqbox .is{color:var(--is);font-weight:600}
+  .eqbox .lm{color:var(--lm);font-weight:600}
+  .eqbox .ad{color:var(--ad);font-weight:600}
+  .readout{margin-top:9px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px 16px}
+  .readout div{font-size:0.82rem;display:flex;justify-content:space-between;gap:8px}
+  .readout .k{color:var(--soft)}
+  .readout .v{font-variant-numeric:tabular-nums;font-weight:600}
+  .state{margin-top:11px;font-size:0.84rem;background:#f7f7f5;border-radius:8px;padding:9px 11px}
+  .state b{font-weight:600}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin:6px 2px 0;font-size:0.74rem;color:var(--soft)}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .sw{width:16px;height:0;border-top-width:2.4px;border-top-style:solid;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>IS-LM에서 총수요곡선 도출하기</h1>
+  <p class="sub">물가 <i>P</i>를 바꾸면 위 그림에서 LM이 움직이고, 그 균형소득이 아래 그림의 총수요곡선 위 한 점으로 옮겨집니다. 교재 제13장 문제의 경제: IS <i>Y</i> = 3000 − 200<i>r</i>, 통화수요 <i>Y</i> − 200<i>r</i>, <i>M</i> = 3000. 그러면 AD는 <i>Y</i> = 1500 + 1500/<i>P</i>.</p>
+
+  <svg id="chart" viewBox="0 0 560 560" role="img" aria-label="IS-LM과 총수요곡선 도출 그래프"></svg>
+
+  <div class="legend">
+    <span><i class="sw" style="border-color:#9a2b2b"></i>LM (물가에 따라 이동)</span>
+    <span><i class="sw" style="border-color:#2f4b86"></i>IS · AD</span>
+    <span><i class="sw" style="border-color:#b9c3d8"></i>정책 이동 전</span>
+  </div>
+
+  <div class="controls">
+    <div class="row">
+      <div class="top"><label for="mP">물가수준 P</label><span class="val" id="vP">3.0</span></div>
+      <input type="range" id="mP" min="1.5" max="5" value="3" step="0.1">
+      <span class="hint">P가 오르면 실질잔고 M/P가 줄어 LM이 위로 이동한다. 이자율이 오르고 투자와 소득이 준다. 그래서 AD는 우하향한다.</span>
+    </div>
+    <div class="btns">
+      <button id="b0" class="on">기준</button>
+      <button id="b1">확장 재정정책 (G 500→700)</button>
+      <button id="b2">확장 금융정책 (M 3000→4500)</button>
+    </div>
+  </div>
+
+  <div class="eqbox">
+    <span class="is" id="eqIS">IS: Y = 3000 − 200r</span>
+    <span class="lm" id="eqLM">LM: Y = 1000 + 200r</span>
+    <span class="ad" id="eqAD">AD: Y = 1500 + 1500/P</span>
+  </div>
+
+  <div class="readout">
+    <div><span class="k">물가 P</span><span class="v" id="rP">3.0</span></div>
+    <div><span class="k">이자율 r</span><span class="v" id="rR">5.0</span></div>
+    <div><span class="k">소득 Y</span><span class="v" id="rY">2000</span></div>
+  </div>
+
+  <div class="state" id="state"></div>
+</div>
+
+<script>
+(function(){
+  var W=560,Hh=560, ML=56, MR=70, PW=W-ML-MR;
+  var YMIN=1600, YMAX=3100;
+  // top panel (IS-LM): r vertical
+  var TMT=30, TPH=206, RMAX=8;
+  // bottom panel (AD): P vertical
+  var BMT=322, BPH=170, PMAX=6;
+  var svg=document.getElementById('chart');
+  var NS="http://www.w3.org/2000/svg";
+  var scenario=0; // 0 base, 1 fiscal, 2 monetary
+  var baseAIS=3000, baseM=3000;
+
+  function x(Y){ return ML + ((Y-YMIN)/(YMAX-YMIN))*PW; }
+  function ty(r){ return TMT + TPH - (r/RMAX)*TPH; }
+  function by(P){ return BMT + BPH - (P/PMAX)*BPH; }
+  function el(n,a){ var e=document.createElementNS(NS,n); for(var k in a) e.setAttribute(k,a[k]); return e; }
+  function txt(s,a){ var e=el('text',a); e.textContent=s; return e; }
+  function params(){
+    var AIS = (scenario===1)?3500:3000;
+    var M   = (scenario===2)?4500:3000;
+    return {AIS:AIS, M:M};
+  }
+
+  // clipped polyline for top panel: fr(Y)->r
+  function topLine(fr){
+    var pts=[], n=220;
+    for(var i=0;i<=n;i++){ var Yv=YMIN+(i/n)*(YMAX-YMIN), rv=fr(Yv);
+      if(rv<-0.001||rv>RMAX+0.001) continue; pts.push(x(Yv).toFixed(1)+","+ty(rv).toFixed(1)); }
+    return pts.length? "M"+pts.join(" L") : "";
+  }
+  // AD curve for bottom panel: Y = AIS/2 + M/(2P)
+  function adLine(AIS,M){
+    var pts=[], n=240;
+    for(var i=0;i<=n;i++){ var Pv=0.9+(i/n)*(PMAX-0.9); if(Pv>PMAX) break;
+      var Yv=AIS/2 + M/(2*Pv);
+      if(Yv<YMIN||Yv>YMAX) continue; pts.push(x(Yv).toFixed(1)+","+by(Pv).toFixed(1)); }
+    return pts.length? "M"+pts.join(" L") : "";
+  }
+
+  function draw(){
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    var p=params(), AIS=p.AIS, M=p.M;
+    var P=+document.getElementById('mP').value;
+    var MP=M/P;
+    var isR=function(Y){ return (AIS - Y)/200; };     // IS: r=(AIS-Y)/200
+    var lmR=function(Y){ return (Y - MP)/200; };       // LM: r=(Y-M/P)/200
+    var rStar=(AIS - MP)/400, yStar=AIS - 200*rStar;
+
+    // ---- TOP PANEL grid ----
+    for(var g=1800; g<=3000; g+=300){ svg.appendChild(el('line',{x1:x(g),y1:TMT,x2:x(g),y2:TMT+TPH,class:'tickline'})); }
+    for(var s=2;s<=RMAX;s+=2){ svg.appendChild(el('line',{x1:ML,y1:ty(s),x2:ML+PW,y2:ty(s),class:'tickline'})); }
+    svg.appendChild(el('line',{x1:ML,y1:TMT,x2:ML,y2:TMT+TPH,class:'axis'}));
+    svg.appendChild(el('line',{x1:ML,y1:TMT+TPH,x2:ML+PW,y2:TMT+TPH,class:'axis'}));
+    svg.appendChild(txt('이자율 r',{x:ML-8,y:TMT+8,class:'axlbl','text-anchor':'end'}));
+    svg.appendChild(txt('① IS-LM 모형',{x:ML+2,y:TMT-10,class:'panlbl'}));
+    for(var s2=2;s2<=RMAX;s2+=2){ svg.appendChild(txt(String(s2),{x:ML-6,y:ty(s2)+4,class:'axlbl','text-anchor':'end'})); }
+
+    // ghost (baseline) curves if a policy is on
+    if(scenario===1){ svg.appendChild(el('path',{d:topLine(function(Y){return (baseAIS-Y)/200;}),class:'isghost'})); }
+    if(scenario===2){ svg.appendChild(el('path',{d:topLine(function(Y){return (Y-baseM/P)/200;}),class:'lmghost'})); }
+
+    // IS & LM
+    svg.appendChild(el('path',{d:topLine(isR),class:'is'}));
+    svg.appendChild(el('path',{d:topLine(lmR),class:'lm'}));
+
+    // curve labels
+    var isLx=AIS-200*1.0; if(isLx>YMAX){isLx=YMAX;} // near r≈1
+    var isrAt=isR(isLx);
+    svg.appendChild(txt('IS',{x:x(Math.min(isLx,YMAX-40))-2,y:ty(Math.max(isrAt,0.4))+15,class:'lbl is','text-anchor':'end'}));
+    var lmTopY = MP + 200*RMAX; // Y where LM hits r=RMAX
+    if(lmTopY>YMAX) lmTopY=YMAX;
+    svg.appendChild(txt('LM(P)',{x:x(Math.min(lmTopY,YMAX))+3,y:ty(lmR(Math.min(lmTopY,YMAX)))+2,class:'lbl lm'}));
+
+    // equilibrium point + guides (top)
+    var ex=x(yStar), eyT=ty(Math.max(0,Math.min(RMAX,rStar)));
+    svg.appendChild(el('line',{x1:ML,y1:eyT,x2:ex,y2:eyT,class:'guide'}));
+    svg.appendChild(el('circle',{cx:ex,cy:eyT,r:5,class:'eqpt'}));
+
+    // ---- BOTTOM PANEL grid ----
+    for(var g2=1800; g2<=3000; g2+=300){ svg.appendChild(el('line',{x1:x(g2),y1:BMT,x2:x(g2),y2:BMT+BPH,class:'tickline'})); }
+    for(var pp=1;pp<=5;pp++){ svg.appendChild(el('line',{x1:ML,y1:by(pp),x2:ML+PW,y2:by(pp),class:'tickline'})); }
+    svg.appendChild(el('line',{x1:ML,y1:BMT,x2:ML,y2:BMT+BPH,class:'axis'}));
+    svg.appendChild(el('line',{x1:ML,y1:BMT+BPH,x2:ML+PW,y2:BMT+BPH,class:'axis'}));
+    svg.appendChild(txt('물가수준 P',{x:ML-8,y:BMT+8,class:'axlbl','text-anchor':'end'}));
+    svg.appendChild(txt('② 총수요곡선',{x:ML+2,y:BMT-10,class:'panlbl'}));
+    for(var pp2=1;pp2<=5;pp2++){ svg.appendChild(txt(String(pp2),{x:ML-6,y:by(pp2)+4,class:'axlbl','text-anchor':'end'})); }
+    svg.appendChild(txt('소득, 생산량 Y',{x:ML+PW,y:BMT+BPH+28,class:'axlbl','text-anchor':'end'}));
+    for(var g3=1800; g3<=3000; g3+=300){ svg.appendChild(txt(String(g3),{x:x(g3),y:BMT+BPH+16,class:'axlbl','text-anchor':'middle'})); }
+
+    // ghost AD if policy on
+    if(scenario!==0){ svg.appendChild(el('path',{d:adLine(baseAIS,baseM),class:'adghost'})); }
+    // AD curve
+    svg.appendChild(el('path',{d:adLine(AIS,M),class:'ad'}));
+    svg.appendChild(txt('AD',{x:x(Math.min(AIS/2+M/(2*4.6),YMAX))+4,y:by(4.6)+2,class:'lbl ad'}));
+
+    // AD point + guide (bottom)
+    var eyB=by(Math.max(0,Math.min(PMAX,P)));
+    svg.appendChild(el('line',{x1:ML,y1:eyB,x2:ex,y2:eyB,class:'guide'}));
+    svg.appendChild(el('circle',{cx:ex,cy:eyB,r:5,class:'eqpt'}));
+
+    // vertical link line connecting the two panels at Y*
+    svg.appendChild(el('line',{x1:ex,y1:eyT,x2:ex,y2:eyB,class:'link'}));
+
+    // readouts
+    document.getElementById('eqIS').textContent='IS: Y = '+AIS+' − 200r';
+    document.getElementById('eqLM').textContent='LM: Y = '+Math.round(MP)+' + 200r';
+    document.getElementById('eqAD').textContent='AD: Y = '+(AIS/2)+' + '+(M/2)+'/P';
+    document.getElementById('rP').textContent=P.toFixed(1);
+    document.getElementById('rR').textContent=rStar.toFixed(2);
+    document.getElementById('rY').textContent=Math.round(yStar);
+    document.getElementById('vP').textContent=P.toFixed(1);
+
+    // state text
+    var msg;
+    if(scenario===0){
+      msg='<b>총수요곡선은 왜 우하향하는가.</b> 물가 P를 올리면 실질잔고 M/P가 줄어 LM이 위로 이동하고, 이자율이 올라 투자와 소득이 준다. 지금 P = '+P.toFixed(1)+'에서 균형은 r = '+rStar.toFixed(2)+', Y = '+Math.round(yStar)+'이다. 이 (Y, P) 짝이 아래 총수요곡선 위의 한 점이다. P를 움직이며 점이 곡선을 따라가는 것을 보라.';
+    } else if(scenario===1){
+      msg='<b>확장 재정정책.</b> 정부구매를 500에서 700으로 늘리면 IS가 오른쪽으로 옮겨, 같은 물가에서 소득이 더 커진다. 총수요곡선 전체가 오른쪽으로 250만큼 이동한다(옅은 선이 이동 전). P = '+P.toFixed(1)+'에서 Y = '+Math.round(yStar)+'.';
+    } else {
+      msg='<b>확장 금융정책.</b> 통화공급을 3000에서 4500으로 늘리면 LM이 오른쪽으로 옮겨, 같은 물가에서 이자율이 내리고 소득이 커진다. 총수요곡선이 오른쪽으로 이동한다(옅은 선이 이동 전). P = '+P.toFixed(1)+'에서 Y = '+Math.round(yStar)+'.';
+    }
+    document.getElementById('state').innerHTML=msg;
+  }
+
+  var mP=document.getElementById('mP');
+  mP.addEventListener('input',draw);
+  function setScenario(s){
+    scenario=s;
+    document.getElementById('b0').classList.toggle('on',s===0);
+    document.getElementById('b1').classList.toggle('on',s===1);
+    document.getElementById('b2').classList.toggle('on',s===2);
+    draw();
+  }
+  document.getElementById('b0').addEventListener('click',function(){setScenario(0);});
+  document.getElementById('b1').addEventListener('click',function(){setScenario(1);});
+  document.getElementById('b2').addEventListener('click',function(){setScenario(2);});
+  draw();
+})();
+</script>
+</body>
+</html>
