@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>단기에서 장기로</title>
+<style>
+  :root{
+    --paper:#ffffff; --ink:#111111; --soft:#8a8a8a; --line:#e6e6e6;
+    --is:#2f4b86; --isghost:#b9c3d8; --lm:#9a2b2b; --lmghost:#dcbcbc;
+    --ad:#2f4b86; --adghost:#b9c3d8; --eq:#111111;
+    --sans:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+    --serif:"Apple SD Gothic Neo","Noto Serif KR",serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;line-height:1.5;padding:4px 2px 14px}
+  .wrap{max-width:620px;margin:0 auto}
+  h1{font-family:var(--serif);font-weight:600;font-size:1.02rem;letter-spacing:-0.01em;margin:4px 2px 2px}
+  .sub{color:var(--soft);font-size:0.78rem;margin:0 2px 10px}
+  svg{display:block;width:100%;height:auto;touch-action:none}
+  .axis{stroke:var(--ink);stroke-width:1.2}
+  .tickline{stroke:var(--line);stroke-width:1}
+  .is{stroke:var(--is);stroke-width:2.4;fill:none}
+  .isghost{stroke:var(--isghost);stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+  .lm{stroke:var(--lm);stroke-width:2.4;fill:none}
+  .lmghost{stroke:var(--lmghost);stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+  .ad{stroke:var(--ad);stroke-width:2.4;fill:none}
+  .adghost{stroke:var(--adghost);stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+  .lras{stroke:var(--ink);stroke-width:1.5;stroke-dasharray:7 4}
+  .sras{stroke:var(--ink);stroke-width:2;fill:none}
+  .srasghost{stroke:#c2c2c2;stroke-width:1.7;stroke-dasharray:5 4}
+  .lbl{font-family:var(--sans);font-size:12.5px;fill:var(--ink)}
+  .lbl.is{fill:var(--is)} .lbl.lm{fill:var(--lm)} .lbl.ad{fill:var(--ad)} .lbl.soft{fill:var(--soft)}
+  .axlbl{font-size:12px;fill:var(--soft)}
+  .panlbl{font-size:11.5px;fill:var(--soft)}
+  .eqpt{fill:var(--eq);stroke:#fff;stroke-width:1.5}
+  .eqpt0{fill:#fff;stroke:var(--soft);stroke-width:1.5}
+  .guide{stroke:var(--soft);stroke-width:1;stroke-dasharray:3 3}
+  .link{stroke:var(--ink);stroke-width:1.1;stroke-dasharray:4 3;opacity:0.5}
+  .controls{margin-top:12px;display:grid;gap:9px}
+  .ctl-label{font-size:0.74rem;color:var(--soft);margin-bottom:-3px}
+  .btns{display:flex;flex-wrap:wrap;gap:6px}
+  button{font-family:var(--sans);font-size:0.78rem;color:var(--ink);background:#fff;
+    border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer}
+  button:hover{border-color:var(--soft)}
+  button.on{border-color:var(--ink);font-weight:600}
+  .steprow{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .readout{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;
+    display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px 14px}
+  .readout div{font-size:0.82rem;display:flex;justify-content:space-between;gap:6px}
+  .readout .k{color:var(--soft)}
+  .readout .v{font-variant-numeric:tabular-nums;font-weight:600}
+  .state{margin-top:11px;font-size:0.84rem;background:#f7f7f5;border-radius:8px;padding:9px 11px}
+  .state b{font-weight:600}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin:6px 2px 0;font-size:0.74rem;color:var(--soft)}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .sw{width:16px;height:0;border-top-width:2.4px;border-top-style:solid;display:inline-block}
+  .sw.dash{border-top-style:dashed;border-top-width:1.6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>단기에서 장기로: IS-LM과 AD-AS</h1>
+  <p class="sub">충격이나 정책이 오면 경제는 단기에 자연율에서 벗어난다. 물가가 서서히 조정되며 장기균형으로 돌아가는 과정을 단계별로 따라가 보자. 자연율 <i>Y</i><sub>n</sub> = 2000. 단기에는 총공급곡선(SRAS)이 수평이다.</p>
+
+  <svg id="chart" viewBox="0 0 560 560" role="img" aria-label="IS-LM과 AD-AS 단기 장기 조정 그래프"></svg>
+
+  <div class="legend">
+    <span><i class="sw" style="border-color:#9a2b2b"></i>LM</span>
+    <span><i class="sw" style="border-color:#2f4b86"></i>IS · AD</span>
+    <span><i class="sw" style="border-color:#111"></i>SRAS</span>
+    <span><i class="sw dash" style="border-color:#111"></i>LRAS (자연율)</span>
+  </div>
+
+  <div class="controls">
+    <div>
+      <div class="ctl-label">무엇이 경제를 흔드는가</div>
+      <div class="btns">
+        <button id="sMoney" class="on">통화공급 증가</button>
+        <button id="sDemand">불리한 수요충격</button>
+      </div>
+    </div>
+    <div>
+      <div class="ctl-label">조정 단계</div>
+      <div class="steprow">
+        <button id="st0" class="on">1 · 처음(장기균형)</button>
+        <button id="st1">2 · 단기</button>
+        <button id="st2">3 · 장기</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="readout">
+    <div><span class="k">단계</span><span class="v" id="rPhase">장기</span></div>
+    <div><span class="k">물가 P</span><span class="v" id="rP">3.0</span></div>
+    <div><span class="k">이자율 r</span><span class="v" id="rR">5.0</span></div>
+    <div><span class="k">소득 Y</span><span class="v" id="rY">2000</span></div>
+  </div>
+
+  <div class="state" id="state"></div>
+</div>
+
+<script>
+(function(){
+  var W=560, ML=56, MR=70, PW=W-ML-MR;
+  var YMIN=1500, YMAX=2300, YN=2000;
+  var TMT=30, TPH=206, RMAX=8;         // top: IS-LM
+  var BMT=322, BPH=170, PMAX=5;         // bottom: AD-AS
+  var svg=document.getElementById('chart');
+  var NS="http://www.w3.org/2000/svg";
+
+  var SCEN={
+    money:[
+      {AIS:3000,M:3000,P:3},
+      {AIS:3000,M:3600,P:3},
+      {AIS:3000,M:3600,P:3.6}
+    ],
+    demand:[
+      {AIS:3000,M:3000,P:3},
+      {AIS:2500,M:3000,P:3},
+      {AIS:2500,M:3000,P:2}
+    ]
+  };
+  var scen='money', step=0;
+
+  function x(Y){ return ML + ((Y-YMIN)/(YMAX-YMIN))*PW; }
+  function ty(r){ return TMT + TPH - (r/RMAX)*TPH; }
+  function by(P){ return BMT + BPH - (P/PMAX)*BPH; }
+  function el(n,a){ var e=document.createElementNS(NS,n); for(var k in a) e.setAttribute(k,a[k]); return e; }
+  function txt(s,a){ var e=el('text',a); e.textContent=s; return e; }
+  function eq(d){ var MP=d.M/d.P; var r=(d.AIS-MP)/400; return {r:r, Y:d.AIS-200*r, MP:MP}; }
+  function adY(d,Pv){ return d.AIS/2 + d.M/(2*Pv); }
+
+  function topLine(fr){
+    var pts=[],n=200;
+    for(var i=0;i<=n;i++){ var Yv=YMIN+(i/n)*(YMAX-YMIN), rv=fr(Yv);
+      if(rv<-0.001||rv>RMAX+0.001) continue; pts.push(x(Yv).toFixed(1)+","+ty(rv).toFixed(1)); }
+    return pts.length?"M"+pts.join(" L"):"";
+  }
+  function adPath(d){
+    var pts=[],n=220;
+    for(var i=0;i<=n;i++){ var Pv=1.3+(i/n)*(PMAX-1.3); if(Pv>PMAX) break;
+      var Yv=adY(d,Pv); if(Yv<YMIN||Yv>YMAX) continue; pts.push(x(Yv).toFixed(1)+","+by(Pv).toFixed(1)); }
+    return pts.length?"M"+pts.join(" L"):"";
+  }
+
+  function draw(){
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    var steps=SCEN[scen], d=steps[step], d0=steps[0], prev=steps[Math.max(0,step-1)];
+    var e=eq(d), e0=eq(d0), MP=d.M/d.P;
+    var isR=function(Y){return (d.AIS-Y)/200;}, lmR=function(Y){return (Y-MP)/200;};
+
+    // ===== TOP PANEL: IS-LM =====
+    for(var g=1600;g<=2200;g+=200){ svg.appendChild(el('line',{x1:x(g),y1:TMT,x2:x(g),y2:TMT+TPH,class:'tickline'})); }
+    for(var s=2;s<=RMAX;s+=2){ svg.appendChild(el('line',{x1:ML,y1:ty(s),x2:ML+PW,y2:ty(s),class:'tickline'})); }
+    svg.appendChild(el('line',{x1:ML,y1:TMT,x2:ML,y2:TMT+TPH,class:'axis'}));
+    svg.appendChild(el('line',{x1:ML,y1:TMT+TPH,x2:ML+PW,y2:TMT+TPH,class:'axis'}));
+    svg.appendChild(txt('이자율 r',{x:ML-8,y:TMT+8,class:'axlbl','text-anchor':'end'}));
+    svg.appendChild(txt('① IS-LM 모형',{x:ML+2,y:TMT-10,class:'panlbl'}));
+    for(var s2=2;s2<=RMAX;s2+=2){ svg.appendChild(txt(String(s2),{x:ML-6,y:ty(s2)+4,class:'axlbl','text-anchor':'end'})); }
+    // LRAS vertical at YN
+    svg.appendChild(el('line',{x1:x(YN),y1:TMT,x2:x(YN),y2:TMT+TPH,class:'lras'}));
+    svg.appendChild(txt('Yn',{x:x(YN),y:TMT-2,class:'axlbl','text-anchor':'middle'}));
+    // ghosts (previous step) if curve moved
+    if(step>0){
+      if(prev.AIS!==d.AIS) svg.appendChild(el('path',{d:topLine(function(Y){return (prev.AIS-Y)/200;}),class:'isghost'}));
+      if(Math.abs(prev.M/prev.P - MP)>0.5) svg.appendChild(el('path',{d:topLine(function(Y){return (Y-prev.M/prev.P)/200;}),class:'lmghost'}));
+    }
+    // IS, LM
+    svg.appendChild(el('path',{d:topLine(isR),class:'is'}));
+    svg.appendChild(el('path',{d:topLine(lmR),class:'lm'}));
+    // labels
+    var isAtY=Math.min(d.AIS-200*3.6, YMAX-20);
+    svg.appendChild(txt('IS',{x:x(isAtY)-2,y:ty(isR(isAtY))+14,class:'lbl is','text-anchor':'end'}));
+    var lmAtY=Math.min(MP+200*7, YMAX-6);
+    svg.appendChild(txt('LM',{x:x(lmAtY)+3,y:ty(lmR(lmAtY))+2,class:'lbl lm'}));
+    // initial eq (hollow) when moved
+    if(step>0){ svg.appendChild(el('circle',{cx:x(e0.Y),cy:ty(e0.r),r:4.3,class:'eqpt0'})); }
+    // current eq
+    var exT=x(e.Y), eyT=ty(Math.max(0,Math.min(RMAX,e.r)));
+    svg.appendChild(el('line',{x1:ML,y1:eyT,x2:exT,y2:eyT,class:'guide'}));
+    svg.appendChild(el('circle',{cx:exT,cy:eyT,r:5,class:'eqpt'}));
+
+    // ===== BOTTOM PANEL: AD-AS =====
+    for(var g2=1600;g2<=2200;g2+=200){ svg.appendChild(el('line',{x1:x(g2),y1:BMT,x2:x(g2),y2:BMT+BPH,class:'tickline'})); }
+    for(var pp=1;pp<=4;pp++){ svg.appendChild(el('line',{x1:ML,y1:by(pp),x2:ML+PW,y2:by(pp),class:'tickline'})); }
+    svg.appendChild(el('line',{x1:ML,y1:BMT,x2:ML,y2:BMT+BPH,class:'axis'}));
+    svg.appendChild(el('line',{x1:ML,y1:BMT+BPH,x2:ML+PW,y2:BMT+BPH,class:'axis'}));
+    svg.appendChild(txt('물가 P',{x:ML-8,y:BMT+8,class:'axlbl','text-anchor':'end'}));
+    svg.appendChild(txt('② 총수요·총공급',{x:ML+2,y:BMT-10,class:'panlbl'}));
+    for(var pp2=1;pp2<=4;pp2++){ svg.appendChild(txt(String(pp2),{x:ML-6,y:by(pp2)+4,class:'axlbl','text-anchor':'end'})); }
+    svg.appendChild(txt('소득, 생산량 Y',{x:ML+PW,y:BMT+BPH+28,class:'axlbl','text-anchor':'end'}));
+    for(var g3=1600;g3<=2200;g3+=200){ svg.appendChild(txt(g3===YN?'Yn':String(g3),{x:x(g3),y:BMT+BPH+16,class:'axlbl','text-anchor':'middle'})); }
+    // LRAS vertical at YN
+    svg.appendChild(el('line',{x1:x(YN),y1:BMT,x2:x(YN),y2:BMT+BPH,class:'lras'}));
+    svg.appendChild(txt('LRAS',{x:x(YN)+4,y:BMT+11,class:'lbl soft'}));
+    // ghost AD + ghost SRAS (previous step)
+    if(step>0){
+      if(prev.AIS!==d.AIS || prev.M!==d.M) svg.appendChild(el('path',{d:adPath(prev),class:'adghost'}));
+      if(prev.P!==d.P) svg.appendChild(el('line',{x1:x(YMIN),y1:by(prev.P),x2:x(YMAX),y2:by(prev.P),class:'srasghost'}));
+    }
+    // SRAS horizontal at current P
+    svg.appendChild(el('line',{x1:ML,y1:by(d.P),x2:ML+PW,y2:by(d.P),class:'sras'}));
+    svg.appendChild(txt('SRAS',{x:ML+PW-2,y:by(d.P)-5,class:'lbl','text-anchor':'end'}));
+    // AD
+    svg.appendChild(el('path',{d:adPath(d),class:'ad'}));
+    svg.appendChild(txt('AD',{x:x(Math.min(adY(d,1.9),YMAX))+4,y:by(1.9)+2,class:'lbl ad'}));
+    // initial eq (hollow)
+    if(step>0){ svg.appendChild(el('circle',{cx:x(e0.Y),cy:by(d0.P),r:4.3,class:'eqpt0'})); }
+    // current eq
+    var exB=x(e.Y), eyB=by(Math.max(0,Math.min(PMAX,d.P)));
+    svg.appendChild(el('circle',{cx:exB,cy:eyB,r:5,class:'eqpt'}));
+
+    // link line between panels
+    svg.appendChild(el('line',{x1:exT,y1:eyT,x2:exB,y2:eyB,class:'link'}));
+
+    // ===== readouts =====
+    var phaseName=['장기균형','단기','장기균형'][step];
+    document.getElementById('rPhase').textContent=phaseName;
+    document.getElementById('rP').textContent=(d.P).toFixed(1);
+    document.getElementById('rR').textContent=e.r.toFixed(2);
+    document.getElementById('rY').textContent=Math.round(e.Y);
+
+    // ===== state text =====
+    var gap=Math.round(e.Y)-YN;
+    var msg;
+    if(scen==='money'){
+      if(step===0) msg='<b>처음.</b> 경제가 자연율 Y<sub>n</sub> = 2000, 물가 P = 3, 이자율 r = 5의 장기균형에 있다. 통화공급을 늘리면 어떻게 되는지 보자.';
+      else if(step===1) msg='<b>단기.</b> 통화공급이 3000에서 3600으로 늘어 LM과 AD가 오른쪽으로 옮겼다. 단기에는 물가가 고정(SRAS 수평)이어서 이자율이 4.5로 내리고 소득이 2100으로 자연율을 넘는다.';
+      else msg='<b>장기.</b> 소득이 자연율을 넘자 물가가 서서히 올라 3.6이 된다. 실질잔고가 다시 줄어 LM이 처음 자리로 돌아오고, 소득 2000과 이자율 5도 제자리로 온다. 물가만 20퍼센트 올랐다. 통화는 장기에 중립적이다.';
+    } else {
+      if(step===0) msg='<b>처음.</b> 경제가 자연율 Y<sub>n</sub> = 2000, 물가 P = 3, 이자율 r = 5의 장기균형에 있다. 재화 수요가 외생적으로 줄면 어떻게 되는지 보자.';
+      else if(step===1) msg='<b>단기.</b> 수요충격으로 IS와 AD가 왼쪽으로 옮겼다. 단기에는 물가가 고정이어서 소득이 1750으로 자연율 아래로 떨어지고 이자율이 3.75로 내린다. 생산량이 자연율에 못 미치는 불황이다.';
+      else msg='<b>장기.</b> 소득이 자연율에 못 미치자 물가가 서서히 내려 2가 된다. 실질잔고가 늘어 LM이 오른쪽으로 옮기고, 소득이 자연율 2000으로 돌아온다. 다만 이자율은 2.5로 낮아진 채 남는다. 물가 하락이 경제를 자연율로 되돌린 것이다.';
+    }
+    if(step===1 && gap!==0) msg+=' (자연율과의 격차: '+(gap>0?'+':'')+gap+')';
+    document.getElementById('state').innerHTML=msg;
+  }
+
+  function setScen(s){ scen=s; step=0;
+    document.getElementById('sMoney').classList.toggle('on',s==='money');
+    document.getElementById('sDemand').classList.toggle('on',s==='demand');
+    syncSteps(); draw();
+  }
+  function setStep(k){ step=k; syncSteps(); draw(); }
+  function syncSteps(){
+    document.getElementById('st0').classList.toggle('on',step===0);
+    document.getElementById('st1').classList.toggle('on',step===1);
+    document.getElementById('st2').classList.toggle('on',step===2);
+  }
+  document.getElementById('sMoney').addEventListener('click',function(){setScen('money');});
+  document.getElementById('sDemand').addEventListener('click',function(){setScen('demand');});
+  document.getElementById('st0').addEventListener('click',function(){setStep(0);});
+  document.getElementById('st1').addEventListener('click',function(){setStep(1);});
+  document.getElementById('st2').addEventListener('click',function(){setStep(2);});
+  draw();
+})();
+</script>
+</body>
+</html>
